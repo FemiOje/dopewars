@@ -1,7 +1,7 @@
-use bushido_trophy::types::task::Task;
+use achievement::types::index::Task;
 use rollyourown::elements::quests::types::{Quest, QuestTrait};
 
-trait TrophyTrait {
+pub trait TrophyTrait {
     fn identifier(level: u8) -> felt252;
     fn hidden(level: u8) -> bool;
     fn index(level: u8) -> u8;

@@ -1,4 +1,7 @@
-use rollyourown::elements::trophies::interface::{TrophyTrait, Task, Quest, QuestTrait};
+use core::array::Array;
+use rollyourown::elements::trophies::interface::{TrophyTrait, Quest, QuestTrait};
+use achievement::types::{index::Task, task::TaskTrait};
+
 
 impl Brawler of TrophyTrait {
     #[inline]
