@@ -1,5 +1,6 @@
 [package]
 cairo-version = "=2.9.4"
+edition = "2023_01"
 name = "rollyourown"
 version = "0.1.0"
 
@@ -16,16 +17,26 @@ build-external-contracts = [
     "dojo::world::world_contract::world",
     "achievement::events::index::e_TrophyCreation",
     "achievement::events::index::e_TrophyProgression",
+    "tournaments::components::models::game::m_GameMetadata",
+    "tournaments::components::models::game::m_TokenMetadata",
+    "tournaments::components::models::game::m_GameCounter",
+    "tournaments::components::models::game::m_Score",
+    "tournaments::components::models::game::m_Settings",
+    "tournaments::components::models::game::m_SettingsDetails",
+    "tournaments::components::models::game::m_SettingsCounter",
 ]
 
 [dev-dependencies]
 cairo_test = "2.8.4"
+snforge_std = "0.31.0"
 
 [dependencies]
 starknet = "2.8.4"
 dojo = { git = "https://github.com/dojoengine/dojo", tag = "v1.4.0" }
 cartridge_vrf = { git = "https://github.com/cartridge-gg/vrf" }
 achievement = { git = "https://github.com/cartridge-gg/arcade", rev = "cb9837b6e554e85b5145f33a0f06c147163f04e8" }
+tournaments = { git = "https://github.com/FemiOje/tournaments.git", branch = "feat/dopewars" }
+
 openzeppelin_token = "0.18.0"
 openzeppelin_access = "0.18.0"
 

@@ -91,6 +91,8 @@ dependencies = [
  "dojo",
  "openzeppelin_access",
  "openzeppelin_token",
+ "snforge_std",
+ "tournaments",
 ]
 
 [[package]]
@@ -112,3 +114,13 @@ dependencies = [
 name = "stark_vrf"
 version = "0.1.0"
 source = "git+https://github.com/dojoengine/stark-vrf.git#96d6d2a88b1ef46c4a285d0ccc334237205edae3"
+
+[[package]]
+name = "tournaments"
+version = "0.0.1"
+source = "git+https://github.com/FemiOje/tournaments.git?branch=feat%2Fdopewars#b0e3e596870d3da7f18d3b376c92dab76a7d1f70"
+dependencies = [
+ "dojo",
+ "openzeppelin_introspection",
+ "openzeppelin_token",
+]
