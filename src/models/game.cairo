@@ -1,7 +1,14 @@
-use dojo::world::{IWorldDispatcher, IWorldDispatcherTrait};
-
-use rollyourown::{utils::{bytes16::{Bytes16, Bytes16Impl, Bytes16Trait}}};
 use starknet::ContractAddress;
+use dojo::world::{IWorldDispatcher, IWorldDispatcherTrait};
+use rollyourown::{utils::{bytes16::{Bytes16, Bytes16Impl, Bytes16Trait}}};
+use rollyourown::config::game::{GameConfig};
+use rollyourown::config::{
+    drugs::{Drugs}, locations::{Locations},
+    ryo::{RyoConfig}, ryo_address::{RyoAddress}, encounters::{Encounters}
+};
+
+// use debug::PrintTrait;
+// use dojo::test_utils::{spawn_test_world};
 
 #[derive(IntrospectPacked, Copy, Drop, Serde)]
 #[dojo::model]
@@ -69,3 +76,12 @@ impl GameImpl of GameTrait {
         self.game_mode == GameMode::Ranked
     }
 }
+
+// #[test]
+// #[available_gas(100000000)]
+// fn test_game_exists() {
+//     let (world, contracts) = spawn_world();
+
+//     let game = GameImpl::new(1, 1, 1, GameMode::Ranked, "test", 1);
+//     game.exists().print();
+// }

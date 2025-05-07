@@ -6,6 +6,7 @@ use rollyourown::{
 };
 use starknet::ContractAddress;
 
+
 #[derive(Copy, Drop, Serde)]
 pub enum Actions {
     Trade: trading::Trade,
@@ -29,13 +30,29 @@ trait IGameActions<T> {
 
 #[dojo::contract]
 mod game {
-    use cartridge_vrf::{IVrfProviderDispatcher, IVrfProviderDispatcherTrait, Source};
+    use starknet::{ContractAddress, get_caller_address, get_contract_address};
+    
     use dojo::event::EventStorage;
-    use dojo::world::IWorldDispatcherTrait;
+    use dojo::model::ModelStorage;
+    use dojo::world::WorldStorage;
+    use dojo::world::{IWorldDispatcher, IWorldDispatcherTrait};
 
+    use cartridge_vrf::{IVrfProviderDispatcher, IVrfProviderDispatcherTrait, Source};
+    
+    use openzeppelin_introspection::src5::SRC5Component;
+    use openzeppelin_token::erc20::interface::{IERC20Dispatcher, IERC20DispatcherTrait};
+    use openzeppelin_token::erc721::interface::{IERC721Dispatcher, IERC721DispatcherTrait, IERC721Metadata};
+    use openzeppelin_token::erc721::{ERC721Component, ERC721HooksEmptyImpl};
+
+    use tournaments::components::game::game_component;
+    use tournaments::components::interfaces::{IGameDetails, IGameToken, ISettings};
+    use tournaments::components::libs::lifecycle::{LifecycleAssertionsImpl, LifecycleAssertionsTrait};
+    use tournaments::components::models::game::TokenMetadata;
+    use tournaments::components::models::lifecycle::Lifecycle;
+    
     use rollyourown::{
         config::{
-            drugs::{Drugs}, locations::{Locations}, game::{GameConfig}, ryo::{RyoConfig},
+            drugs::{Drugs}, locations::{Locations}, game::{GameConfig, GameSettingsImpl}, ryo::{RyoConfig},
             ryo_address::{RyoAddress}, encounters::{Encounters}
         },
         models::{game_store_packed::GameStorePacked, game::{Game, GameImpl}, season::{Season}},
@@ -47,9 +64,85 @@ mod game {
         helpers::season_manager::{SeasonManagerTrait},
         utils::{random::{Random, RandomImpl}, bytes16::{Bytes16, Bytes16Impl, Bytes16Trait},},
         interfaces::paper::{IPaperDispatcher, IPaperDispatcherTrait}, constants::{ETHER},
-        store::{Store, StoreImpl, StoreTrait}, events::{GameCreated}
+        store::{Store, StoreImpl, StoreTrait}, events::{GameCreated},
+        constants::{DEFAULT_NS, SCORE_MODEL, SCORE_ATTRIBUTE, SETTINGS_MODEL}
     };
-    use starknet::{ContractAddress, get_caller_address, get_contract_address};
+
+    component!(path: game_component, storage: game, event: GameEvent);
+    component!(path: SRC5Component, storage: src5, event: SRC5Event);
+    component!(path: ERC721Component, storage: erc721, event: ERC721Event);
+
+    #[abi(embed_v0)]
+    impl GameComponentImpl = game_component::GameImpl<ContractState>;
+    impl GameComponentInternalImpl = game_component::InternalImpl<ContractState>;
+
+    #[abi(embed_v0)]
+    impl ERC721Impl = ERC721Component::ERC721Impl<ContractState>;
+    #[abi(embed_v0)]
+    impl ERC721CamelOnlyImpl = ERC721Component::ERC721CamelOnlyImpl<ContractState>;
+    impl ERC721InternalImpl = ERC721Component::InternalImpl<ContractState>;
+
+    #[abi(embed_v0)]
+    impl SRC5Impl = SRC5Component::SRC5Impl<ContractState>;
+
+    #[storage]
+    struct Storage {
+        #[substorage(v0)]
+        game: game_component::Storage,
+        #[substorage(v0)]
+        erc721: ERC721Component::Storage,
+        #[substorage(v0)]
+        src5: SRC5Component::Storage,
+    }
+
+    #[event]
+    #[derive(Drop, starknet::Event)]
+    enum Event {
+        #[flat]
+        GameEvent: game_component::Event,
+        #[flat]
+        ERC721Event: ERC721Component::Event,
+        #[flat]
+        SRC5Event: SRC5Component::Event,
+    }
+
+    // constructor
+    fn dojo_init(ref self: ContractState, creator_address: ContractAddress) {
+        self.erc721.initializer("Dope Wars", "DOPE", "dopewars.game");
+        self
+            .game
+            .initializer(
+                creator_address,
+                'Dope Wars',
+                "Dope Wars is an onchain adaptation of the classic Drug Wars game, built on Starknet using the Dojo Engine",
+                'Cartridge',
+                'Cartridge',
+                'Simulation / Strategy',
+                "https://github.com/cartridge-gg/dopewars/blob/main/assets/icon.png",
+                DEFAULT_NS(),
+                SCORE_MODEL(),
+                SCORE_ATTRIBUTE(),
+                SETTINGS_MODEL(),
+            );
+    }
+
+    #[abi(embed_v0)]
+    impl GameDetailsImpl of IGameDetails<ContractState> {
+        fn score(self: @ContractState, game_id: u64) -> u32 {
+            let world: WorldStorage = self.world(@DEFAULT_NS());
+            let game: Game = world.read_model(game_id);
+            game.final_score.into()
+        }
+    }
+
+    #[abi(embed_v0)]
+    impl SettingsImpl of ISettings<ContractState> {
+        fn setting_exists(self: @ContractState, settings_id: u32) -> bool {
+            let world: WorldStorage = self.world(@DEFAULT_NS());
+            let settings: GameConfig = world.read_model(settings_id);
+            settings.exists()
+        }
+    }
 
     #[abi(embed_v0)]
     impl GameActionsImpl of super::IGameActions<ContractState> {

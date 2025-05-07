@@ -25,6 +25,9 @@ skip_contracts = ["dopewars-vrf_provider_mock"]
     "0x051fea4450da9d6aee758bdeba88b2f665bcbf549d2c61421aa724e9ac0ced8f", # vrf address
     "0x44cea566ac53bf7c36b298e36536c1a53ba0b0bdf66b2c5f437965605acface",  # treasury: click_save controller address
 ]
+"dopewars-game" = [
+    "0x06325CDEEA5EF4894dAad10E7bB116D5D01f0EAf55C4a4FC1f593bA035004f75", # creator address
+]
 
 # [writers]
 # "dopewars" = [

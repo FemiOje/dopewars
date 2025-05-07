@@ -21,3 +21,28 @@ struct GameConfig {
     rep_hospitalized: u8, // reputation earn when Hospitalized
     rep_jailed: u8, // reputation earn when Jailed
 }
+
+#[generate_trait]
+impl GameSettingsImpl of GameSettingsTrait {
+    fn new(settings_id: u16) -> GameConfig {
+        // TODO: change to ACTUAL default values
+        GameConfig {
+            season_version: settings_id,
+            cash: 1000,
+            health: 90,
+            max_turns: 16,
+            max_wanted_shopping: 5,
+            max_rounds: 3,
+            rep_drug_step: 20,
+            rep_buy_item: 2,
+            rep_carry_drugs: 2,
+            rep_hospitalized: 4,
+            rep_jailed: 6,
+        }
+    }
+    
+    fn exists(self: GameConfig) -> bool {
+        self.health.is_non_zero()
+    }
+}
+

@@ -90,6 +90,7 @@ dependencies = [
  "cartridge_vrf",
  "dojo",
  "openzeppelin_access",
+ "openzeppelin_introspection",
  "openzeppelin_token",
  "snforge_std",
  "tournaments",
