@@ -79,5 +79,6 @@ slot_ryomainnet_torii = "slot d create --tier rare ryomainnet torii -v v1.0.5 --
 [profile.ryo2]
 [profile.internal]
 [profile.ryosepolia]
+[profile.sepolia]
 [profile.mainnet]
 

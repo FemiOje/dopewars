@@ -1,12 +1,12 @@
 
 [env]
 rpc_url = "https://api.cartridge.gg/x/starknet/sepolia"
-account_address = "0x3677d8443f74dcc6cd23c4b3f217256c70f084ee7edc4ddc431af2ce91eb936"
-keystore = "../../../sozo_acc"
+account_address = "0x1bb9e30c1d477757491c3c85254adadc32994ca7069aa7a754914ceacdcaa65"
+keystore ="./deploy/keystore.json"
 
 [world]
 name = "Dope Wars"
-seed = "sepo6seed"
+seed = "seed"
 description = "Dope Wars is an onchain adaptation of the classic arbitrage game Drug Wars, built by Cartridge in partnership with Dope DAO."
 # website = "https://rollyourown.preview.cartridge.gg/"
 # icon_uri = "file://assets/icon.png"
@@ -24,6 +24,9 @@ skip_contracts = ["dopewars-vrf_provider_mock"]
     "0x0",                                                                # paper address, 0x0 = use dns world to retrieve paper_mock
     "0x051fea4450da9d6aee758bdeba88b2f665bcbf549d2c61421aa724e9ac0ced8f", # vrf address
     "0x44cea566ac53bf7c36b298e36536c1a53ba0b0bdf66b2c5f437965605acface",  # treasury: click_save controller address
+]
+"dopewars-game" = [
+    "0x06325CDEEA5EF4894dAad10E7bB116D5D01f0EAf55C4a4FC1f593bA035004f75", # creator address
 ]
 
 # [writers]
