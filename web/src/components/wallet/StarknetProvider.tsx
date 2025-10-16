@@ -182,14 +182,14 @@ const cartridgeConnector = ({ selectedChain }: { selectedChain: DojoChainConfig 
     ],
     defaultChainId: `0x${selectedChain.chainConfig.id.toString(16)}`,
     url: selectedChain.keychain ? selectedChain.keychain : "https://x.cartridge.gg",
-    rpc: selectedChain.rpcUrl ? selectedChain.rpcUrl : "http://localhost:5050",
+    // rpc: selectedChain.rpcUrl ? selectedChain.rpcUrl : "http://localhost:5050",
     // profileUrl: selectedChain.profileUrl ? selectedChain.profileUrl : undefined,
     namespace: selectedChain.namespace ? selectedChain.namespace : "dopewars",
     slot: selectedChain.slot ? selectedChain.slot : "ryo",
     tokens: {
       erc20: [
         // paperAddress
-        "0x410466536b5ae074f7fea81e5533b8134a9fa08b3dd077dd9db08f64997d113",
+        // "0x410466536b5ae074f7fea81e5533b8134a9fa08b3dd077dd9db08f64997d113",
       ],
     },
     preset: "dope-wars",
