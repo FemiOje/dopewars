@@ -142,7 +142,7 @@ export class ConfigStoreClass {
     });
   }
 
-  *init(): Generator<any, void, any> {
+  *init(): Generator<any, any, any> {
     this.isInitialized = false;
 
     this.config = undefined;
