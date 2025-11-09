@@ -1,0 +1,104 @@
+query Config {
+  # RyoAddress
+  dopewarsRyoAddressModels(limit: 1) {
+    edges {
+      node {
+        key
+        paper
+        treasury
+      }
+    }
+  }
+
+  # Ryo
+  dopewarsRyoConfigModels(limit: 1) {
+    edges {
+      node {
+        key
+        initialized
+        paused
+        season_version
+        season_duration
+        season_time_limit
+        paper_fee
+        paper_reward_launderer
+        treasury_fee_pct
+        treasury_balance
+      }
+    }
+  }
+
+  # Drugs
+  dopewarsDrugConfigModels(limit: 24, order: { field: DRUG_ID, direction: ASC }) {
+    edges {
+      node {
+        drugs_mode
+        drug
+        drug_id
+        base
+        step
+        weight
+        name {
+          value
+        }
+      }
+    }
+  }
+
+  # Locations
+  dopewarsLocationConfigModels(order: { field: LOCATION_ID, direction: ASC }) {
+    edges {
+      node {
+        location
+        location_id
+        name {
+          value
+        }
+      }
+    }
+  }
+
+  dopewarsEncounterStatsConfigModels(limit: 100) {
+    edges {
+      node {
+        encounters_mode
+        encounter
+        health_base
+        health_step
+        attack_base
+        attack_step
+        defense_base
+        defense_step
+        speed_base
+        speed_step
+      }
+    }
+  }
+
+  # DopewarsItemTierModels
+  dopewarsDopewarsItemTierModels(limit: 1000) {
+    edges {
+      node {
+        slot_id
+        item_id
+        tier
+      }
+    }
+  }
+
+  # DopewarsItemTierConfigModels
+  dopewarsDopewarsItemTierConfigModels(limit: 1000) {
+    edges {
+      node {
+        slot_id
+        tier
+        levels {
+          stat
+          cost
+        }
+      }
+    }
+  }
+
+  # Note: dopeComponentValueEventModels is excluded for chains without Dope namespace
+}

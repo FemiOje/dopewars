@@ -11,4 +11,5 @@ deployment.md
 .snfoundry_cache/
 .claude/
 AGENTS.md
+STRIPPING_PLAN.md
 scripts/start-dev-ssl.sh

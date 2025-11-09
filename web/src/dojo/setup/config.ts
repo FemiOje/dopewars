@@ -8,6 +8,7 @@ import manifestDopewars from "../../manifests/manifest_dopewars.json";
 import manifestRyoSepolia from "../../manifests/manifest_ryosepolia.json";
 import manifestMainnet from "../../manifests/manifest_mainnet.json";
 import manifestProvableDw from "../../manifests/manifest_provable-dw.json";
+import manifestSepolia from "../../manifests/manifest_sepolia.json";
 
 
 import manifestDopeDev from "../../manifests_dope/manifest_dev.json";
@@ -134,17 +135,30 @@ const katanaSlotDopewars: DojoChainConfig = {
 };
 
 
+// const snSepolia: DojoChainConfig = {
+//   name: "SEPOLIA",
+//   chainConfig: sepolia,
+//   rpcUrl: "https://api.cartridge.gg/x/starknet/sepolia",
+//   toriiUrl: "https://api.cartridge.gg/x/ryosepolia2/torii/graphql",
+//   toriiWsUrl: "wss://api.cartridge.gg/x/ryosepolia2/torii/graphql/ws",
+//   manifest: mergeManifests(manifestRyoSepolia, [manifestDopeSepolia]),
+//   slot: "ryosepolia2",
+//   predeployedAccounts: [],
+//   paperAddress: manifestRyoSepolia.contracts.find((i) => i.tag === `${DW_NS}-paper_mock`)?.address || "0x0",
+//   vrfProviderAddress: VRF_PROVIDER_SEPOLIA,
+//   vrfProviderSecret: undefined,
+// };
+
 const snSepolia: DojoChainConfig = {
   name: "SEPOLIA",
   chainConfig: sepolia,
   rpcUrl: "https://api.cartridge.gg/x/starknet/sepolia",
-  toriiUrl: "https://api.cartridge.gg/x/ryosepolia2/torii/graphql",
-  toriiWsUrl: "wss://api.cartridge.gg/x/ryosepolia2/torii/graphql/ws",
-  manifest: mergeManifests(manifestRyoSepolia, [manifestDopeSepolia]),
-  slot: "ryosepolia2",
+  toriiUrl: "https://api.cartridge.gg/x/provable-dw-1/torii/graphql",
+  toriiWsUrl: "wss://api.cartridge.gg/x/provable-dw-1/torii/graphql/ws",
+  manifest: mergeManifests(manifestSepolia, [manifestDopeSepolia]),
   predeployedAccounts: [],
-  paperAddress: manifestRyoSepolia.contracts.find((i) => i.tag === `${DW_NS}-paper_mock`)?.address || "0x0",
-  vrfProviderAddress: VRF_PROVIDER_SEPOLIA,
+  paperAddress: manifestSepolia.contracts.find((i) => i.tag === `${DW_NS}-paper_mock`)?.address || "0x0",
+  vrfProviderAddress: manifestSepolia.contracts.find((i) => i.tag === `${DW_NS}-vrf_provider_mock`)?.address || "0x0",
   vrfProviderSecret: undefined,
 };
 
@@ -180,7 +194,7 @@ const snMainnet: DojoChainConfig = {
 // The first chain in this object is the default chain in production
 export const dojoContextConfig = {
   // SN_MAIN: snMainnet,
-  // SN_SEPOLIA: snSepolia,
+  SN_SEPOLIA: snSepolia,
   WP_PROVABLE_DW: provableDW,
   WP_DOPEWARS: katanaSlotDopewars,
   KATANA: katanaLocal,

@@ -20,14 +20,14 @@ export interface RandomnessConfig {
 export const getRandomnessMode = (chainConfig: DojoChainConfig): RandomnessConfig => {
   const chainName = chainConfig.name;
 
-  // Use local randomness for provable-dw deployment and local katana
-  if (chainName === "WP_PROVABLE_DW" || chainName === "KATANA") {
+  // Use local randomness for provable-dw deployment, local katana, and sepolia (mock VRF)
+  if (chainName === "WP_PROVABLE_DW" || chainName === "KATANA" || chainName === "SEPOLIA") {
     return {
       mode: RandomnessMode.LOCAL,
     };
   }
 
-  // Use VRF for mainnet, sepolia, and dopewars slot
+  // Use VRF for mainnet and dopewars slot
   return {
     mode: RandomnessMode.VRF,
     vrfProviderAddress: chainConfig.vrfProviderAddress,
@@ -83,13 +83,7 @@ export const generateLocalEntropy = (gameId?: string, action?: string): string =
   const userAgent = typeof window !== "undefined" ? window.navigator.userAgent : "";
 
   // Combine multiple entropy sources
-  const entropyInputs = [
-    timestamp.toString(),
-    random.toString(),
-    gameId || "",
-    action || "",
-    userAgent,
-  ];
+  const entropyInputs = [timestamp.toString(), random.toString(), gameId || "", action || "", userAgent];
 
   // Create a simple hash-like string (not cryptographically secure, but sufficient for game entropy)
   let hash = 0;
@@ -97,7 +91,7 @@ export const generateLocalEntropy = (gameId?: string, action?: string): string =
 
   for (let i = 0; i < combined.length; i++) {
     const char = combined.charCodeAt(i);
-    hash = ((hash << 5) - hash) + char;
+    hash = (hash << 5) - hash + char;
     hash = hash & hash; // Convert to 32-bit integer
   }
 

@@ -20,23 +20,14 @@ import {
   Dope_ComponentValueEventEdge as ComponentValueEventEdge,
   Dope_ComponentValueEvent as ComponentValueEvent,
 } from "@/generated/graphql";
-import { DojoProvider } from "@dojoengine/core";
+import { DojoProvider, getContractByName } from "@dojoengine/core";
 import { GraphQLClient } from "graphql-request";
 import { flow, makeObservable, observable } from "mobx";
 import React, { ReactNode } from "react";
-import { Contract, ProviderInterface, shortString } from "starknet";
+import { Contract, TypedContractV2, RpcProvider, shortString } from "starknet";
 import { ABI as configAbi } from "../abis/configAbi";
 import { drugIcons, drugIconsKeys, locationIcons, locationIconsKeys } from "../helpers";
-import {
-  CashMode,
-  DrugsMode,
-  EncountersMode,
-  EncountersOddsMode,
-  HealthMode,
-  ItemSlot,
-  TurnsMode,
-  // WantedMode,
-} from "../types";
+import { CashMode, DrugsMode, EncountersMode, EncountersOddsMode, HealthMode, ItemSlot, TurnsMode } from "../types";
 import { GearItem } from "@/dope/helpers";
 
 export type DrugConfigFull = Omit<DrugConfig, "name"> & { icon: React.FC; name: string };
@@ -90,7 +81,6 @@ export type SeasonSettingsModes = {
   encounters_modes: Array<EncountersMode>;
   encounters_odds_modes: Array<EncountersOddsMode>;
   drugs_modes: Array<DrugsMode>;
-  // wanted_modes: Array<WantedMode>;
 };
 
 export type GetConfig = {
@@ -121,12 +111,14 @@ export type Config = {
 type ConfigStoreProps = {
   client: GraphQLClient;
   dojoProvider: DojoProvider;
+  rpcProvider?: RpcProvider;
   manifest: any;
 };
 
 export class ConfigStoreClass {
   client: GraphQLClient;
   dojoProvider: DojoProvider;
+  rpcProvider?: RpcProvider;
   manifest: any;
 
   config: Config | undefined = undefined;
@@ -135,11 +127,12 @@ export class ConfigStoreClass {
   isInitialized = false;
   error: any | undefined = undefined;
 
-  constructor({ client, dojoProvider, manifest }: ConfigStoreProps) {
+  constructor({ client, dojoProvider, rpcProvider, manifest }: ConfigStoreProps) {
     // console.log("new ConfigStoreClass");
 
     this.client = client;
     this.dojoProvider = dojoProvider;
+    this.rpcProvider = rpcProvider;
     this.manifest = manifest;
 
     makeObservable(this, {
@@ -149,12 +142,122 @@ export class ConfigStoreClass {
     });
   }
 
-  *init(): Generator<any, any, any> {
+  *init() {
     this.isInitialized = false;
 
     this.config = undefined;
 
-    const data = (yield this.client.request(ConfigDocument, {})) as ConfigQuery;
+    let data: ConfigQuery;
+    try {
+      data = (yield this.client.request(ConfigDocument, {})) as ConfigQuery;
+    } catch (error: any) {
+      // Handle case where Dope namespace doesn't exist (e.g., Sepolia)
+      // The error occurs when dopeComponentValueEventModels field doesn't exist in the schema
+      if (
+        error?.response?.errors?.some(
+          (e: any) => e.message?.includes("dopeComponentValueEventModels") || e.message?.includes("Unknown field"),
+        )
+      ) {
+        // Retry with a query that excludes the Dope field
+        const queryWithoutDope = `
+          query Config {
+            dopewarsRyoAddressModels(limit: 1) {
+              edges {
+                node {
+                  key
+                  paper
+                  treasury
+                }
+              }
+            }
+            dopewarsRyoConfigModels(limit: 1) {
+              edges {
+                node {
+                  key
+                  initialized
+                  paused
+                  season_version
+                  season_duration
+                  season_time_limit
+                  paper_fee
+                  paper_reward_launderer
+                  treasury_fee_pct
+                  treasury_balance
+                }
+              }
+            }
+            dopewarsDrugConfigModels(limit: 24, order: { field: DRUG_ID, direction: ASC }) {
+              edges {
+                node {
+                  drugs_mode
+                  drug
+                  drug_id
+                  base
+                  step
+                  weight
+                  name {
+                    value
+                  }
+                }
+              }
+            }
+            dopewarsLocationConfigModels(order: { field: LOCATION_ID, direction: ASC }) {
+              edges {
+                node {
+                  location
+                  location_id
+                  name {
+                    value
+                  }
+                }
+              }
+            }
+            dopewarsEncounterStatsConfigModels(limit: 100) {
+              edges {
+                node {
+                  encounters_mode
+                  encounter
+                  health_base
+                  health_step
+                  attack_base
+                  attack_step
+                  defense_base
+                  defense_step
+                  speed_base
+                  speed_step
+                }
+              }
+            }
+            dopewarsDopewarsItemTierModels(limit: 1000) {
+              edges {
+                node {
+                  slot_id
+                  item_id
+                  tier
+                }
+              }
+            }
+            dopewarsDopewarsItemTierConfigModels(limit: 1000) {
+              edges {
+                node {
+                  slot_id
+                  tier
+                  levels {
+                    stat
+                    cost
+                  }
+                }
+              }
+            }
+          }
+        `;
+        data = (yield this.client.request(queryWithoutDope, {})) as ConfigQuery;
+        // Ensure dopeComponentValueEventModels is undefined for chains without Dope namespace
+        data.dopeComponentValueEventModels = undefined;
+      } else {
+        throw error;
+      }
+    }
 
     /*************************************************** */
 
@@ -211,139 +314,47 @@ export class ConfigStoreClass {
       ?.edges as DopewarsItemTierConfigEdge[];
     const dopewarsItemsTierConfigs = dopewarsItemsTierConfigsEdges.map((i) => i.node as DopewarsItemTierConfig);
 
-    const componentValuesEdges = data.dopeComponentValueEventModels?.edges as ComponentValueEventEdge[];
-    const componentValues = componentValuesEdges.map((i) => {
-      const node = i.node as ComponentValueEvent;
-      return {
-        ...node,
-        component_id: Number(node.component_id),
-        collection_id: shortString.decodeShortString(node.collection_id),
-        component_slug: shortString.decodeShortString(node.component_slug),
-      };
-    });
+    const componentValuesEdges = data.dopeComponentValueEventModels?.edges as ComponentValueEventEdge[] | undefined;
+    const componentValues =
+      componentValuesEdges?.map((i) => {
+        const node = i.node as ComponentValueEvent;
+        return {
+          ...node,
+          component_id: Number(node.component_id),
+          collection_id: shortString.decodeShortString(node.collection_id),
+          component_slug: shortString.decodeShortString(node.component_slug),
+        };
+      }) || [];
 
     // console.log(componentValues);
 
     /*************************************************** */
 
-    const configContractAddress = this.manifest.contracts.find((c: any) => c.tag === "dopewars-config")?.address;
-    if (!configContractAddress) {
-      throw new Error("Config contract address not found in manifest");
-    }
-
-    const provider = this.dojoProvider.provider as unknown as ProviderInterface;
-    const getConfigRaw = (yield this.fetchConfigWithLatestBlock(provider, configContractAddress)) as {
-      layouts: { game_store: Array<any>; player: Array<any> };
-      ryo_config: any;
-      season_settings_modes: any;
-    };
-
-    const toBigInt = (value: any): bigint => {
-      if (typeof value === "bigint") {
-        return value;
+    // Use rpcProvider directly with "latest" block_id for Sepolia compatibility
+    // dojoProvider.call uses "pending" which doesn't work on Sepolia
+    let getConfig: any;
+    if (this.rpcProvider) {
+      const configContract = getContractByName(this.dojoProvider.manifest, "dopewars", "config");
+      if (configContract) {
+        getConfig = yield this.rpcProvider.callContract(
+          {
+            contractAddress: configContract.address,
+            entrypoint: "get_config",
+            calldata: [],
+          },
+          "latest",
+        );
+      } else {
+        throw new Error("Config contract not found in manifest");
       }
-      if (typeof value === "number") {
-        return BigInt(value);
-      }
-      if (typeof value === "string") {
-        if (value.startsWith("0x")) {
-          return BigInt(value);
-        }
-        const parsed = Number(value);
-        if (Number.isNaN(parsed)) {
-          return BigInt(0);
-        }
-        return BigInt(parsed);
-      }
-      return BigInt(value ?? 0);
-    };
-
-    const decodeLayoutName = (value: any): string => {
-      if (typeof value === "string" && !value.startsWith("0x")) {
-        return value;
-      }
-
-      const hex =
-        typeof value === "string"
-          ? value.startsWith("0x")
-            ? value
-            : `0x${toBigInt(value).toString(16)}`
-          : `0x${toBigInt(value).toString(16)}`;
-
-      try {
-        return shortString.decodeShortString(hex);
-      } catch {
-        return hex;
-      }
-    };
-
-    const mapLayout = (items: Array<any>): Array<LayoutItem> =>
-      items.map((item) => ({
-        name: decodeLayoutName(item.name),
-        idx: toBigInt(item.idx),
-        bits: toBigInt(item.bits),
-      }));
-
-    const toBool = (value: any): boolean => {
-      if (typeof value === "boolean") {
-        return value;
-      }
-      if (typeof value === "string") {
-        return value === "0x1" || value === "1";
-      }
-      return Boolean(Number(value ?? 0));
-    };
-
-    const toNumber = (value: any): number => Number(value ?? 0);
-
-    const mapModes = <T extends Record<string, string>>(
-      values: Array<any> | undefined,
-      enumObj: T,
-    ): Array<T[keyof T]> => {
-      const options = Object.values(enumObj) as Array<T[keyof T]>;
-
-      return (values ?? []).map((value) => {
-        if (typeof value === "string" && !value.startsWith("0x")) {
-          return value as T[keyof T];
-        }
-        const index = Number(value);
-        return options[index] ?? (options[0] as T[keyof T]);
+    } else {
+      ///@ts-ignore
+      getConfig = yield this.dojoProvider.call("dopewars", {
+        contractName: "config",
+        entrypoint: "get_config",
+        calldata: [],
       });
-    };
-
-    const rawRyoConfig = getConfigRaw.ryo_config ?? {};
-
-    const getConfig: GetConfig = {
-      layouts: {
-        game_store: mapLayout(getConfigRaw.layouts?.game_store ?? []),
-        player: mapLayout(getConfigRaw.layouts?.player ?? []),
-      },
-      ryo_config: {
-        ...rawRyoConfig,
-        key: toNumber(rawRyoConfig.key),
-        initialized: toBool(rawRyoConfig.initialized),
-        paused: toBool(rawRyoConfig.paused),
-        season_version: toNumber(rawRyoConfig.season_version),
-        season_duration: toNumber(rawRyoConfig.season_duration),
-        season_time_limit: toNumber(rawRyoConfig.season_time_limit),
-        paper_fee: toNumber(rawRyoConfig.paper_fee),
-        paper_reward_launderer: toNumber(rawRyoConfig.paper_reward_launderer),
-        treasury_fee_pct: toNumber(rawRyoConfig.treasury_fee_pct),
-        treasury_balance: toNumber(rawRyoConfig.treasury_balance),
-      } as RyoConfig,
-      season_settings_modes: {
-        cash_modes: mapModes(getConfigRaw.season_settings_modes?.cash_modes, CashMode),
-        health_modes: mapModes(getConfigRaw.season_settings_modes?.health_modes, HealthMode),
-        turns_modes: mapModes(getConfigRaw.season_settings_modes?.turns_modes, TurnsMode),
-        encounters_modes: mapModes(getConfigRaw.season_settings_modes?.encounters_modes, EncountersMode),
-        encounters_odds_modes: mapModes(
-          getConfigRaw.season_settings_modes?.encounters_odds_modes,
-          EncountersOddsMode,
-        ),
-        drugs_modes: mapModes(getConfigRaw.season_settings_modes?.drugs_modes, DrugsMode),
-        // wanted_modes: mapModes(getConfigRaw.season_settings_modes?.wanted_modes, WantedMode),
-      },
-    };
+    }
 
     /*************************************************** */
 
@@ -418,28 +429,4 @@ export class ConfigStoreClass {
   getGearItemTier(gearItem: GearItem) {
     return this.config?.dopewarsItemsTiers.find((i) => i.slot_id === gearItem.slot && i.item_id === gearItem.item);
   }
-
-  /** @dev
-   * Dojo's typed `call` helper defaults to `block_id: "pending"`, which my RPC gateway
-   * currently rejects. To stay aligned with upstream data
-   * structures while avoiding the `block_id` failure we issue the call manually with
-   * `blockIdentifier: "latest"`.
-   *
-   * NOTE: When the upstream gateway accepts `pending` again we can revert to the
-   * original `dojoProvider.call` path (see commented block below) and delete this helper.
-   */
-  private async fetchConfigWithLatestBlock(
-    provider: ProviderInterface,
-    configContractAddress: string,
-  ): Promise<any> {
-    const configContract = new Contract(configAbi, configContractAddress, provider);
-    return configContract.call("get_config", [], { blockIdentifier: "latest" });
-  }
-
-  // Legacy approach kept for reviewers/context:
-  // const getConfig = await this.dojoProvider.call("dopewars", {
-  //   contractName: "config",
-  //   entrypoint: "get_config",
-  //   calldata: [],
-  // });
 }

@@ -1,0 +1,30 @@
+rpc = "https://api.cartridge.gg/x/starknet/sepolia"
+world_address = "0x059e284ac6aae0f252337c5e5f92dd7c9793cf9548739d2813a65f9096c078c8"
+
+[server]
+http_cors_origins = ["*"]
+
+[indexing]
+index_pending = true
+polling_interval = 1000
+contracts = [
+    "erc721:0x02334dc9c950c74c3228e2a343d495ae36f0b4edf06767a679569e9f9de08776"
+]
+
+[events]
+historical_events = [
+    "dopewars-GameCreated",
+    "dopewars-Traveled",
+    "dopewars-GameOver",
+    "dopewars-TradeDrug",
+    "dopewars-HighVolatility",
+    "dopewars-UpgradeItem",
+    "dopewars-TravelEncounter",
+    "dopewars-TravelEncounterResult",
+    "dopewars-NewSeason",
+    "dopewars-NewHighScore",
+    "dopewars-Claimed",
+    # bushido 
+    "dopewars-TrophyCreation",
+    "dopewars-TrophyProgression",
+]
