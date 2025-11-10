@@ -31,8 +31,6 @@ interface SystemsInterface {
     gameMode: number,
     playerName: string,
     multiplier: number,
-    tokenIdType: number,
-    tokenId: number,
     minigameTokenId: number,
   ) => Promise<SystemExecuteResult>;
   endGame: (tokenId: string, actions: Array<PendingCall>) => Promise<SystemExecuteResult>;
@@ -255,26 +253,12 @@ export const useSystems = (): SystemsInterface => {
   );
 
   const createGame = useCallback(
-    async (
-      gameMode: GameMode,
-      playerName: string,
-      multiplier: number,
-      tokenIdType: number,
-      tokenId: number,
-      minigameTokenId: number,
-    ) => {
+    async (gameMode: GameMode, playerName: string, multiplier: number, minigameTokenId: number) => {
       // Games are now free - no PAPER approval needed
       const createGameCall = {
         contractAddress: gameAddress,
         entrypoint: "create_game",
-        calldata: CallData.compile([
-          gameMode,
-          shortString.encodeShortString(playerName),
-          multiplier,
-          tokenIdType,
-          tokenId,
-          minigameTokenId,
-        ]),
+        calldata: CallData.compile([gameMode, shortString.encodeShortString(playerName), multiplier, minigameTokenId]),
       };
 
       const createGameCalls = await buildRandomnessCalls({

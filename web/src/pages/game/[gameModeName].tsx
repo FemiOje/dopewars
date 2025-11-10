@@ -253,9 +253,6 @@ const New = observer(() => {
         play();
       }
 
-      const selectedLootTokenId = selectableTokens!.length > 0 ? Number(selectedToken.token_id) : 0;
-      const tokenIdType = selectedTokenIdType;
-
       // mint game token
       const { tokenId: minigameTokenId } = await mintGameToken(name);
 
@@ -265,8 +262,8 @@ const New = observer(() => {
         return;
       }
 
-      // create the game with minted token
-      await createGame(gameMode, name, multiplier, tokenIdType, selectedLootTokenId, minigameTokenId);
+      // create the game with minted token (no token selection needed - uses default equipment)
+      await createGame(gameMode, name, multiplier, minigameTokenId);
     } catch (e) {
       console.log(e);
       setError("Game creation failed");
