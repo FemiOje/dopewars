@@ -124,11 +124,12 @@ const New = observer(() => {
     return selectableTokens[selectedTokenIndex];
   }, [selectableTokens, selectedTokenIndex]);
 
-  const { balance, isInitializing } = useTokenBalance({
-    address: account?.address,
-    token: config?.ryoAddress.paper,
-    refetchInterval: 10_000,
-  });
+  // PAPER balance check removed - games are now free
+  // const { balance, isInitializing } = useTokenBalance({
+  //   address: account?.address,
+  //   token: config?.ryoAddress.paper,
+  //   refetchInterval: 10_000,
+  // });
 
   const dopeLootClaimState = useDopeStore((state) => state.dopeLootClaimState);
 
@@ -306,18 +307,9 @@ const New = observer(() => {
 
           <ChildrenOrConnect variant="primary" h="35px">
             {gameMode == GameMode.Ranked && (
-              <>
-                <Button
-                  w={["full", "auto"]}
-                  px={["auto", "20px"]}
-                  isLoading={isPending}
-                  onClick={() => create(gameMode)}
-                  isDisabled={balance < 1000n * ETHER}
-                >
-                  Play
-                </Button>
-                {selectedChain.name !== "MAINNET" && balance < 10000n * ETHER && <PaperFaucetButton />}
-              </>
+              <Button w={["full", "auto"]} px={["auto", "20px"]} isLoading={isPending} onClick={() => create(gameMode)}>
+                Play
+              </Button>
             )}
             {gameMode == GameMode.Noob && (
               <Button w={["full", "auto"]} px={["auto", "20px"]} isLoading={isPending} onClick={() => create(gameMode)}>
@@ -588,7 +580,7 @@ const New = observer(() => {
           </VStack>
 
           {
-            /*!isRyoDotGame && !isMobile && */ season.paper_fee > 0 && (
+            /*!isRyoDotGame && !isMobile && */ season?.paper_fee > 0 && (
               <Card p={3} w="300px">
                 <HStack gap={6} fontSize="14px">
                   <VStack gap={0} alignItems="center" minW="240px" w="full">

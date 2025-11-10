@@ -263,16 +263,7 @@ export const useSystems = (): SystemsInterface => {
       tokenId: number,
       minigameTokenId: number,
     ) => {
-      const paperFee = BigInt(config?.ryo.paper_fee * multiplier) * ETHER;
-      const paperAddress = selectedChain.paperAddress;
-
-      //
-      const approvalCall: Call = {
-        contractAddress: paperAddress,
-        entrypoint: "approve",
-        calldata: CallData.compile({ gameAddress, amount: uint256.bnToUint256(paperFee) }),
-      };
-
+      // Games are now free - no PAPER approval needed
       const createGameCall = {
         contractAddress: gameAddress,
         entrypoint: "create_game",
@@ -292,19 +283,13 @@ export const useSystems = (): SystemsInterface => {
         chainConfig: selectedChain,
       });
 
-      const calls =
-        createGameCalls.length === 2
-          ? [createGameCalls[0], approvalCall, createGameCalls[1]]
-          : [approvalCall, ...createGameCalls];
-      // console.log(calls);
-
-      const { hash } = await executeAndReceipt(calls);
+      const { hash } = await executeAndReceipt(createGameCalls);
 
       return {
         hash,
       };
     },
-    [executeAndReceipt, config?.ryoAddress.paper, selectedChain],
+    [executeAndReceipt, selectedChain],
   );
 
   const endGame = useCallback(
