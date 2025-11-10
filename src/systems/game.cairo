@@ -1,5 +1,5 @@
 use rollyourown::config::locations::Locations;
-use rollyourown::models::game::{GameMode, TokenId};
+use rollyourown::models::game::GameMode;
 use rollyourown::packing::game_store::GameStoreImpl;
 use rollyourown::systems::helpers::{shopping, trading};
 
@@ -23,7 +23,6 @@ pub trait IGameActions<T> {
         game_mode: GameMode,
         player_name: felt252,
         multiplier: u8,
-        token_id: TokenId,
         minigame_token_id: u64,
     );
     fn end_game(self: @T, token_id: u64, actions: Span<Actions>);
@@ -40,9 +39,6 @@ pub mod game {
     use dojo::world::{IWorldDispatcherTrait, WorldStorageTrait};
     use game_components_minigame::interface::{IMinigameDispatcher, IMinigameDispatcherTrait};
     use game_components_minigame::libs::{assert_token_ownership, post_action, pre_action};
-    use rollyourown::dope_contracts::dope_hustlers::dope_hustlers_models::{
-        HustlerBody, HustlerBodyParts, HustlerSlotOption, HustlerSlots,
-    };
     use rollyourown::helpers::game_owner::resolve_current_owner;
     // use dope_contracts::dope_hustlers::dope_hustlers_store::{HustlerStoreImpl,
     // HustlerStoreTrait};
@@ -69,7 +65,6 @@ pub mod game {
             game_mode: GameMode,
             player_name: felt252,
             multiplier: u8,
-            token_id: TokenId,
             minigame_token_id: u64,
         ) {
             self.assert_not_paused();
@@ -102,7 +97,13 @@ pub mod game {
             let mut season_manager = SeasonManagerTrait::new(store);
             let season_version = season_manager.get_current_version();
 
-            let mut dope_world = self.world(@"dope");
+            // Generate valid guest loot ID for this season
+            let hash: u256 = core::poseidon::poseidon_hash_span(
+                array![season_version.into(), 0_u32.into()].span(),
+            )
+                .into();
+            let valid_guest_loot_id: felt252 = ((hash % 8000) + 1).try_into().unwrap();
+            let default_token_id = TokenId::GuestLootId(valid_guest_loot_id);
 
             let mut game_created = GameCreated {
                 game_id,
@@ -110,129 +111,14 @@ pub mod game {
                 game_mode,
                 player_name,
                 multiplier,
-                token_id,
+                token_id: default_token_id,
                 hustler_equipment: array![].span(),
                 hustler_body: array![].span(),
             };
 
-            match token_id {
-                TokenId::GuestLootId(guest_loot_id) => {
-                    // check one of the availble guest_loot_id for season
-                    let mut i: u32 = 0;
-                    let mut is_valid = false;
-                    while i < 8 {
-                        let hash: u256 = core::poseidon::poseidon_hash_span(
-                            array![season_version.into(), i.into()].span(),
-                        )
-                            .into();
-                        let id: felt252 = ((hash % 8000) + 1).try_into().unwrap();
-                        if guest_loot_id == id {
-                            is_valid = true;
-                            break;
-                        }
-                        i += 1;
-                    }
-
-                    assert!(is_valid, "invalid guest loot id");
-                },
-                TokenId::LootId(_loot_id) => { // check if owner of loot_id
-                // let loot_dispatcher = IERC721ABIDispatcher {
-                //     contract_address: dope_world.dns_address(@"DopeLoot").unwrap(),
-                // };
-                // assert(
-                //     player_id == loot_dispatcher.owner_of(loot_id.into()),
-                //     'caller is not loot owner',
-                // );
-                },
-                TokenId::HustlerId(hustler_id) => {
-                    // check if owner of hustler_id
-                    // let erc721_dispatcher = IERC721ABIDispatcher {
-                    //     contract_address: dope_world.dns_address(@"DopeHustlers").unwrap(),
-                    // };
-
-                    // assert(
-                    //     player_id == erc721_dispatcher.owner_of(hustler_id.into()),
-                    //     'caller is not hustler owner',
-                    // );
-
-                    // let mut hustler_store = HustlerStoreImpl::new(dope_world);
-
-                    // game_created
-                    //     .hustler_equipment = hustler_store
-                    //     .hustler_slot_full(hustler_id.into());
-
-                    // game_created.hustler_body =
-                    // hustler_store.hustler_body_full(hustler_id.into());
-
-                    game_created
-                        .hustler_equipment =
-                            array![
-                                HustlerSlotOption {
-                                    token_id: hustler_id.into(),
-                                    slot: HustlerSlots::Clothe,
-                                    gear_item_id: Option::Some(256),
-                                },
-                                HustlerSlotOption {
-                                    token_id: hustler_id.into(),
-                                    slot: HustlerSlots::Vehicle,
-                                    gear_item_id: Option::Some(512),
-                                },
-                                HustlerSlotOption {
-                                    token_id: hustler_id.into(),
-                                    slot: HustlerSlots::Foot,
-                                    gear_item_id: Option::Some(1280),
-                                },
-                                HustlerSlotOption {
-                                    token_id: hustler_id.into(),
-                                    slot: HustlerSlots::Weapon,
-                                    gear_item_id: Option::Some(0),
-                                },
-                            ]
-                        .span();
-
-                    game_created
-                        .hustler_body =
-                            array![
-                                HustlerBody {
-                                    token_id: hustler_id.into(),
-                                    slot: HustlerBodyParts::Gender,
-                                    value: 0,
-                                },
-                                HustlerBody {
-                                    token_id: hustler_id.into(),
-                                    slot: HustlerBodyParts::Body,
-                                    value: 0,
-                                },
-                                HustlerBody {
-                                    token_id: hustler_id.into(),
-                                    slot: HustlerBodyParts::Hair,
-                                    value: 0,
-                                },
-                                HustlerBody {
-                                    token_id: hustler_id.into(),
-                                    slot: HustlerBodyParts::Beard,
-                                    value: 0,
-                                },
-                            ]
-                        .span();
-                    // let accessory = hustler_store
-                //     .hustler_slot(hustler_id.into(), HustlerSlots::Accessory);
-
-                    // let bushido_store = BushidoStoreTrait::new(world);
-                // if accessory.gear_item_id.is_some() {
-                //     bushido_store
-                //         .progress(
-                //             player_id.into(),
-                //             Tasks::ELEGANT,
-                //             1,
-                //             starknet::get_block_timestamp(),
-                //         );
-                // };
-                },
-            }
-
             // create game
             let mut game_config = store.game_config(season_version);
+            let mut dope_world = self.world(@"dope");
             let mut game = GameImpl::new(
                 dope_world,
                 game_id,
@@ -241,7 +127,7 @@ pub mod game {
                 game_mode,
                 player_name,
                 multiplier,
-                token_id,
+                default_token_id,
             );
 
             game.minigame_token_id = minigame_token_id;

@@ -2460,7 +2460,7 @@
     },
     {
       "address": "0x69814650f03792d15928e4cbae545195750809105138b48a3d23412405dce38",
-      "class_hash": "0x669e799eda5a6a6683079ab4fc8086ed7b5a2c9baf050355b5b0292c637bf34",
+      "class_hash": "0x3513deae85df8e250aea18c60c584f2b07e8a10959e274d771afb6b04a23801",
       "abi": [
         {
           "type": "impl",
@@ -2532,24 +2532,6 @@
             {
               "name": "Warrior",
               "type": "()"
-            }
-          ]
-        },
-        {
-          "type": "enum",
-          "name": "rollyourown::models::game::TokenId",
-          "variants": [
-            {
-              "name": "GuestLootId",
-              "type": "core::felt252"
-            },
-            {
-              "name": "LootId",
-              "type": "core::felt252"
-            },
-            {
-              "name": "HustlerId",
-              "type": "core::felt252"
             }
           ]
         },
@@ -2732,10 +2714,6 @@
                 {
                   "name": "multiplier",
                   "type": "core::integer::u8"
-                },
-                {
-                  "name": "token_id",
-                  "type": "rollyourown::models::game::TokenId"
                 },
                 {
                   "name": "minigame_token_id",
