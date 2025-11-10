@@ -3,11 +3,11 @@
 rpc_url = "https://api.cartridge.gg/x/starknet/sepolia"
 account_address = "0x05ef6460b5165a94bc342a57825058c039e6f6c17e3c2daf6350e30cc58c8bd6"
 keystore = "../scard/contracts/deployments/keystore.json"
-world_address="0x059e284ac6aae0f252337c5e5f92dd7c9793cf9548739d2813a65f9096c078c8"
+world_address="0x046aed7289ba76b2bedff753b8932b59579a27d608d235814bd2d9660b20f6d0"
 
 [world]
 name = "Dope Wars"
-seed = "sepo8seed"
+seed = "sepo10seed"
 description = "Dope Wars is an onchain adaptation of the classic arbitrage game Drug Wars, built by Cartridge in partnership with Dope DAO."
 # website = "https://rollyourown.preview.cartridge.gg/"
 # icon_uri = "file://assets/icon.png"
@@ -19,12 +19,13 @@ default = "dopewars"
 
 [migration]
 skip_contracts = ["dopewars-vrf_provider_mock"]
+disable_multicall = true
 
 [init_call_args]
 "dopewars-ryo" = [
     "0x0",      # paper address, 0x0 = use world.dns
-    # "0x051fea4450da9d6aee758bdeba88b2f665bcbf549d2c61421aa724e9ac0ced8f",      # vrf address, 0x0 = use local randomness instead of VRF
-    "0x0",      # vrf address, 0x0 = use local randomness instead of VRF
+    "0x051fea4450da9d6aee758bdeba88b2f665bcbf549d2c61421aa724e9ac0ced8f",      # vrf address, 0x0 = use local randomness instead of VRF
+    # "0x0",      # vrf address, 0x0 = use local randomness instead of VRF
     "0x02ca2bae77044d5646f0fc7aaa0edb75bdfa17a5f62635e8fddf930b26d4e764", # treasury / multisig address
 ]
 "dopewars-game_token_system_v0" = [

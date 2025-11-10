@@ -1,8 +1,8 @@
 {
   "world": {
     "class_hash": "0x57994b6a75fad550ca18b41ee82e2110e158c59028c4478109a67965a0e5b1e",
-    "address": "0x12f7b9fead8dd9023c015c82fc05ee0f90a8cc017fae06e0b73a010d7edb6ee",
-    "seed": "sepo7seed",
+    "address": "0x46aed7289ba76b2bedff753b8932b59579a27d608d235814bd2d9660b20f6d0",
+    "seed": "sepo10seed",
     "name": "Dope Wars",
     "entrypoints": [
       "uuid",
@@ -1479,7 +1479,7 @@
   },
   "contracts": [
     {
-      "address": "0x1afe38d953929610382f53cf82cab73b4c03d9efff96c600b284053d0ac7ee4",
+      "address": "0x5a52a8de53469b6bb362d42a9182b96ee7da25c874cd7b6b3bc0677429b2c53",
       "class_hash": "0x14884e5f050eac1013c034d6205c51fabd50385bd3fe4155f662de63fbfbc43",
       "abi": [
         {
@@ -2025,7 +2025,7 @@
       ]
     },
     {
-      "address": "0x5a93c44f16da2887890c8f4c3ee9b919fd381ebf276c93b180f49f91dd674ec",
+      "address": "0x37bbc16b89c18f410b5197e63a4cf180b740165b501173455a78c08d5a436fc",
       "class_hash": "0x15c7c743022b8e3890a88a9e7eb7a00e33add3a6ebaf170aa196fcc7f8c2d30",
       "abi": [
         {
@@ -2246,7 +2246,7 @@
       ]
     },
     {
-      "address": "0x11d4382c2eda344b174ad8ef9727b0ea4029e2d66226515279ef1dbaeb11b13",
+      "address": "0x98477eba50b35e79e43633e9e6fcd9c502e1ff6850af98367ca324a6493e63",
       "class_hash": "0xecd20dbd24949abae987b1653eab8b471332fbb94602581680208bbbd30972",
       "abi": [
         {
@@ -2459,8 +2459,8 @@
       ]
     },
     {
-      "address": "0x3d6e0b0d716a6caea531fdca830d429796070b996a58ab83dabaf5234b55b26",
-      "class_hash": "0x464b1b0483f37e4b418d12c72fd224505a8e5913492a3d6859f4a7a287fd16",
+      "address": "0x69814650f03792d15928e4cbae545195750809105138b48a3d23412405dce38",
+      "class_hash": "0x669e799eda5a6a6683079ab4fc8086ed7b5a2c9baf050355b5b0292c637bf34",
       "abi": [
         {
           "type": "impl",
@@ -2906,7 +2906,7 @@
       ]
     },
     {
-      "address": "0x5051f7c2f65ad190fb1972cff9371fc765bd9b3b7b41039ba2e3225f2e9077d",
+      "address": "0x4b1746ec7f127746723375d117575aa4831f8ea1e888414f517301fb5567cb7",
       "class_hash": "0x6a419029fac8be1f38a7795aaa0a2e58336fce900e89651b1b0d2e241570ef7",
       "abi": [
         {
@@ -3478,7 +3478,7 @@
       ]
     },
     {
-      "address": "0x4425433764f55410f30db48279ba5282636eed9dfdd206e9e7befa9050c1093",
+      "address": "0x5863cb8ab510ddc8c534ccce2e536a39dc192fe1aedbd2264c5f9ddfa71339d",
       "class_hash": "0x43e4d749c1c8d4c3bc1233b66c8b45446e78d41e410feabdb7cc5b8c2058f0f",
       "abi": [
         {
@@ -3746,7 +3746,7 @@
       ]
     },
     {
-      "address": "0x2bb3677e06440aec9ab46d048df078169669ab108cf59748df9f05a5f72259f",
+      "address": "0x1c99fd6b094de157196834eb6861feb1ce37b2b9cf5f3ab96f160508a61dab3",
       "class_hash": "0x6eb22b7fd8b169ef8962d1014e20639be8c3a87c59d3b5f707e3a3e6890b769",
       "abi": [
         {
@@ -4218,7 +4218,7 @@
       ]
     },
     {
-      "address": "0x216d005b5be7232b3fe837207daed17c21f04b23d0244dfe9193472f824ef81",
+      "address": "0x4e999587a215a21f6bcc909e2327ca4649d6059b329c4fcc02386373f3ec1e6",
       "class_hash": "0x19937651af076dacb25548a2f913c9bd4aabcc73acada8dfbc761b2ce590f6d",
       "abi": [
         {
@@ -4634,464 +4634,6 @@
       "selector": "0x32b65ba76433a3384da18dba9d4a63d3a7de35be8bf53a61d71928482a6d75e",
       "systems": [
         "upgrade"
-      ]
-    },
-    {
-      "address": "0x6390bc83a6492ce93bd742776d93ec44878d8ac818b55ddd6f1a0b33aca0b2a",
-      "class_hash": "0x683e8432fa2e51be83f309084392ea6e122ac342c3cc95694ff86c081065b46",
-      "abi": [
-        {
-          "type": "impl",
-          "name": "vrf_provider_mock__ContractImpl",
-          "interface_name": "dojo::contract::interface::IContract"
-        },
-        {
-          "type": "interface",
-          "name": "dojo::contract::interface::IContract",
-          "items": []
-        },
-        {
-          "type": "impl",
-          "name": "DojoDeployedContractImpl",
-          "interface_name": "dojo::meta::interface::IDeployedResource"
-        },
-        {
-          "type": "struct",
-          "name": "core::byte_array::ByteArray",
-          "members": [
-            {
-              "name": "data",
-              "type": "core::array::Array::<core::bytes_31::bytes31>"
-            },
-            {
-              "name": "pending_word",
-              "type": "core::felt252"
-            },
-            {
-              "name": "pending_word_len",
-              "type": "core::integer::u32"
-            }
-          ]
-        },
-        {
-          "type": "interface",
-          "name": "dojo::meta::interface::IDeployedResource",
-          "items": [
-            {
-              "type": "function",
-              "name": "dojo_name",
-              "inputs": [],
-              "outputs": [
-                {
-                  "type": "core::byte_array::ByteArray"
-                }
-              ],
-              "state_mutability": "view"
-            }
-          ]
-        },
-        {
-          "type": "function",
-          "name": "dojo_init",
-          "inputs": [
-            {
-              "name": "pubkey_x",
-              "type": "core::felt252"
-            },
-            {
-              "name": "pubkey_y",
-              "type": "core::felt252"
-            }
-          ],
-          "outputs": [],
-          "state_mutability": "external"
-        },
-        {
-          "type": "impl",
-          "name": "WorldProviderImpl",
-          "interface_name": "dojo::contract::components::world_provider::IWorldProvider"
-        },
-        {
-          "type": "struct",
-          "name": "dojo::world::iworld::IWorldDispatcher",
-          "members": [
-            {
-              "name": "contract_address",
-              "type": "core::starknet::contract_address::ContractAddress"
-            }
-          ]
-        },
-        {
-          "type": "interface",
-          "name": "dojo::contract::components::world_provider::IWorldProvider",
-          "items": [
-            {
-              "type": "function",
-              "name": "world_dispatcher",
-              "inputs": [],
-              "outputs": [
-                {
-                  "type": "dojo::world::iworld::IWorldDispatcher"
-                }
-              ],
-              "state_mutability": "view"
-            }
-          ]
-        },
-        {
-          "type": "impl",
-          "name": "UpgradeableImpl",
-          "interface_name": "dojo::contract::components::upgradeable::IUpgradeable"
-        },
-        {
-          "type": "interface",
-          "name": "dojo::contract::components::upgradeable::IUpgradeable",
-          "items": [
-            {
-              "type": "function",
-              "name": "upgrade",
-              "inputs": [
-                {
-                  "name": "new_class_hash",
-                  "type": "core::starknet::class_hash::ClassHash"
-                }
-              ],
-              "outputs": [],
-              "state_mutability": "external"
-            }
-          ]
-        },
-        {
-          "type": "impl",
-          "name": "VrfProviderImpl",
-          "interface_name": "cartridge_vrf::vrf_provider::vrf_provider_component::IVrfProvider"
-        },
-        {
-          "type": "enum",
-          "name": "cartridge_vrf::vrf_provider::vrf_provider_component::Source",
-          "variants": [
-            {
-              "name": "Nonce",
-              "type": "core::starknet::contract_address::ContractAddress"
-            },
-            {
-              "name": "Salt",
-              "type": "core::felt252"
-            }
-          ]
-        },
-        {
-          "type": "struct",
-          "name": "stark_vrf::ecvrf::Point",
-          "members": [
-            {
-              "name": "x",
-              "type": "core::felt252"
-            },
-            {
-              "name": "y",
-              "type": "core::felt252"
-            }
-          ]
-        },
-        {
-          "type": "struct",
-          "name": "stark_vrf::ecvrf::Proof",
-          "members": [
-            {
-              "name": "gamma",
-              "type": "stark_vrf::ecvrf::Point"
-            },
-            {
-              "name": "c",
-              "type": "core::felt252"
-            },
-            {
-              "name": "s",
-              "type": "core::felt252"
-            },
-            {
-              "name": "sqrt_ratio_hint",
-              "type": "core::felt252"
-            }
-          ]
-        },
-        {
-          "type": "struct",
-          "name": "cartridge_vrf::vrf_provider::vrf_provider_component::PublicKey",
-          "members": [
-            {
-              "name": "x",
-              "type": "core::felt252"
-            },
-            {
-              "name": "y",
-              "type": "core::felt252"
-            }
-          ]
-        },
-        {
-          "type": "interface",
-          "name": "cartridge_vrf::vrf_provider::vrf_provider_component::IVrfProvider",
-          "items": [
-            {
-              "type": "function",
-              "name": "request_random",
-              "inputs": [
-                {
-                  "name": "caller",
-                  "type": "core::starknet::contract_address::ContractAddress"
-                },
-                {
-                  "name": "source",
-                  "type": "cartridge_vrf::vrf_provider::vrf_provider_component::Source"
-                }
-              ],
-              "outputs": [],
-              "state_mutability": "view"
-            },
-            {
-              "type": "function",
-              "name": "submit_random",
-              "inputs": [
-                {
-                  "name": "seed",
-                  "type": "core::felt252"
-                },
-                {
-                  "name": "proof",
-                  "type": "stark_vrf::ecvrf::Proof"
-                }
-              ],
-              "outputs": [],
-              "state_mutability": "external"
-            },
-            {
-              "type": "function",
-              "name": "consume_random",
-              "inputs": [
-                {
-                  "name": "source",
-                  "type": "cartridge_vrf::vrf_provider::vrf_provider_component::Source"
-                }
-              ],
-              "outputs": [
-                {
-                  "type": "core::felt252"
-                }
-              ],
-              "state_mutability": "external"
-            },
-            {
-              "type": "function",
-              "name": "assert_consumed",
-              "inputs": [
-                {
-                  "name": "seed",
-                  "type": "core::felt252"
-                }
-              ],
-              "outputs": [],
-              "state_mutability": "external"
-            },
-            {
-              "type": "function",
-              "name": "get_public_key",
-              "inputs": [],
-              "outputs": [
-                {
-                  "type": "cartridge_vrf::vrf_provider::vrf_provider_component::PublicKey"
-                }
-              ],
-              "state_mutability": "view"
-            },
-            {
-              "type": "function",
-              "name": "set_public_key",
-              "inputs": [
-                {
-                  "name": "new_pubkey",
-                  "type": "cartridge_vrf::vrf_provider::vrf_provider_component::PublicKey"
-                }
-              ],
-              "outputs": [],
-              "state_mutability": "external"
-            }
-          ]
-        },
-        {
-          "type": "constructor",
-          "name": "constructor",
-          "inputs": []
-        },
-        {
-          "type": "event",
-          "name": "dojo::contract::components::upgradeable::upgradeable_cpt::Upgraded",
-          "kind": "struct",
-          "members": [
-            {
-              "name": "class_hash",
-              "type": "core::starknet::class_hash::ClassHash",
-              "kind": "data"
-            }
-          ]
-        },
-        {
-          "type": "event",
-          "name": "dojo::contract::components::upgradeable::upgradeable_cpt::Event",
-          "kind": "enum",
-          "variants": [
-            {
-              "name": "Upgraded",
-              "type": "dojo::contract::components::upgradeable::upgradeable_cpt::Upgraded",
-              "kind": "nested"
-            }
-          ]
-        },
-        {
-          "type": "event",
-          "name": "dojo::contract::components::world_provider::world_provider_cpt::Event",
-          "kind": "enum",
-          "variants": []
-        },
-        {
-          "type": "event",
-          "name": "openzeppelin_access::ownable::ownable::OwnableComponent::OwnershipTransferred",
-          "kind": "struct",
-          "members": [
-            {
-              "name": "previous_owner",
-              "type": "core::starknet::contract_address::ContractAddress",
-              "kind": "key"
-            },
-            {
-              "name": "new_owner",
-              "type": "core::starknet::contract_address::ContractAddress",
-              "kind": "key"
-            }
-          ]
-        },
-        {
-          "type": "event",
-          "name": "openzeppelin_access::ownable::ownable::OwnableComponent::OwnershipTransferStarted",
-          "kind": "struct",
-          "members": [
-            {
-              "name": "previous_owner",
-              "type": "core::starknet::contract_address::ContractAddress",
-              "kind": "key"
-            },
-            {
-              "name": "new_owner",
-              "type": "core::starknet::contract_address::ContractAddress",
-              "kind": "key"
-            }
-          ]
-        },
-        {
-          "type": "event",
-          "name": "openzeppelin_access::ownable::ownable::OwnableComponent::Event",
-          "kind": "enum",
-          "variants": [
-            {
-              "name": "OwnershipTransferred",
-              "type": "openzeppelin_access::ownable::ownable::OwnableComponent::OwnershipTransferred",
-              "kind": "nested"
-            },
-            {
-              "name": "OwnershipTransferStarted",
-              "type": "openzeppelin_access::ownable::ownable::OwnableComponent::OwnershipTransferStarted",
-              "kind": "nested"
-            }
-          ]
-        },
-        {
-          "type": "event",
-          "name": "cartridge_vrf::vrf_provider::vrf_provider_component::VrfProviderComponent::PublicKeyChanged",
-          "kind": "struct",
-          "members": [
-            {
-              "name": "pubkey",
-              "type": "cartridge_vrf::vrf_provider::vrf_provider_component::PublicKey",
-              "kind": "data"
-            }
-          ]
-        },
-        {
-          "type": "event",
-          "name": "cartridge_vrf::vrf_provider::vrf_provider_component::VrfProviderComponent::SubmitRandom",
-          "kind": "struct",
-          "members": [
-            {
-              "name": "seed",
-              "type": "core::felt252",
-              "kind": "key"
-            },
-            {
-              "name": "proof",
-              "type": "stark_vrf::ecvrf::Proof",
-              "kind": "data"
-            }
-          ]
-        },
-        {
-          "type": "event",
-          "name": "cartridge_vrf::vrf_provider::vrf_provider_component::VrfProviderComponent::Event",
-          "kind": "enum",
-          "variants": [
-            {
-              "name": "PublicKeyChanged",
-              "type": "cartridge_vrf::vrf_provider::vrf_provider_component::VrfProviderComponent::PublicKeyChanged",
-              "kind": "nested"
-            },
-            {
-              "name": "SubmitRandom",
-              "type": "cartridge_vrf::vrf_provider::vrf_provider_component::VrfProviderComponent::SubmitRandom",
-              "kind": "nested"
-            }
-          ]
-        },
-        {
-          "type": "event",
-          "name": "rollyourown::_mocks::vrf_provider_mock::vrf_provider_mock::Event",
-          "kind": "enum",
-          "variants": [
-            {
-              "name": "UpgradeableEvent",
-              "type": "dojo::contract::components::upgradeable::upgradeable_cpt::Event",
-              "kind": "nested"
-            },
-            {
-              "name": "WorldProviderEvent",
-              "type": "dojo::contract::components::world_provider::world_provider_cpt::Event",
-              "kind": "nested"
-            },
-            {
-              "name": "OwnableEvent",
-              "type": "openzeppelin_access::ownable::ownable::OwnableComponent::Event",
-              "kind": "flat"
-            },
-            {
-              "name": "VrfProviderEvent",
-              "type": "cartridge_vrf::vrf_provider::vrf_provider_component::VrfProviderComponent::Event",
-              "kind": "flat"
-            }
-          ]
-        }
-      ],
-      "init_calldata": [
-        "0x6b0aab388dc7b240801b5aa0722bfcd39a1f397e83d5c032c198b18594b665e",
-        "0x55ca1905d9b3d72b5e710f723c3bbd8f03428fb243f44cd5faee2796b44b204"
-      ],
-      "tag": "dopewars-vrf_provider_mock",
-      "selector": "0x3e25b1e3b8b24700387a74a69255690e18885dc76f5d1f32c16f8fa891d8406",
-      "systems": [
-        "dojo_init",
-        "upgrade",
-        "submit_random",
-        "consume_random",
-        "assert_consumed",
-        "set_public_key"
       ]
     }
   ],
