@@ -25,9 +25,6 @@ pub struct RyoConfig {
     pub season_duration: u32,
     pub season_time_limit: u16,
     //
-    pub paper_fee: u16,
-    pub paper_reward_launderer: u16,
-    pub treasury_fee_pct: u8,
     pub treasury_balance: u32,
 }
 
@@ -42,9 +39,6 @@ pub impl RyoConfigImpl of RyoConfigTrait {
             season_version: 1,
             season_duration: TEMP_VALUE, //ONE_DAY, 
             season_time_limit: TWO_MIN, // HALF_HOUR, 
-            paper_fee: 0, // PAPER removed - games are free
-            paper_reward_launderer: 0, // PAPER removed - no rewards
-            treasury_fee_pct: 0, // PAPER removed - no treasury fees
             treasury_balance: 0,
         }
     }
@@ -56,11 +50,8 @@ pub impl RyoConfigImpl of RyoConfigTrait {
             // season config copied from RyoConfig
             season_duration: self.season_duration,
             season_time_limit: self.season_time_limit,
-            paper_fee: 0, // PAPER removed - always 0
-            treasury_fee_pct: 0, // PAPER removed - always 0
             // season datas
             next_version_timestamp: get_block_timestamp() + self.season_duration.into(),
-            paper_balance: 0,
             high_score: 0,
         }
     }

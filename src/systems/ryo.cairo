@@ -77,12 +77,13 @@ pub mod ryo {
         // RyoAddresses
         let mut ryo_addresses = store.ryo_addresses();
 
-        let paper_address = if paper_address.is_zero() {
-            let (paper_mock_address, _) = world.dns(@"paper_mock").unwrap();
-            paper_mock_address
-        } else {
-            paper_address
-        };
+        // PAPER removed - always set to zero address
+        // let paper_address = if paper_address.is_zero() {
+        //     let (paper_mock_address, _) = world.dns(@"paper_mock").unwrap();
+        //     paper_mock_address
+        // } else {
+        //     paper_address
+        // };
 
         let vrf_address = if vrf_address.is_zero() {
             let (vrf_mock_address, _) = world.dns(@"vrf_provider_mock").unwrap();
@@ -91,7 +92,7 @@ pub mod ryo {
             vrf_address
         };
 
-        ryo_addresses.paper = paper_address;
+        // PAPER removed - paper field no longer exists in RyoAddress
         ryo_addresses.treasury = treasury_address;
         ryo_addresses.vrf = vrf_address;
 
@@ -145,20 +146,19 @@ pub mod ryo {
 
             new_ryo_config.season_duration = ryo_config.season_duration;
             new_ryo_config.season_time_limit = ryo_config.season_time_limit;
-            new_ryo_config.paper_fee = ryo_config.paper_fee;
-            new_ryo_config.paper_reward_launderer = ryo_config.paper_reward_launderer;
-            new_ryo_config.treasury_fee_pct = ryo_config.treasury_fee_pct;
+            // PAPER removed - no longer updating PAPER fields
+            // new_ryo_config.paper_fee = ryo_config.paper_fee;
+            // new_ryo_config.paper_reward_launderer = ryo_config.paper_reward_launderer;
+            // new_ryo_config.treasury_fee_pct = ryo_config.treasury_fee_pct;
 
             store.save_ryo_config(@new_ryo_config);
         }
 
         fn set_paper(self: @ContractState, paper_address: ContractAddress) {
+            // PAPER removed - this function is kept for interface compatibility but does nothing
+            let _paper_address = paper_address;
             self.assert_caller_is_owner();
-
-            let mut store = StoreImpl::new(self.world(@"dopewars"));
-            let mut ryo_addresses = store.ryo_addresses();
-            ryo_addresses.paper = paper_address;
-            store.save_ryo_addresses(@ryo_addresses);
+            // No-op: PAPER address is no longer used
         }
 
         fn set_treasury(self: @ContractState, treasury_address: ContractAddress) {
@@ -189,8 +189,8 @@ pub mod ryo {
         //
 
         fn paper(self: @ContractState) -> ContractAddress {
-            let mut store = StoreImpl::new(self.world(@"dopewars"));
-            store.ryo_addresses().paper
+            // PAPER removed - always return zero address
+            starknet::contract_address_const::<0x0>()
         }
 
         fn treasury(self: @ContractState) -> ContractAddress {
@@ -214,8 +214,8 @@ pub mod ryo {
         }
 
         fn paper_fee(self: @ContractState) -> u16 {
-            let mut store = StoreImpl::new(self.world(@"dopewars"));
-            store.ryo_config().paper_fee
+            // PAPER removed - always return 0
+            0
         }
 
         fn season_duration(self: @ContractState) -> u32 {

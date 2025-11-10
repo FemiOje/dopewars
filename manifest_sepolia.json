@@ -1,8 +1,8 @@
 {
   "world": {
     "class_hash": "0x57994b6a75fad550ca18b41ee82e2110e158c59028c4478109a67965a0e5b1e",
-    "address": "0x46aed7289ba76b2bedff753b8932b59579a27d608d235814bd2d9660b20f6d0",
-    "seed": "sepo10seed",
+    "address": "0x180d56434e6947c4630151f743c0aaeaa6dd4c33064af65a36131c171310dc9",
+    "seed": "sepo12seed",
     "name": "Dope Wars",
     "entrypoints": [
       "uuid",
@@ -1479,8 +1479,8 @@
   },
   "contracts": [
     {
-      "address": "0x5a52a8de53469b6bb362d42a9182b96ee7da25c874cd7b6b3bc0677429b2c53",
-      "class_hash": "0x14884e5f050eac1013c034d6205c51fabd50385bd3fe4155f662de63fbfbc43",
+      "address": "0x6b909a57cccb7872298581a5e7280e50aa50d7e2ff5444dd5b6c921840f08b0",
+      "class_hash": "0x1dc163702446f9d67290e8ea810c28ff964fd5c299831018df00d3c89c3bd67",
       "abi": [
         {
           "type": "impl",
@@ -1617,18 +1617,6 @@
             {
               "name": "season_time_limit",
               "type": "core::integer::u16"
-            },
-            {
-              "name": "paper_fee",
-              "type": "core::integer::u16"
-            },
-            {
-              "name": "paper_reward_launderer",
-              "type": "core::integer::u16"
-            },
-            {
-              "name": "treasury_fee_pct",
-              "type": "core::integer::u8"
             },
             {
               "name": "treasury_balance",
@@ -2025,7 +2013,7 @@
       ]
     },
     {
-      "address": "0x37bbc16b89c18f410b5197e63a4cf180b740165b501173455a78c08d5a436fc",
+      "address": "0x193fff59280f2a7c96bfbb39726c338eccb48643d0c22b9b419a068d685be6c",
       "class_hash": "0x15c7c743022b8e3890a88a9e7eb7a00e33add3a6ebaf170aa196fcc7f8c2d30",
       "abi": [
         {
@@ -2246,8 +2234,8 @@
       ]
     },
     {
-      "address": "0x98477eba50b35e79e43633e9e6fcd9c502e1ff6850af98367ca324a6493e63",
-      "class_hash": "0x7d867908a46ffdad372d48eed00e70e64834f2ef3f1a02d6a1f96fc0073d3cb",
+      "address": "0xc69aec82d41ef30051c0ae473cddf2846f26bb6b8ee6f2551edf2d5e03f845",
+      "class_hash": "0x192ef51660c0ac82e1e560d858663e8f5e311cb52e520337c47478e3411073d",
       "abi": [
         {
           "type": "impl",
@@ -2459,8 +2447,8 @@
       ]
     },
     {
-      "address": "0x69814650f03792d15928e4cbae545195750809105138b48a3d23412405dce38",
-      "class_hash": "0x3513deae85df8e250aea18c60c584f2b07e8a10959e274d771afb6b04a23801",
+      "address": "0x61e0608893556556a20c33bd02a8b7238b8c11f87a958b243f0960b1ee40aa8",
+      "class_hash": "0x4ff2fd34d85f6afab67caa16336c8e950b179b6384f73181d24b03951adadef",
       "abi": [
         {
           "type": "impl",
@@ -2884,8 +2872,8 @@
       ]
     },
     {
-      "address": "0x4b1746ec7f127746723375d117575aa4831f8ea1e888414f517301fb5567cb7",
-      "class_hash": "0x6a419029fac8be1f38a7795aaa0a2e58336fce900e89651b1b0d2e241570ef7",
+      "address": "0x7ae189638045d955de08ee1084c021146ff6a5bfadccb4970059240b9c5e89",
+      "class_hash": "0x56455ef353bc3e86b5ae064432b9c593ee1757837ea124f61ebe71495c343ed",
       "abi": [
         {
           "type": "impl",
@@ -3456,8 +3444,8 @@
       ]
     },
     {
-      "address": "0x5863cb8ab510ddc8c534ccce2e536a39dc192fe1aedbd2264c5f9ddfa71339d",
-      "class_hash": "0x4dd0223695f45fbb9b7f79b4ebf2f8e6d9ad80c2873be6c2dc29aa6f4f0342f",
+      "address": "0x569aaeb5676d6f8bd56252d2e6dfe4dca68b7ba99fbc7bd951d3d87ac231d67",
+      "class_hash": "0x615479030378eabbbdaefe0e89e6e5ce52f66c1d0de9829980dbc4eae82c157",
       "abi": [
         {
           "type": "impl",
@@ -3724,7 +3712,7 @@
       ]
     },
     {
-      "address": "0x1c99fd6b094de157196834eb6861feb1ce37b2b9cf5f3ab96f160508a61dab3",
+      "address": "0xaa1d399e88c460e0564493b4bbc0de2ad5666dc377f6733d84a0617dc1096b",
       "class_hash": "0x6eb22b7fd8b169ef8962d1014e20639be8c3a87c59d3b5f707e3a3e6890b769",
       "abi": [
         {
@@ -4196,8 +4184,8 @@
       ]
     },
     {
-      "address": "0x4e999587a215a21f6bcc909e2327ca4649d6059b329c4fcc02386373f3ec1e6",
-      "class_hash": "0x37934d598376850e0b1c3a8aa1795ffa70caac1e7115a92f8f7ad280998a518",
+      "address": "0x57a067110e63dd2b79558cdd5009f7ebd5326cf36ef64b9e5aa5908680f863f",
+      "class_hash": "0x4e747451fe710bd9cff3d8d75372e84bc1bb411cff7083efbc9f7799e74f159",
       "abi": [
         {
           "type": "impl",
@@ -4315,18 +4303,6 @@
             {
               "name": "season_time_limit",
               "type": "core::integer::u16"
-            },
-            {
-              "name": "paper_fee",
-              "type": "core::integer::u16"
-            },
-            {
-              "name": "paper_reward_launderer",
-              "type": "core::integer::u16"
-            },
-            {
-              "name": "treasury_fee_pct",
-              "type": "core::integer::u8"
             },
             {
               "name": "treasury_balance",
@@ -4854,19 +4830,19 @@
     },
     {
       "members": [],
-      "class_hash": "0x54d7578cb12eafadf9a0fb29bec0df17427eef95d361aafd27b14b6555dbb11",
+      "class_hash": "0x4343421211ccb32b27f5abc1ab0bffc93766759c1b20149eb83675408cdfd97",
       "tag": "dopewars-RyoAddress",
       "selector": "0x261f89bf8e1c46576eed3931a59795015818056a6fc75f9b5a266b6187b73ec"
     },
     {
       "members": [],
-      "class_hash": "0x6fa2a670001bd32ccf67947b8984bf8eeb7c714b72174f5a1d477c4fdcdbe03",
+      "class_hash": "0x56d0689fca40c56d9876ca468d3082ccf8af80f010377c57fce1d218d18fc84",
       "tag": "dopewars-RyoConfig",
       "selector": "0x7d8eb0bce0a49d2d3d2f16b5958bb2445cfe364f9b2a8f71c009ebbe602ccfd"
     },
     {
       "members": [],
-      "class_hash": "0xa79772fb5fccda76fca3218b67b55f2c2decdfaa6855425c8f2ad2a8fe81b5",
+      "class_hash": "0x12319dbd171f1e43fda330f6afc86339b36e08a784e6662c7c4017ba41dc8ed",
       "tag": "dopewars-Season",
       "selector": "0x57a4b7adcd7d8362c0cef59cbdbd45264a73517c25dabee19063c58fb5a910c"
     },

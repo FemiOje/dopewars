@@ -28,12 +28,12 @@ pub mod laundromat {
     // use dope_contracts::helpers::is_og;
     use rollyourown::achievements::achievements_v1::Tasks;
     use rollyourown::{
-        constants::{ETHER, MAX_MULTIPLIER}, events::{Claimed, NewSeason},
+        constants::{MAX_MULTIPLIER}, events::{Claimed, NewSeason},
         helpers::{
             game_owner::resolve_current_owner_by_token,
             season_manager::{SeasonManagerImpl, SeasonManagerTrait},
         },
-        interfaces::{paper::{IPaperDispatcher, IPaperDispatcherTrait}},
+        // interfaces::{paper::{IPaperDispatcher, IPaperDispatcherTrait}}, // PAPER removed
         // libraries::dopewars_items::{IDopewarsItemsDispatcherTrait,
         // IDopewarsItemsLibraryDispatcher},
         models::{game::{Game, GameImpl, GameTrait // TokenId
@@ -46,7 +46,7 @@ pub mod laundromat {
             sorted_list::{SortedListImpl, SortedListTrait},
         },
     };
-    use starknet::{ContractAddress, get_caller_address, get_contract_address};
+    use starknet::{ContractAddress, get_caller_address};
     // use cartridge_vrf::{IVrfProviderDispatcher, IVrfProviderDispatcherTrait, Source};
 
     #[abi(embed_v0)]
@@ -246,13 +246,11 @@ pub mod laundromat {
                 }
             }
 
-            // retrieve paper address
-            let paper_address = store.ryo_addresses().paper;
-            let paper_reward_launderer: u256 = ryo_config.paper_reward_launderer.into() * ETHER;
-
-            // reward launderer with some clean paper
-            IPaperDispatcher { contract_address: paper_address }
-                .transfer(get_caller_address(), paper_reward_launderer);
+            // PAPER removed - no longer rewarding launderer
+            // let paper_address = store.ryo_addresses().paper;
+            // let paper_reward_launderer: u256 = ryo_config.paper_reward_launderer.into() * ETHER;
+            // IPaperDispatcher { contract_address: paper_address }
+            //     .transfer(get_caller_address(), paper_reward_launderer);
         }
 
         fn claim(self: @ContractState, player_id: ContractAddress, token_ids: Span<u64>) {
@@ -346,21 +344,20 @@ pub mod laundromat {
                 }
             }
 
-            bushido_store
-                .progress(
-                    expected_owner.into(),
-                    Tasks::PAPER,
-                    total_claimable.into(),
-                    starknet::get_block_timestamp(),
-                );
+            // PAPER removed - no longer tracking PAPER tasks or transferring rewards
+            // bushido_store
+            //     .progress(
+            //         expected_owner.into(),
+            //         Tasks::PAPER,
+            //         total_claimable.into(),
+            //         starknet::get_block_timestamp(),
+            //     );
 
-            // retrieve paper address
-            let paper_address = store.ryo_addresses().paper;
-            let total_claimable: u256 = total_claimable.into() * ETHER;
-
-            // transfer reward to player_id
-            IPaperDispatcher { contract_address: paper_address }
-                .transfer(expected_owner, total_claimable);
+            // PAPER removed - no longer transferring rewards
+            // let paper_address = store.ryo_addresses().paper;
+            // let total_claimable: u256 = total_claimable.into() * ETHER;
+            // IPaperDispatcher { contract_address: paper_address }
+            //     .transfer(expected_owner, total_claimable);
             // // mint gear items
         // gear_dispatcher
         //     .mint_batch(player_id, gear_ids.span(), gear_ids_values.span(), array![].span());
@@ -373,46 +370,17 @@ pub mod laundromat {
         }
 
         fn claim_treasury(self: @ContractState) {
-            let mut store = StoreImpl::new(self.world(@"dopewars"));
-            let mut ryo_config = store.ryo_config();
-
-            assert(ryo_config.treasury_balance > 0, 'nothin to claim');
-
-            // calc claimable amount
-            let claimable: u256 = ryo_config.treasury_balance.into() * ETHER;
-
-            // reset treasury_balance
-            ryo_config.treasury_balance = 0;
-            store.save_ryo_config(@ryo_config);
-
-            let ryo_addresses = store.ryo_addresses();
-            // transfer claimable to treasury
-            IPaperDispatcher { contract_address: ryo_addresses.paper }
-                .transfer(ryo_addresses.treasury, claimable);
+            // PAPER removed - treasury claiming no longer supported
+            // This function is kept for interface compatibility but does nothing
+            let _store = StoreImpl::new(self.world(@"dopewars"));
         }
 
         fn supercharge_jackpot(self: @ContractState, season_version: u16, amount_eth: u32) {
-            let mut store = StoreImpl::new(self.world(@"dopewars"));
-            // retrieve season
-            let mut season = store.season(season_version);
-
-            // check if exists
-            assert(season.exists(), 'invalid season_version');
-            // check if still open
-            assert(season.is_open(), 'season has ended');
-
-            // update season paper_balance & save
-            season.paper_balance += amount_eth;
-            store.save_season(@season);
-
-            // retrieve paper address
-            let ryo_addresses = store.ryo_addresses();
-            let amount = amount_eth.into() * ETHER;
-
-            // transfer paper_fee_ether from donnator to laundromat ( donnator approved laundromat
-            // contract to spend paper before)
-            IPaperDispatcher { contract_address: ryo_addresses.paper }
-                .transfer_from(get_caller_address(), get_contract_address(), amount);
+            // PAPER removed - jackpot supercharging no longer supported
+            // This function is kept for interface compatibility but does nothing
+            let _store = StoreImpl::new(self.world(@"dopewars"));
+            let _season = _store.season(season_version);
+            let _amount = amount_eth;
         }
     }
 

@@ -240,8 +240,8 @@ pub impl SortedListImpl of SortedListTrait {
         assert(!self.processed, 'list already processed');
         assert(batch_size > 0, 'invalid batch_size');
 
-        let season = store.season(self.list_id.try_into().unwrap());
-        let paper_balance = season.paper_balance;
+        let _season = store.season(self.list_id.try_into().unwrap());
+        let paper_balance = 0; // PAPER removed - always 0
         let entrants = self.size;
         let stake_adj_paper_balance = self.stake_adj_paper_balance;
 
@@ -298,8 +298,8 @@ pub impl SortedListImpl of SortedListTrait {
         ref self: SortedList, ref store: Store, total_payed: u32,
     ) -> u32 {
         let entrants = self.size;
-        let season = store.season(self.list_id.try_into().unwrap());
-        let paper_balance = season.paper_balance;
+        let _season = store.season(self.list_id.try_into().unwrap());
+        let paper_balance = 0; // PAPER removed - always 0
 
         let curr_k0 = Self::root();
         let curr_k1 = Into::<u32, felt252>::into(Self::root()).try_into().unwrap();

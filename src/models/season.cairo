@@ -6,11 +6,8 @@ pub struct Season {
     // season config copied from RyoConfig
     pub season_duration: u32,
     pub season_time_limit: u16,
-    pub paper_fee: u16,
-    pub treasury_fee_pct: u8,
     // season datas
     pub next_version_timestamp: u64, // updated on new highscore
-    pub paper_balance: u32,
     pub high_score: u32,
     //
 }
