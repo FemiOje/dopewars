@@ -25,11 +25,7 @@ claimed,
 claimable,
 position,
 multiplier,
-minigame_token_id,
-token_id,
-"token_id.guestlootid",
-"token_id.lootid",
-"token_id.hustlerid"
+minigame_token_id
 FROM "dopewars-Game" 
 where season_version = ${season_version} and registered = true
 ORDER BY final_score DESC
@@ -43,14 +39,20 @@ export const useRegisteredGamesBySeason = (version: number): RegisteredGamesBySe
   const { data, isFetched, isFetching, refetch } = useSql(sqlQuery((version || 0).toString()));
 
   const registeredGames = useMemo(() => {
-    // const edges = data?.dopewarsGameModels?.edges as GameEdge[];
-    // const games = edges?.length > 0 ? edges.map((i) => i.node as Game) : [];
-    const games = (data || []).map((i: any) => {
+    // Handle different response structures from SQL endpoint
+    let gamesData: any[] = [];
+    if (Array.isArray(data)) {
+      gamesData = data;
+    } else if (data && typeof data === "object") {
+      // Try common response structures
+      gamesData = data.rows || data.data || data.results || [];
+    }
+
+    const games = gamesData.map((i: any) => {
       return {
         ...i,
         player_name: shortString.decodeShortString(BigInt(i["player_name.value"]).toString()),
-        token_id_type: i.token_id,
-        token_id: Number(i[`token_id.${i.token_id}`]),
+        // token_id removed - Dope collection integration stripped
         minigame_token_id: Number(i.minigame_token_id),
       };
     });

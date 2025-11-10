@@ -5,10 +5,10 @@ query SeasonByVersion($version: u16, $listId: felt252) {
         version
         season_duration
         season_time_limit
-        paper_fee
-        treasury_fee_pct
+        # paper_fee removed - PAPER integration stripped
+        # treasury_fee_pct removed - PAPER integration stripped
         next_version_timestamp
-        paper_balance
+        # paper_balance removed - PAPER integration stripped
       }
     }
   }
@@ -49,10 +49,10 @@ query Seasons {
         version
         season_duration
         season_time_limit
-        paper_fee
-        treasury_fee_pct
+        # paper_fee removed - PAPER integration stripped
+        # treasury_fee_pct removed - PAPER integration stripped
         next_version_timestamp
-        paper_balance
+        # paper_balance removed - PAPER integration stripped
       }
     }
   }
@@ -116,7 +116,6 @@ query AllSeasonSettings {
     }
   }
 }
-
 
 query HallOfFame {
   dopewarsGameModels(limit: 420, where: { position: 1 }, order: { field: SEASON_VERSION, direction: DESC }) {

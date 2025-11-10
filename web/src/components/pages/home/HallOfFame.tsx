@@ -73,9 +73,10 @@ const HallOfFameEntry = ({ game, account }: { game: Game; account: AccountInterf
             <HustlerAvatarIcon
               gameId={game.game_id}
               // @ts-ignore
-              tokenIdType={game.token_id_type}
-              // @ts-ignore
-              tokenId={game.token_id}
+              // token_id removed - Dope collection integration stripped
+              // HustlerAvatarIcon will return null when tokenIdType/tokenId are undefined
+              tokenIdType={undefined}
+              tokenId={undefined}
               width="48px"
               height="48px"
               display="flex"

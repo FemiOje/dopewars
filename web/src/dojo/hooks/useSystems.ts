@@ -562,9 +562,9 @@ export const useSystems = (): SystemsInterface => {
           season_version: 0, // ignored in contract
           season_duration: ryoConfig.season_duration,
           season_time_limit: ryoConfig.season_time_limit,
-          paper_fee: ryoConfig.paper_fee,
-          paper_reward_launderer: ryoConfig.paper_reward_launderer,
-          treasury_fee_pct: ryoConfig.treasury_fee_pct,
+          paper_fee: 0, // PAPER removed - always 0
+          paper_reward_launderer: 0, // PAPER removed - always 0
+          treasury_fee_pct: 0, // PAPER removed - always 0
           treasury_balance: 0, // ignored in contract
         }),
       });

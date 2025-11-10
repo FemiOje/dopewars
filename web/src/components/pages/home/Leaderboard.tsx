@@ -227,10 +227,9 @@ export const Leaderboard = observer(({ config }: { config?: Config }) => {
           <UnorderedList boxSize="full" variant="dotted" h="auto">
             {registeredGames && registeredGames.length > 0 ? (
               registeredGames.map((game: Game, index: number) => {
-                
                 // Check if player currently owns the token (not just if they are original owner)
                 const tokenId = Number(game.minigame_token_id);
-                
+
                 // check if current owner of token
                 const isOwn = ownedTokenIds.has(tokenId);
                 const color = isOwn ? colors.yellow["400"].toString() : colors.neon["200"].toString();
@@ -257,10 +256,10 @@ export const Leaderboard = observer(({ config }: { config?: Config }) => {
                       >
                         <HustlerAvatarIcon
                           gameId={game.game_id}
-                          // @ts-ignore
-                          tokenIdType={game.token_id_type}
-                          // @ts-ignore
-                          tokenId={game.token_id}
+                          // token_id removed - Dope collection integration stripped
+                          // HustlerAvatarIcon will return null when tokenIdType/tokenId are undefined
+                          tokenIdType={undefined}
+                          tokenId={undefined}
                         />
                       </Box>
 

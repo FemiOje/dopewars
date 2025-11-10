@@ -355,7 +355,8 @@ const RyoSeasonConfigCard = observer(() => {
               />
             </HStack>
 
-            <HStack>
+            {/* PAPER fields removed - PAPER integration stripped */}
+            {/* <HStack>
               <Text w="220px" flexShrink={0}>
                 PAPER FEE
               </Text>
@@ -401,7 +402,7 @@ const RyoSeasonConfigCard = observer(() => {
                   });
                 }}
               />
-            </HStack>
+            </HStack> */}
           </VStack>
           <ChildrenOrConnect>
             <Button isLoading={isPending} onClick={onUpdate}>

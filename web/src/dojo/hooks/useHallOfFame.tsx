@@ -11,11 +11,7 @@ player_id,
 "player_name.value",
 final_score,
 claimable,
-position,
-token_id,
-"token_id.guestlootid",
-"token_id.lootid",
-"token_id.hustlerid"
+position
 FROM "dopewars-Game" 
 WHERE position = 1
 ORDER BY season_version DESC
@@ -29,14 +25,20 @@ export const useHallOfFame = () => {
   const { data, isFetched, isFetching, refetch } = useSql(sqlQuery());
 
   const hallOfFame = useMemo(() => {
-    if (!data) return [];
+    // Handle different response structures from SQL endpoint
+    let gamesData: any[] = [];
+    if (Array.isArray(data)) {
+      gamesData = data;
+    } else if (data && typeof data === "object") {
+      // Try common response structures
+      gamesData = data.rows || data.data || data.results || [];
+    }
 
-    return (data || []).map((i: any) => {
+    return gamesData.map((i: any) => {
       return {
         ...i,
         player_name: shortString.decodeShortString(BigInt(i["player_name.value"]).toString()),
-        token_id_type: i.token_id,
-        token_id: Number(i[`token_id.${i.token_id}`]),
+        // token_id removed - Dope collection integration stripped
       };
     });
   }, [data]);

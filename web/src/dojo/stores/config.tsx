@@ -165,7 +165,7 @@ export class ConfigStoreClass {
               edges {
                 node {
                   key
-                  paper
+                  # paper removed - PAPER integration stripped
                   treasury
                 }
               }
@@ -179,9 +179,9 @@ export class ConfigStoreClass {
                   season_version
                   season_duration
                   season_time_limit
-                  paper_fee
-                  paper_reward_launderer
-                  treasury_fee_pct
+                  # paper_fee removed - PAPER integration stripped
+                  # paper_reward_launderer removed - PAPER integration stripped
+                  # treasury_fee_pct removed - PAPER integration stripped
                   treasury_balance
                 }
               }

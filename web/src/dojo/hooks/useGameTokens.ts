@@ -21,10 +21,7 @@ interface GameQueryResponse {
   game_mode: string;
   game_over: number;
   final_score: number;
-  token_id: string;
-  "token_id.guestlootid": string | null;
-  "token_id.lootid": string | null;
-  "token_id.hustlerid": string | null;
+  // token_id removed - Dope collection integration stripped
   minigame_token_id: string;
   equipment_by_slot: string;
 }
@@ -43,7 +40,7 @@ const parseTokenId = (tokenIdString: string): number => {
  * @example convertToHexTokenId(29) => "0x000000000000001d"
  */
 const convertToHexTokenId = (tokenId: number): string => {
-  const hex = tokenId.toString(16).padStart(HEX_PADDING_LENGTH, '0');
+  const hex = tokenId.toString(16).padStart(HEX_PADDING_LENGTH, "0");
   return `"0x${hex}"`;
 };
 
@@ -52,10 +49,7 @@ export const useGameTokens = () => {
     chains: { selectedChain },
   } = useDojoContext();
 
-  const SQL_ENDPOINT = useMemo(
-    () => selectedChain.toriiUrl.replace(/\/graphql$/, "/sql"),
-    [selectedChain.toriiUrl]
-  );
+  const SQL_ENDPOINT = useMemo(() => selectedChain.toriiUrl.replace(/\/graphql$/, "/sql"), [selectedChain.toriiUrl]);
 
   /**
    * Execute a SQL query against the Torii SQL endpoint
@@ -74,13 +68,21 @@ export const useGameTokens = () => {
           throw new Error(`SQL query failed: ${response.statusText}`);
         }
 
-        return await response.json();
+        const json = await response.json();
+        // Handle different response structures from SQL endpoint
+        if (Array.isArray(json)) {
+          return json;
+        } else if (json && typeof json === "object") {
+          // Try common response structures
+          return json.rows || json.data || json.results || [];
+        }
+        return [];
       } catch (error) {
         console.error("[useGameTokens] SQL query error:", error);
         return [];
       }
     },
-    [SQL_ENDPOINT]
+    [SQL_ENDPOINT],
   );
 
   /**
@@ -108,7 +110,7 @@ export const useGameTokens = () => {
       const data = await executeSqlQuery<TokenBalanceResponse>(query);
       return data.map((token) => parseTokenId(token.token_id));
     },
-    [executeSqlQuery]
+    [executeSqlQuery],
   );
 
   /**
@@ -127,9 +129,7 @@ export const useGameTokens = () => {
 
       // Convert decimal token IDs to padded hex format for SQL query
       // Note: minigame_token_id is stored as hex (u64 = 16 hex digits) in the database
-      const tokenIdsHex = gamesData
-        .map((game) => convertToHexTokenId(game.token_id))
-        .join(",");
+      const tokenIdsHex = gamesData.map((game) => convertToHexTokenId(game.token_id)).join(",");
 
       const query = `
         SELECT
@@ -140,10 +140,6 @@ export const useGameTokens = () => {
           game_mode,
           game_over,
           final_score,
-          token_id,
-          "token_id.guestlootid",
-          "token_id.lootid",
-          "token_id.hustlerid",
           minigame_token_id,
           equipment_by_slot
         FROM "dopewars-Game"
@@ -162,18 +158,15 @@ export const useGameTokens = () => {
 
         return {
           ...gameData,
-          player_name: shortString.decodeShortString(
-            BigInt(gameData["player_name.value"]).toString()
-          ),
-          token_id_type: gameData.token_id,
-          token_id: Number(gameData[`token_id.${gameData.token_id}` as keyof GameQueryResponse]),
+          player_name: shortString.decodeShortString(BigInt(gameData["player_name.value"]).toString()),
+          // token_id removed - Dope collection integration stripped
           minigame_token_id: minigameTokenIdDecimal,
           minted_by: metagameData?.minted_by,
           lifecycle: metagameData?.lifecycle,
         };
       });
     },
-    [executeSqlQuery]
+    [executeSqlQuery],
   );
 
   return {

@@ -22,10 +22,7 @@ interface ClaimableRow {
   claimable: number;
   claimed: number;
   position: number;
-  token_id: string;
-  "token_id.guestlootid": string | null;
-  "token_id.lootid": string | null;
-  "token_id.hustlerid": string | null;
+  // token_id removed - Dope collection integration stripped
   minigame_token_id: string;
 }
 
@@ -45,16 +42,13 @@ export const useClaimable = (playerId: string) => {
     clients: { rpcProvider },
   } = useDojoContext();
 
-  const sqlEndpoint = useMemo(
-    () => selectedChain.toriiUrl.replace(/\/graphql$/, "/sql"),
-    [selectedChain.toriiUrl],
-  );
+  const sqlEndpoint = useMemo(() => selectedChain.toriiUrl.replace(/\/graphql$/, "/sql"), [selectedChain.toriiUrl]);
 
   const [claimable, setClaimable] = useState<any[]>([]);
   const [isFetching, setIsFetching] = useState(false);
 
   const executeSqlQuery = useCallback(
-    async <T = any>(query: string): Promise<T[]> => {
+    async <T = any,>(query: string): Promise<T[]> => {
       const url = `${sqlEndpoint}/?query=${encodeURIComponent(query)}`;
 
       try {
@@ -64,10 +58,19 @@ export const useClaimable = (playerId: string) => {
         });
 
         if (!response.ok) {
-          throw new Error(`SQL query failed: ${response.statusText}`);
+          const errorText = await response.text();
+          throw new Error(`SQL query failed: ${response.statusText} - ${errorText}`);
         }
 
-        return await response.json();
+        const json = await response.json();
+        // Handle different response structures from SQL endpoint
+        if (Array.isArray(json)) {
+          return json;
+        } else if (json && typeof json === "object") {
+          // Try common response structures
+          return json.rows || json.data || json.results || [];
+        }
+        return [];
       } catch (error) {
         console.error("[useClaimable] SQL query error:", error);
         return [];
@@ -166,10 +169,6 @@ export const useClaimable = (playerId: string) => {
                claimable,
                claimed,
                position,
-               token_id,
-               "token_id.guestlootid",
-               "token_id.lootid",
-               "token_id.hustlerid",
                minigame_token_id
         FROM "dopewars-Game"
         WHERE claimed = false
@@ -182,8 +181,6 @@ export const useClaimable = (playerId: string) => {
       const rows = await executeSqlQuery<ClaimableRow>(claimableQuery);
 
       const parsed = rows.map((row) => {
-        const rawTokenId = (row as any)[`token_id.${row.token_id}`];
-        const tokenId = rawTokenId ? Number(rawTokenId) : 0;
         const minigameTokenId = row.minigame_token_id?.startsWith("0x")
           ? Number.parseInt(row.minigame_token_id, 16)
           : Number(row.minigame_token_id);
@@ -196,8 +193,7 @@ export const useClaimable = (playerId: string) => {
           claimed: Number(row.claimed),
           position: Number(row.position),
           player_name: shortString.decodeShortString(BigInt(row["player_name.value"]).toString()),
-          token_id_type: row.token_id,
-          token_id: tokenId,
+          // token_id removed - Dope collection integration stripped
           minigame_token_id: Number.isFinite(minigameTokenId) ? minigameTokenId : 0,
         };
       });

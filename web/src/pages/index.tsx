@@ -110,9 +110,9 @@ export default function Home() {
                   <Flipflop /> Play guest
                 </Button> */}
 
-                <HStack flex="1" h="full" alignItems="center"justifyContent="center">
+                <HStack flex="1" h="full" alignItems="center" justifyContent="center">
                   <Warning color="yellow.400" />
-                  <Text >Waiting for season end</Text>
+                  <Text>Waiting for season end</Text>
                 </HStack>
               </HStack>
             )}
@@ -123,12 +123,8 @@ export default function Home() {
 
                 <VStack h="full">
                   <Text fontSize={["12px", "14px"]}>
-                    Last season results need to be washed. Confirm a transaction and earn{" "}
-                    <PaperIcon color="yellow.400" mr={1} />
-                    <span style={{ color: colors.yellow["400"].toString() }}>
-                      {config?.ryo.paper_reward_launderer} PAPER
-                    </span>
-                    !
+                    Last season results need to be washed. Confirm a transaction to process the leaderboard.
+                    {/* PAPER rewards removed - games are free */}
                   </Text>
                   <Button w="full" isLoading={isPending} onClick={onLaunder}>
                     <HStack w="full" justifyContent="center">
