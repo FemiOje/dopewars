@@ -197,12 +197,10 @@ pub mod laundromat {
             let list_id = season_version.into();
             let mut sorted_list = SortedListImpl::get(@store, list_id);
 
-            // set process_max_size & total_stake_mul then lock list
+            // set process_max_size then lock list (PAPER removed - no stake calculations)
             if !sorted_list.locked {
                 let process_max_size = get_payed_count(sorted_list.size);
-                let stake_adj_paper_balance = sorted_list
-                    .calc_stake_adj_paper_balance::<Game>(ref store, process_max_size);
-                sorted_list.lock(ref store, process_max_size, stake_adj_paper_balance);
+                sorted_list.lock(ref store, process_max_size);
             }
 
             // if not process, process batch_size items

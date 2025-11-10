@@ -2,7 +2,7 @@ use core::num::traits::Zero;
 use core::traits::TryInto;
 use rollyourown::models::game::Game;
 use rollyourown::store::{Store, StoreImpl, StoreTrait};
-use rollyourown::utils::payout_structure::get_payout;
+// use rollyourown::utils::payout_structure::get_payout; // PAPER removed - no longer needed
 use starknet::ContractAddress;
 
 
@@ -18,7 +18,7 @@ pub struct SortedList {
     pub process_size: u32, // number of item processed
     pub process_cursor_k0: u32,
     pub process_cursor_k1: ContractAddress,
-    pub stake_adj_paper_balance: u32,
+    // pub stake_adj_paper_balance: u32, // PAPER removed
 }
 
 #[derive(IntrospectPacked, Copy, Drop, Serde)]
@@ -46,8 +46,6 @@ pub trait SortableItem<T> {
         ref store: Store,
         position: u16,
         entrants: u32,
-        paper_balance: u32,
-        stake_adj_paper_balance: u32,
     );
     fn get_multiplier(self: T) -> u32;
 }
@@ -74,24 +72,10 @@ pub impl SortableItemGameImpl of SortableItem<Game> {
         ref store: Store,
         position: u16,
         entrants: u32,
-        paper_balance: u32,
-        stake_adj_paper_balance: u32,
     ) {
-        // calc payout for this game
-        let payout = get_payout(position.into(), entrants, paper_balance, false);
-        // adjust with multipliers
-        let claimable: u64 = if stake_adj_paper_balance > 0 {
-            payout.into()
-                * self.multiplier.into()
-                * paper_balance.into()
-                / stake_adj_paper_balance.into()
-        } else {
-            0
-        };
-
+        // PAPER removed - claimable is always 0, only track position for leaderboard
         self.position = position;
-        self.claimable = claimable.try_into().unwrap();
-        // set!(world, (self));
+        self.claimable = 0; // PAPER removed - no rewards
         store.set_game(@self)
     }
 }
@@ -110,7 +94,7 @@ pub impl SortedListImpl of SortedListTrait {
             process_size: 0,
             process_cursor_k0: Self::root(),
             process_cursor_k1: Into::<u32, felt252>::into(Self::root()).try_into().unwrap(),
-            stake_adj_paper_balance: 0,
+            // stake_adj_paper_balance: 0, // PAPER removed
         }
     }
 
@@ -217,15 +201,14 @@ pub impl SortedListImpl of SortedListTrait {
     //
 
     fn lock(
-        ref self: SortedList, ref store: Store, process_max_size: u32, stake_adj_paper_balance: u32,
+        ref self: SortedList, ref store: Store, process_max_size: u32,
     ) {
         assert(!self.locked, 'list already locked');
         assert(process_max_size > 0, 'invalid process_max_size');
 
         self.process_max_size = process_max_size;
-        self.stake_adj_paper_balance = stake_adj_paper_balance;
+        // PAPER removed - stake_adj_paper_balance no longer used
         self.locked = true;
-        //self.set(world);
         Self::set(self, ref store);
     }
 
@@ -241,9 +224,7 @@ pub impl SortedListImpl of SortedListTrait {
         assert(batch_size > 0, 'invalid batch_size');
 
         let _season = store.season(self.list_id.try_into().unwrap());
-        let paper_balance = 0; // PAPER removed - always 0
         let entrants = self.size;
-        let stake_adj_paper_balance = self.stake_adj_paper_balance;
 
         let curr_k0 = self.process_cursor_k0;
         let curr_k1 = self.process_cursor_k1;
@@ -253,7 +234,7 @@ pub impl SortedListImpl of SortedListTrait {
         let mut curr_position: u16 = self
             .process_size
             .try_into()
-            .unwrap(); //curr_item.get_position();
+            .unwrap();
 
         let mut i = 0;
 
@@ -275,10 +256,8 @@ pub impl SortedListImpl of SortedListTrait {
             curr = store.sorted_list_item(self.list_id, curr.next_k0, curr.next_k1);
             curr_item = SortableItem::<T>::get_by_keys(@store, (curr.item_k0, curr.item_k1));
             curr_position += 1;
-            curr_item
-                .set_position(
-                    ref store, curr_position, entrants, paper_balance, stake_adj_paper_balance,
-                );
+            // PAPER removed - only set position, claimable is always 0
+            curr_item.set_position(ref store, curr_position, entrants);
 
             self.process_size += 1;
 
@@ -294,40 +273,8 @@ pub impl SortedListImpl of SortedListTrait {
 
     //
 
-    fn calc_stake_adj_paper_balance<T, +SortableItem<T>, +Drop<T>, +Copy<T>>(
-        ref self: SortedList, ref store: Store, total_payed: u32,
-    ) -> u32 {
-        let entrants = self.size;
-        let _season = store.season(self.list_id.try_into().unwrap());
-        let paper_balance = 0; // PAPER removed - always 0
-
-        let curr_k0 = Self::root();
-        let curr_k1 = Into::<u32, felt252>::into(Self::root()).try_into().unwrap();
-
-        let mut curr = store.sorted_list_item(self.list_id, curr_k0, curr_k1);
-        let mut curr_item = SortableItem::<T>::get_by_keys(@store, (curr.item_k0, curr.item_k1));
-        let mut stake_adj_paper_balance: u32 = 0;
-
-        let mut i = 0;
-
-        while i < total_payed {
-            curr = store.sorted_list_item(self.list_id, curr.next_k0, curr.next_k1);
-            curr_item = SortableItem::<T>::get_by_keys(@store, (curr.item_k0, curr.item_k1));
-
-            // to adjust payout we will divide by stake_adj_paper_balance so we round it up
-            let payout = get_payout((i + 1).into(), entrants, paper_balance, true);
-            stake_adj_paper_balance += payout * curr_item.get_multiplier();
-
-            // println!(
-            //     "{} - {} - {} - {}", i, payout, curr_item.get_multiplier(),
-            //     stake_adj_paper_balance,
-            // );
-
-            i += 1;
-        }
-
-        stake_adj_paper_balance
-    }
+    // PAPER removed - calc_stake_adj_paper_balance no longer needed
+    // Function removed since PAPER rewards are no longer distributed
 
     fn print(self: SortedList) {
         println!("------------");
