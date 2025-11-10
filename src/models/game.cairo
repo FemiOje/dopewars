@@ -1,20 +1,12 @@
-use dojo::world::WorldStorage;
-// use dope_contracts::dope_hustlers::dope_hustlers_models::{HustlerSlots};
-// use dope_contracts::dope_hustlers::dope_hustlers_store::{HustlerStoreImpl, HustlerStoreTrait};
-// use dope_contracts::dope_loot::dope_loot_store::{LootStoreImpl, LootStoreTrait};
+// Dope collection integration removed - dope_world and dope_contracts no longer needed
 use rollyourown::store::StoreImpl;
 use rollyourown::utils::bytes16::{Bytes16, Bytes16Impl};
 use starknet::ContractAddress;
 
 pub type GearId = felt252;
 
-#[derive(Copy, Drop, Serde, PartialEq, Introspect, Default, DojoStore)]
-pub enum TokenId {
-    #[default]
-    GuestLootId: felt252,
-    LootId: felt252,
-    HustlerId: felt252,
-}
+// TokenId enum removed - Dope collection integration stripped
+// All games now use default equipment
 
 
 #[derive(Copy, Drop, Serde, PartialEq, IntrospectPacked, Default, DojoStore)]
@@ -47,8 +39,8 @@ pub struct Game {
     pub claimable: u32,
     pub position: u16,
     //
-    pub token_id: TokenId,
-    // sorted by slot order 0,1,2,3
+    // token_id removed - Dope collection integration stripped
+    // sorted by slot order 0,1,2,3 (always default equipment)
     pub equipment_by_slot: Span<GearId>,
     pub minigame_token_id: u64 // NFT token ID from game_components_minigame
 }
@@ -56,64 +48,15 @@ pub struct Game {
 #[generate_trait]
 pub impl GameImpl of GameTrait {
     fn new(
-        dope_world: WorldStorage,
         game_id: u32,
         player_id: ContractAddress,
         season_version: u16,
         game_mode: GameMode,
         player_name: felt252,
         multiplier: u8,
-        token_id: TokenId,
     ) -> Game {
-        let equipment_by_slot = match token_id {
-            TokenId::GuestLootId(loot_id) |
-            TokenId::LootId(loot_id) => {
-                // let mut loot_store = LootStoreImpl::new(dope_world);
-
-                let _loot_id: u256 = loot_id.into();
-                let mut equipment = array![0, 256, 1280, 512];
-                // let mut equipment = array![
-                // loot_store.gear_item_id(loot_id, HustlerSlots::Weapon).try_into().unwrap(),
-                // loot_store.gear_item_id(loot_id, HustlerSlots::Clothe).try_into().unwrap(),
-                // loot_store.gear_item_id(loot_id, HustlerSlots::Foot).try_into().unwrap(),
-                // loot_store.gear_item_id(loot_id, HustlerSlots::Vehicle).try_into().unwrap(),
-                // ];
-
-                equipment.span()
-            },
-            TokenId::HustlerId(_hustler_id) => {
-                // let mut hustler_store = HustlerStoreImpl::new(dope_world);
-                // let weapon = hustler_store.hustler_slot(hustler_id.into(), HustlerSlots::Weapon);
-                // let clothe = hustler_store.hustler_slot(hustler_id.into(), HustlerSlots::Clothe);
-                // let foot = hustler_store.hustler_slot(hustler_id.into(), HustlerSlots::Foot);
-                // let vehicle = hustler_store.hustler_slot(hustler_id.into(),
-                // HustlerSlots::Vehicle);
-
-                // let weapon_id: felt252 = weapon
-                //     .gear_item_id
-                //     .expect('must equip a weapon')
-                //     .try_into()
-                //     .unwrap();
-                // let clothe_id: felt252 = clothe
-                //     .gear_item_id
-                //     .expect('must equip a clothe')
-                //     .try_into()
-                //     .unwrap();
-                // let foot_id: felt252 = foot
-                //     .gear_item_id
-                //     .expect('must equip a foot')
-                //     .try_into()
-                //     .unwrap();
-                // let vehicle_id: felt252 = vehicle
-                //     .gear_item_id
-                //     .expect('must equip a weapon')
-                //     .try_into()
-                //     .unwrap();
-
-                // array![weapon_id, clothe_id, foot_id, vehicle_id].span()
-                array![0, 256, 1280, 512].span()
-            },
-        };
+        // Dope collection integration removed - always use default equipment
+        let mut equipment = array![0, 256, 1280, 512];
         Game {
             game_id,
             player_id,
@@ -131,9 +74,9 @@ pub impl GameImpl of GameTrait {
             claimable: 0,
             position: 0,
             //
-            token_id,
+            // token_id removed - Dope collection integration stripped
             minigame_token_id: 0, // Will be set after minting
-            equipment_by_slot,
+            equipment_by_slot: equipment.span(),
         }
     }
 

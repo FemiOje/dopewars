@@ -12,7 +12,7 @@ pub mod devtools {
     use core::traits::{Into, TryInto};
     use dojo::world::IWorldDispatcherTrait;
     use rollyourown::helpers::season_manager::SeasonManagerTrait;
-    use rollyourown::models::game::{Game, GameMode, TokenId};
+    use rollyourown::models::game::{Game, GameMode};
     use rollyourown::packing::game_store::{GameStoreImpl, GameStorePackerImpl};
     use rollyourown::store::{StoreImpl, StoreTrait};
     use rollyourown::utils::bytes16::Bytes16Impl;
@@ -60,7 +60,7 @@ pub mod devtools {
                 claimed: false,
                 claimable: 0,
                 position: 0,
-                token_id: TokenId::LootId(loot_id.into()),
+                // token_id removed - Dope collection integration stripped
                 minigame_token_id: 0,
                 equipment_by_slot: array![0, 0, 0, 0].span(),
             };

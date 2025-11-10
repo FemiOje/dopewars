@@ -36,7 +36,7 @@ pub mod laundromat {
         // interfaces::{paper::{IPaperDispatcher, IPaperDispatcherTrait}}, // PAPER removed
         // libraries::dopewars_items::{IDopewarsItemsDispatcherTrait,
         // IDopewarsItemsLibraryDispatcher},
-        models::{game::{Game, GameImpl, GameTrait // TokenId
+        models::{game::{Game, GameImpl, GameTrait
         }, season::{SeasonImpl, SeasonTrait}},
         packing::game_store::{GameStoreImpl}, store::{StoreImpl, StoreTrait},
         utils::{

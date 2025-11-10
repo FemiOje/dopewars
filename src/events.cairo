@@ -1,7 +1,5 @@
-use rollyourown::dope_contracts::dope_hustlers::dope_hustlers_models::{
-    HustlerBody, HustlerSlotOption,
-};
-use rollyourown::models::game::{GameMode, TokenId};
+// Dope collection integration removed - no longer using dope_contracts
+use rollyourown::models::game::GameMode;
 use rollyourown::systems::game::EncounterActions;
 use rollyourown::systems::helpers::traveling::EncounterOutcomes;
 use starknet::ContractAddress;
@@ -16,9 +14,7 @@ pub struct GameCreated {
     pub game_mode: GameMode,
     pub player_name: felt252,
     pub multiplier: u8,
-    pub token_id: TokenId,
-    pub hustler_equipment: Span<HustlerSlotOption>,
-    pub hustler_body: Span<HustlerBody>,
+    // token_id, hustler_equipment, hustler_body removed - Dope collection integration stripped
 }
 
 
@@ -44,7 +40,7 @@ pub struct GameOver {
     pub player_id: ContractAddress,
     pub season_version: u16,
     pub player_name: felt252,
-    pub token_id: TokenId,
+    // token_id removed - Dope collection integration stripped
     pub turn: u8,
     pub cash: u32,
     pub health: u8,
@@ -152,7 +148,7 @@ pub struct NewHighScore {
     #[key]
     pub season_version: u16,
     pub player_name: felt252,
-    pub token_id: TokenId,
+    // token_id removed - Dope collection integration stripped
     pub cash: u32,
     pub health: u8,
     pub reputation: u8,

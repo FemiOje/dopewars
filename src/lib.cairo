@@ -12,7 +12,7 @@ pub mod achievements {
     pub mod achievements_v1;
 }
 
-pub mod dope_contracts;
+// pub mod dope_contracts; // Dope collection integration stripped
 
 pub mod traits;
 pub mod config {

@@ -1,5 +1,5 @@
 rpc = "https://api.cartridge.gg/x/starknet/sepolia"
-world_address = "0x0180d56434e6947c4630151f743c0aaeaa6dd4c33064af65a36131c171310dc9"
+world_address = "0x05c01553274d7c51aacb772a4396deff54caa3b4e36022219d284b77dd2459ae"
 
 [server]
 http_cors_origins = ["*"]

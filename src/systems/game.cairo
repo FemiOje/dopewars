@@ -47,7 +47,7 @@ pub mod game {
         config::{locations::{Locations}}, events::{GameCreated},
         helpers::season_manager::{SeasonManagerTrait},
         // interfaces::{erc721::{IERC721ABIDispatcher, IERC721ABIDispatcherTrait}},
-        models::{game::{GameImpl, GameMode, TokenId}, game_token::GameToken},
+        models::{game::{GameImpl, GameMode}, game_token::GameToken},
         packing::{game_store::{GameStore, GameStoreImpl}, player::{PlayerImpl}},
         store::{StoreImpl, StoreTrait},
         systems::{helpers::{game_loop, shopping, trading, trading::{TradeDirection}}},
@@ -97,13 +97,7 @@ pub mod game {
             let mut season_manager = SeasonManagerTrait::new(store);
             let season_version = season_manager.get_current_version();
 
-            // Generate valid guest loot ID for this season
-            let hash: u256 = core::poseidon::poseidon_hash_span(
-                array![season_version.into(), 0_u32.into()].span(),
-            )
-                .into();
-            let valid_guest_loot_id: felt252 = ((hash % 8000) + 1).try_into().unwrap();
-            let default_token_id = TokenId::GuestLootId(valid_guest_loot_id);
+            // Dope collection integration removed - no token_id needed
 
             let mut game_created = GameCreated {
                 game_id,
@@ -111,23 +105,17 @@ pub mod game {
                 game_mode,
                 player_name,
                 multiplier,
-                token_id: default_token_id,
-                hustler_equipment: array![].span(),
-                hustler_body: array![].span(),
             };
 
             // create game
             let mut game_config = store.game_config(season_version);
-            let mut dope_world = self.world(@"dope");
             let mut game = GameImpl::new(
-                dope_world,
                 game_id,
                 player_id,
                 season_version,
                 game_mode,
                 player_name,
                 multiplier,
-                default_token_id,
             );
 
             game.minigame_token_id = minigame_token_id;
