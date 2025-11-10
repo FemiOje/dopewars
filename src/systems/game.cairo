@@ -102,12 +102,6 @@ pub mod game {
             let mut season_manager = SeasonManagerTrait::new(store);
             let season_version = season_manager.get_current_version();
 
-            // if RANKED
-            if game_mode == GameMode::Ranked {
-                // pay paper_fee * multiplier
-                season_manager.on_game_start(multiplier);
-            }
-
             let mut dope_world = self.world(@"dope");
 
             let mut game_created = GameCreated {

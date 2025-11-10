@@ -2,15 +2,11 @@ use dojo::event::EventStorage;
 use dojo::world::WorldStorageTrait;
 use rollyourown::config::ryo::RyoConfigTrait;
 use rollyourown::config::settings::{SeasonSettingsImpl, SeasonSettingsTrait};
-use rollyourown::constants::{ETHER, MAX_MULTIPLIER};
 use rollyourown::events::NewHighScore;
-use rollyourown::interfaces::paper::{IPaperDispatcher, IPaperDispatcherTrait};
 use rollyourown::models::season::{SeasonImpl, SeasonTrait};
 use rollyourown::packing::game_store::GameStore;
 use rollyourown::store::{Store, StoreImpl, StoreTrait};
-use rollyourown::utils::math::{MathImpl, MathTrait};
 use rollyourown::utils::random::Random;
-use starknet::get_caller_address;
 
 #[derive(Drop, Copy)]
 pub struct SeasonManager {
@@ -47,47 +43,6 @@ pub impl SeasonManagerImpl of SeasonManagerTrait {
         store.save_season(@season);
         store.save_season_settings(@season_settings);
         store.save_game_config(@game_config);
-    }
-
-    fn on_game_start(ref self: SeasonManager, multiplier: u8) {
-        let mut store = self.store;
-        let mut ryo_config = store.ryo_config();
-
-        // get current season infos
-        let mut season = store.season(ryo_config.season_version);
-
-        // check if season is opened
-        assert(season.is_open(), 'season has closed');
-        // check if enought time for a game before season end
-        assert(season.can_create_game(), 'not enought time for a game');
-
-        // check multiplier
-        assert(multiplier > 0 && multiplier <= MAX_MULTIPLIER, 'invalid multiplier');
-
-        // get paper_fee
-        let paper_fee: u32 = season.paper_fee.into() * multiplier.into();
-        let paper_fee_eth: u256 = paper_fee.into() * ETHER;
-
-        // calc treasury share
-        let treasury_share = paper_fee.pct(season.treasury_fee_pct.into());
-        let jackpot_share = paper_fee - treasury_share;
-
-        // add jackpot_share to current_season & save
-        season.paper_balance += jackpot_share;
-        store.save_season(@season);
-
-        // add treasury_share to treasury_balance & save
-        ryo_config.treasury_balance += treasury_share;
-        store.save_ryo_config(@ryo_config);
-
-        // retrieve paper_address & laundromat_address
-        let ryo_addresses = store.ryo_addresses();
-        let laundromat_address = store.world.dns_address(@"laundromat").unwrap();
-
-        // transfer paper_fee_ether from user to laundromat ( user approved game contract to spend
-        // paper before)
-        IPaperDispatcher { contract_address: ryo_addresses.paper }
-            .transfer_from(get_caller_address(), laundromat_address, paper_fee_eth);
     }
 
     fn on_register_score(ref self: SeasonManager, ref game_store: GameStore) -> bool {
