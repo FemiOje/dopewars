@@ -135,12 +135,12 @@ const End = () => {
         <>
           {gameInfos?.game_mode == "Ranked" && !gameInfos?.registered ? (
             <VStack w="full" gap={3}>
-              <Card p={3}>
+              {/* <Card p={3}>
                 <HStack color="yellow.400">
                   <Warning mr={2} color="yellow.400" />
                   <Text maxW="340px">You must register your score in order to be eligible for season rewards</Text>
                 </HStack>
-              </Card>
+              </Card> */}
 
               <ChildrenOrConnect>
                 <Button isLoading={isPending} onClick={() => onRegister()}>
