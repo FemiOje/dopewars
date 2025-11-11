@@ -39,29 +39,16 @@ export const HustlerPreviewFromGame = observer(
       });
     }, [tokenId]);
 
+    // Dope collection integration removed - hustler_body and hustler_equipment no longer exist
     const hustlerBody = useMemo(() => {
-      if (!gameCreated) return [];
-      return gameCreated.hustler_body.reduce(
-        (a, v) => ({
-          ...a,
-          [feltToString(v.slot)]: v.value,
-        }),
-        {},
-      );
-    }, [gameCreated]);
+      // Return empty object since hustler_body was removed
+      return {};
+    }, []);
 
     const hustlerEquipment = useMemo(() => {
-      if (!gameCreated) return [];
-      return gameCreated.hustler_equipment
-        .filter((i) => i.gear_item_id.isSome())
-        .reduce(
-          (a, v) => ({
-            ...a,
-            [feltToString(v.slot)]: { token_id: BigInt(v.gear_item_id.Some!) } as ParsedToken,
-          }),
-          {},
-        );
-    }, [gameCreated]);
+      // Return empty object since hustler_equipment was removed
+      return {};
+    }, []);
 
     //
 
@@ -89,7 +76,8 @@ export const HustlerPreviewFromGame = observer(
       };
     }, [hustlerMeta]);
 
-    if (!gameCreated || !hustlerEquipment) return null;
+    // Dope collection integration removed - return null since we can't render hustler without Dope data
+    if (!gameCreated) return null;
     return (
       <>
         <HustlerPreview

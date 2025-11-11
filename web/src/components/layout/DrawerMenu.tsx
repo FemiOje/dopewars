@@ -52,9 +52,10 @@ const DrawerMenu = () => {
   const { uiStore } = useDojoContext();
   return (
     <>
-      <HeaderButton ref={btnRef} onClick={onOpen} h={["40px","48px"]}  w={["40px","48px"]}>
+      <HeaderButton ref={btnRef} onClick={onOpen} h={["40px", "48px"]} w={["40px", "48px"]}>
         <Dots />
       </HeaderButton>
+      {/* @ts-ignore */}
       <Drawer isOpen={isOpen} placement="right" size="xs" onClose={onClose} trapFocus={false}>
         <DrawerOverlay onClick={onClose} />
         <DrawerContent minW="340px" overflowX="hidden">
@@ -101,14 +102,15 @@ const DrawerMenu = () => {
                     </HStack>
                   </DrawerListItem>
 
-                  {account && config && (
+                  {/* PAPER integration removed - commenting out paper balance display */}
+                  {/* {account && config && (
                     <DrawerListItem cursor="default">
                       <HStack w="full">
                         <TokenBalance address={account?.address} token={config?.ryoAddress.paper} icon={PaperIcon} />{" "}
                         <Text>PAPER</Text>
                       </HStack>
                     </DrawerListItem>
-                  )}
+                  )} */}
 
                   {game && (
                     <>
@@ -119,9 +121,10 @@ const DrawerMenu = () => {
                         </HStack>
                       </DrawerListItem>
 
-                      <DrawerListItem>
+                      {/* Dope collection integration removed - commenting out profile link */}
+                      {/* <DrawerListItem>
                         <ProfileLinkDrawer />
-                      </DrawerListItem>
+                      </DrawerListItem> */}
 
                       <DrawerListItem
                         onClick={() => {
@@ -162,21 +165,21 @@ const DrawerMenu = () => {
                     <Calendar mr={2} /> SEASONS
                   </DrawerListItem>
 
-                  <DrawerListItem
+                  {/* <DrawerListItem
                     onClick={() => {
                       router.push("/gear");
                     }}
                   >
                     <Cigarette mr={2} /> GEAR
-                  </DrawerListItem>
+                  </DrawerListItem> */}
 
-                  <DrawerListItem
+                  {/* <DrawerListItem
                     onClick={() => {
                       router.push("/dope");
                     }}
                   >
                     <HustlerIcon hustler={Hustlers.Dragon} mr={2} /> MY DOPE
-                  </DrawerListItem>
+                  </DrawerListItem> */}
 
                   {/* DEV */}
 

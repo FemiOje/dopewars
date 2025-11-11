@@ -13,9 +13,10 @@ export const MobileMenu = ({ ...props }: StyleProps) => {
   const { uiStore } = useDojoContext();
   return (
     <>
+      {/* @ts-ignore */}
       <Popover placement="bottom-end">
         <PopoverTrigger>
-          <HeaderButton h={["40px","48px"]}>
+          <HeaderButton h={["40px", "48px"]}>
             <Dots />
           </HeaderButton>
         </PopoverTrigger>

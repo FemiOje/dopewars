@@ -57,7 +57,7 @@ export const Header = observer(() => {
             justifyContent="center"
             py={2}
           >
-            <Cigarette mr="2"/> MIGRATION
+            <Cigarette mr="2" /> MIGRATION
           </HeaderButton>
         )}
       </HStack>
@@ -95,7 +95,8 @@ export const Header = observer(() => {
 
       <HStack flex="1" justify="right">
         {!isMobile && <ConnectButton />}
-        {!isMobile && account && game && <ProfileLink />}
+        {/* Dope collection integration removed - commenting out profile link */}
+        {/* {!isMobile && account && game && <ProfileLink />} */}
 
         {/* trick to allow autoplay.. */}
         <Box display="none">

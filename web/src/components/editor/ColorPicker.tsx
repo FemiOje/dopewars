@@ -11,9 +11,17 @@ export function ColorPicker({
   setSelectedColor: (e: number) => void;
 }) {
   return (
+    // @ts-ignore
     <Popover placement="right">
       <PopoverTrigger>
-        <Box w="24px" h="24px" p={1} borderWidth="2px" borderColor="neon.500" style={{ background: colors[selectedColor] }}></Box>
+        <Box
+          w="24px"
+          h="24px"
+          p={1}
+          borderWidth="2px"
+          borderColor="neon.500"
+          style={{ background: colors[selectedColor] }}
+        ></Box>
       </PopoverTrigger>
       <PopoverContent>
         <PopoverBody w="auto" display="flex" flexWrap="wrap" gap={2} p={3}>
@@ -30,7 +38,6 @@ export function ColorPicker({
                 border="solid 1px !important"
                 borderColor="neon.500"
                 borderRadius={0}
-
                 style={{ background: color }}
               >
                 <></>
