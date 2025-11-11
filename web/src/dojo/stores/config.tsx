@@ -30,6 +30,97 @@ import { drugIcons, drugIconsKeys, locationIcons, locationIconsKeys } from "../h
 import { CashMode, DrugsMode, EncountersMode, EncountersOddsMode, HealthMode, ItemSlot, TurnsMode } from "../types";
 import { GearItem } from "@/dope/helpers";
 
+// Map ItemSlot enum to dopewars slot_id (matches DW_SLOT_IDS in Cairo: [0, 1, 5, 2])
+const DW_SLOT_IDS = [0, 1, 5, 2] as const;
+
+// Hardcoded tier configs from Cairo contract as fallback (matches dopewars_items.cairo)
+const HARDCODED_TIER_CONFIGS: Record<number, Record<number, Array<{ stat: number; cost: number }>>> = {
+  // slot_id 0 (Weapon)
+  0: {
+    1: [
+      { stat: 10, cost: 0 },
+      { stat: 25, cost: 1050 },
+      { stat: 50, cost: 17500 },
+      { stat: 80, cost: 210000 },
+    ],
+    2: [
+      { stat: 12, cost: 0 },
+      { stat: 28, cost: 1120 },
+      { stat: 45, cost: 11900 },
+      { stat: 70, cost: 175000 },
+    ],
+    3: [
+      { stat: 14, cost: 0 },
+      { stat: 30, cost: 1120 },
+      { stat: 40, cost: 7000 },
+      { stat: 60, cost: 140000 },
+    ],
+  },
+  // slot_id 1 (Clothes)
+  1: {
+    1: [
+      { stat: 10, cost: 0 },
+      { stat: 22, cost: 960 },
+      { stat: 48, cost: 20800 },
+      { stat: 75, cost: 216000 },
+    ],
+    2: [
+      { stat: 12, cost: 0 },
+      { stat: 26, cost: 1120 },
+      { stat: 45, cost: 15200 },
+      { stat: 70, cost: 200000 },
+    ],
+    3: [
+      { stat: 14, cost: 0 },
+      { stat: 30, cost: 1280 },
+      { stat: 42, cost: 9600 },
+      { stat: 65, cost: 184000 },
+    ],
+  },
+  // slot_id 2 (Transport)
+  2: {
+    1: [
+      { stat: 900, cost: 0 },
+      { stat: 1300, cost: 800 },
+      { stat: 3200, cost: 38000 },
+      { stat: 5500, cost: 253000 },
+    ],
+    2: [
+      { stat: 1000, cost: 0 },
+      { stat: 1500, cost: 1000 },
+      { stat: 3000, cost: 30000 },
+      { stat: 5000, cost: 220000 },
+    ],
+    3: [
+      { stat: 1100, cost: 0 },
+      { stat: 1700, cost: 1200 },
+      { stat: 2800, cost: 22000 },
+      { stat: 4500, cost: 187000 },
+    ],
+  },
+  // slot_id 5 (Feet)
+  5: {
+    1: [
+      { stat: 6, cost: 0 },
+      { stat: 14, cost: 880 },
+      { stat: 36, cost: 24200 },
+      { stat: 54, cost: 198000 },
+    ],
+    2: [
+      { stat: 8, cost: 0 },
+      { stat: 18, cost: 1100 },
+      { stat: 33, cost: 16500 },
+      { stat: 50, cost: 187000 },
+    ],
+    3: [
+      { stat: 10, cost: 0 },
+      { stat: 22, cost: 1320 },
+      { stat: 30, cost: 8800 },
+      { stat: 46, cost: 176000 },
+    ],
+  },
+};
+
 export type DrugConfigFull = Omit<DrugConfig, "name"> & { icon: React.FC; name: string };
 export type LocationConfigFull = Omit<LocationConfig, "name"> & { icon: React.FC; name: string };
 
@@ -605,37 +696,60 @@ export class ConfigStoreClass {
   // loot
 
   getGearItemFull(gearItem: GearItem): GearItemFull {
-    const tier = this.getGearItemTier(gearItem)?.tier;
-    const tierConfig = this.config?.dopewarsItemsTierConfigs.find(
-      (i) => i.slot_id === gearItem.slot && i.tier === tier,
-    );
+    // Map ItemSlot enum to dopewars slot_id (DW_SLOT_IDS: [0, 1, 5, 2])
+    const dwSlotId = DW_SLOT_IDS[gearItem.slot] ?? gearItem.slot;
 
-    const item = this.config?.componentValues.find(
-      (i) => i.collection_id === "DopeGear" && i.component_id === gearItem.slot && i.id === gearItem.item,
-    );
+    // Get tier from GraphQL or fallback to hardcoded lookup
+    const tierData = this.getGearItemTier(gearItem);
+    const tier = tierData?.tier;
 
-    // Provide default levels if tierConfig or levels is missing
-    const levels =
-      tierConfig?.levels && tierConfig.levels.length > 0
-        ? tierConfig.levels.map((i) => {
-            return { cost: Number(i?.cost ?? 0), stat: Number(i?.stat ?? 0) };
-          })
-        : [
-            // Default levels if missing
-            { cost: 0, stat: 0 },
-            { cost: 0, stat: 0 },
-            { cost: 0, stat: 0 },
-          ];
+    // Try to get tier config from GraphQL first
+    let tierConfig = this.config?.dopewarsItemsTierConfigs.find((i) => i.slot_id === dwSlotId && i.tier === tier);
+
+    // If not found in GraphQL, use hardcoded fallback from Cairo contract
+    let levels: Array<{ stat: number; cost: number }>;
+    if (tierConfig?.levels && tierConfig.levels.length > 0) {
+      levels = tierConfig.levels.map((i) => {
+        return { cost: Number(i?.cost ?? 0), stat: Number(i?.stat ?? 0) };
+      });
+    } else if (tier && HARDCODED_TIER_CONFIGS[dwSlotId]?.[tier]) {
+      // Use hardcoded tier configs as fallback (no Dope collection dependency)
+      levels = HARDCODED_TIER_CONFIGS[dwSlotId][tier];
+    } else {
+      // Last resort: use tier 1 config for the slot (most common/default)
+      const defaultTier = 1;
+      if (HARDCODED_TIER_CONFIGS[dwSlotId]?.[defaultTier]) {
+        levels = HARDCODED_TIER_CONFIGS[dwSlotId][defaultTier];
+      } else {
+        // Absolute fallback - use reasonable defaults based on slot type
+        levels =
+          dwSlotId === 2
+            ? [
+                { stat: 900, cost: 0 },
+                { stat: 1300, cost: 800 },
+                { stat: 3200, cost: 38000 },
+                { stat: 5500, cost: 253000 },
+              ]
+            : [
+                { stat: 10, cost: 0 },
+                { stat: 25, cost: 1000 },
+                { stat: 50, cost: 15000 },
+                { stat: 80, cost: 200000 },
+              ];
+      }
+    }
 
     return {
       gearItem,
-      name: item?.value ?? "",
-      tier: tier ?? 0,
+      name: "", // No longer using Dope collection for names
+      tier: tier ?? 1,
       levels,
     };
   }
 
   getGearItemTier(gearItem: GearItem) {
-    return this.config?.dopewarsItemsTiers.find((i) => i.slot_id === gearItem.slot && i.item_id === gearItem.item);
+    // Map ItemSlot enum to dopewars slot_id
+    const dwSlotId = DW_SLOT_IDS[gearItem.slot] ?? gearItem.slot;
+    return this.config?.dopewarsItemsTiers.find((i) => i.slot_id === dwSlotId && i.item_id === gearItem.item);
   }
 }
