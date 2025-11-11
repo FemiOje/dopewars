@@ -44,22 +44,6 @@ export const Header = observer(() => {
     >
       <HStack gap={3} flex="1">
         {!gameId && <ClaimReward />}
-        {!gameId && !router.route.includes("/claim") && (
-          <HeaderButton
-            variant="pixelated"
-            h={["40px", "48px"]}
-            fontSize="14px"
-            onClick={() => router.push("/claim")}
-            mr={6}
-            display="flex"
-            flexDirection={"row"}
-            alignItems="center"
-            justifyContent="center"
-            py={2}
-          >
-            <Cigarette mr="2" /> MIGRATION
-          </HeaderButton>
-        )}
       </HStack>
 
       {game /*|| router.asPath.includes("logs")*/ && (
