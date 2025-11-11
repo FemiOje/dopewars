@@ -21,12 +21,16 @@ export interface ItemInfos {
 }
 
 const gearItemFullToItemInfos = (level: number, item: GearItemFull, icon: React.FC): ItemInfos => {
+  // Ensure levels array exists and level index is valid
+  const levels = item.levels || [];
+  const levelData = levels[level] || { stat: 0, cost: 0 };
+
   return {
     icon,
     level,
     slot: dopeLootSlotIdToItemSlot[item.gearItem.slot as keyof typeof dopeLootSlotIdToItemSlot],
-    stat: item.levels[level].stat,
-    cost: item.levels[level].cost,
+    stat: levelData.stat,
+    cost: levelData.cost,
     name: item.name,
     tier: item.tier,
     id: item.gearItem.item,

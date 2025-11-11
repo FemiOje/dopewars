@@ -608,19 +608,30 @@ export class ConfigStoreClass {
     const tier = this.getGearItemTier(gearItem)?.tier;
     const tierConfig = this.config?.dopewarsItemsTierConfigs.find(
       (i) => i.slot_id === gearItem.slot && i.tier === tier,
-    )!;
+    );
 
     const item = this.config?.componentValues.find(
       (i) => i.collection_id === "DopeGear" && i.component_id === gearItem.slot && i.id === gearItem.item,
     );
 
+    // Provide default levels if tierConfig or levels is missing
+    const levels =
+      tierConfig?.levels && tierConfig.levels.length > 0
+        ? tierConfig.levels.map((i) => {
+            return { cost: Number(i?.cost ?? 0), stat: Number(i?.stat ?? 0) };
+          })
+        : [
+            // Default levels if missing
+            { cost: 0, stat: 0 },
+            { cost: 0, stat: 0 },
+            { cost: 0, stat: 0 },
+          ];
+
     return {
       gearItem,
-      name: item?.value,
-      tier,
-      levels: tierConfig?.levels!.map((i) => {
-        return { cost: Number(i?.cost), stat: Number(i?.stat) };
-      }),
+      name: item?.value ?? "",
+      tier: tier ?? 0,
+      levels,
     };
   }
 
