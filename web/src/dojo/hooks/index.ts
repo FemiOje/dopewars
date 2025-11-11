@@ -6,7 +6,6 @@ export * from "./useDojoContext";
 export * from "./useGameById";
 export * from "./useGameStore";
 export * from "./useGameTokens";
-export * from "./useHallOfFame";
 export * from "./useRouterContext";
 export * from "./useSystems";
 export * from "./useTokenBalance";
