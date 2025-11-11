@@ -696,6 +696,22 @@ export class ConfigStoreClass {
   // loot
 
   getGearItemFull(gearItem: GearItem): GearItemFull {
+    if (!gearItem) {
+      console.error("[ConfigStore] getGearItemFull called with undefined gearItem!");
+      // Return a default transport item as fallback
+      return {
+        gearItem: { slot: 3, item: 0 } as GearItem,
+        name: "",
+        tier: 1,
+        levels: [
+          { stat: 900, cost: 0 },
+          { stat: 1300, cost: 800 },
+          { stat: 3200, cost: 38000 },
+          { stat: 5500, cost: 253000 },
+        ],
+      };
+    }
+
     // Map ItemSlot enum to dopewars slot_id (DW_SLOT_IDS: [0, 1, 5, 2])
     const dwSlotId = DW_SLOT_IDS[gearItem.slot] ?? gearItem.slot;
 

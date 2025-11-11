@@ -125,11 +125,10 @@ const Location = observer(() => {
               const freeSpace = game.items.transport.stat - game.drugs.quantity * (game.drugs?.drug?.weight || 0);
               const hasFreeSpace = freeSpace >= drug.weight;
               const hasMinCash = game.player.cash >= drug.price;
+              const canBuySameDrug =
+                game.drugs.quantity === 0 || !game.drugs?.drug || game.drugs?.drug?.drug === drug!.drug;
 
-              const canBuy =
-                hasFreeSpace &&
-                hasMinCash &&
-                (game.drugs.quantity === 0 || !game.drugs?.drug || game.drugs?.drug?.drug === drug!.drug);
+              const canBuy = hasFreeSpace && hasMinCash && canBuySameDrug;
 
               const canSell =
                 (game.drugs.quantity > 0 && game.drugs?.drug && game.drugs?.drug?.drug === drug!.drug) || false;

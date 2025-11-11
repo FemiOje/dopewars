@@ -20,20 +20,35 @@ export class MarketsClass extends GamePropertyClass {
       for (let drugId of [0, 1, 2, 3 /*4, 5*/]) {
         const drugIdWithDrugLevel = drugId + drugLevel;
 
-        const drug = game.configStore.getDrugById(game.seasonSettings.drugs_mode, drugIdWithDrugLevel)!;
-        const price = this.getDrugPrice(locationId, drugIdWithDrugLevel);
+        try {
+          const drug = game.configStore.getDrugById(game.seasonSettings.drugs_mode, drugIdWithDrugLevel);
+          if (!drug) {
+            console.warn(
+              `[Market] Drug config not found: drugs_mode=${game.seasonSettings.drugs_mode}, drug_id=${drugIdWithDrugLevel}, drugLevel=${drugLevel}`,
+            );
+            continue;
+          }
 
-        const drugMarket: DrugMarket = {
-          drug: drug.drug,
-          drugId: drug.drug_id,
-          price: price,
-          weight: drug.weight,
-        };
+          const price = this.getDrugPrice(locationId, drugIdWithDrugLevel);
 
-        if (this.marketsByLocation.has(location.location)) {
-          this.marketsByLocation.get(location.location)?.push(drugMarket);
-        } else {
-          this.marketsByLocation.set(location.location, [drugMarket]);
+          const drugMarket: DrugMarket = {
+            drug: drug.drug,
+            drugId: drug.drug_id,
+            price: price,
+            weight: drug.weight,
+          };
+
+          if (this.marketsByLocation.has(location.location)) {
+            this.marketsByLocation.get(location.location)?.push(drugMarket);
+          } else {
+            this.marketsByLocation.set(location.location, [drugMarket]);
+          }
+        } catch (error) {
+          console.error(
+            `[Market] Failed to generate market for drug_id=${drugIdWithDrugLevel} at location=${locationId}:`,
+            error,
+          );
+          // Continue to next drug instead of failing entire market generation
         }
       }
     }

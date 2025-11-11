@@ -63,8 +63,15 @@ export class ItemsClass extends GamePropertyClass {
 
     this.gearItems = [];
     if (game.gameInfos) {
-      this.gearItems = (game.gameInfos.equipment_by_slot || []).map((gearItemId) => {
-        return getGearItem(BigInt(gearItemId));
+      // Map equipment_by_slot array to gearItems, overriding slot to match ItemSlot enum
+      // The slot in the gear item ID is from Dope collection encoding, not dopewars ItemSlot
+      this.gearItems = (game.gameInfos.equipment_by_slot || []).map((gearItemId, index) => {
+        const gearItem = getGearItem(BigInt(gearItemId));
+        // Override slot to match ItemSlot enum: 0=Weapon, 1=Clothes, 2=Feet, 3=Transport
+        return {
+          ...gearItem,
+          slot: index, // Use array index as the slot (matches ItemSlot enum)
+        };
       });
     }
 
@@ -173,7 +180,16 @@ export class ItemsClass extends GamePropertyClass {
         .filter((i) => i.slot === ItemSlot.Transport).length;
     }
 
-    const item = this.game.configStore.getGearItemFull(this.gearItems[ItemSlot.Transport]);
+    const transportGearItem = this.gearItems[ItemSlot.Transport];
+    if (!transportGearItem) {
+      console.warn(
+        `[Items] Transport gear item is missing! gearItems:`,
+        this.gearItems,
+        `ItemSlot.Transport:`,
+        ItemSlot.Transport,
+      );
+    }
+    const item = this.game.configStore.getGearItemFull(transportGearItem);
     return gearItemFullToItemInfos(level, item, Car);
   }
 }
