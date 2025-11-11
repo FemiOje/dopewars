@@ -14,11 +14,7 @@ export const YourGames = observer(() => {
 
   if (!account) {
     return (
-      <VStack
-        boxSize="full"
-        maxH={["calc(100dvh - 320px)", "calc(100dvh - 380px)"]}
-        justifyContent="center"
-      >
+      <VStack boxSize="full" maxH={["calc(100dvh - 320px)", "calc(100dvh - 380px)"]} justifyContent="center">
         <Text opacity={0.7}>Connect your wallet to see your games</Text>
       </VStack>
     );
@@ -75,10 +71,8 @@ const YourGameEntry = ({ game }: { game: any; account: AccountInterface | undefi
         <HStack w="full" gap={3}>
           <HustlerAvatarIcon
             gameId={game.game_id}
-            // @ts-ignore
-            tokenIdType={game.token_id_type}
-            // @ts-ignore
-            tokenId={game.token_id}
+            tokenIdType={undefined}
+            tokenId={undefined}
             width="48px"
             height="48px"
             display="flex"
@@ -93,19 +87,12 @@ const YourGameEntry = ({ game }: { game: any; account: AccountInterface | undefi
               Token #{game.minigame_token_id}
             </Text>
             <Text color={colors.neon["400"].toString()} fontWeight="bold">
-            {game.player_name as string}
+              {game.player_name as string}
             </Text>
           </VStack>
         </HStack>
 
-        <HStack
-          w="full"
-          justifyContent="space-between"
-          borderTop="solid 1px"
-          borderColor="neon.700"
-          pt={1}
-          mt={1}
-        >
+        <HStack w="full" justifyContent="space-between" borderTop="solid 1px" borderColor="neon.700" pt={1} mt={1}>
           <Text opacity={0.7}>SEASON {game.season_version}</Text>
           <Text color={colors.neon["400"].toString()} fontWeight="bold">
             RESUME →

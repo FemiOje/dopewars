@@ -32,14 +32,8 @@ export const HustlerProfile = observer(() => {
           pointerEvents="none"
           overflow="hidden"
         >
-          {/* @ts-ignore */}
-          {gameInfos && (gameInfos.token_id_type === "LootId" || gameInfos.token_id_type === "GuestLootId") && (
-            <HustlerPreviewFromLoot tokenId={Number(gameInfos.token_id)} renderMode={1} />
-          )}
-          {/* @ts-ignore */}
-          {gameInfos && gameInfos.token_id_type === "HustlerId" && (
-            <HustlerPreviewFromGame gameId={gameInfos.game_id} tokenId={Number(gameInfos.token_id)} renderMode={1} />
-          )}
+          {/* token_id removed from Game model - Dope collection integration stripped */}
+          {/* Hustler preview components removed as they required token_id */}
         </Box>
       </HStack>
 

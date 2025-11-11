@@ -290,13 +290,7 @@ const Encounter = observer(
               <VStack w="full" gap={0}>
                 <HStack w="full" px="10px" py="6px" justifyContent="space-between">
                   <HStack w="full" justifyContent="center">
-                    <HustlerAvatarIcon
-                      gameId={gameInfos?.game_id}
-                      // @ts-ignore
-                      tokenId={gameInfos?.token_id}
-                      // @ts-ignore
-                      tokenIdType={gameInfos.token_id_type}
-                    />
+                    <HustlerAvatarIcon gameId={gameInfos?.game_id} tokenId={undefined} tokenIdType={undefined} />
                     <Text>
                       {shortString.decodeShortString(num.toHexString(BigInt(game.gameInfos.player_name?.value)))}
                     </Text>

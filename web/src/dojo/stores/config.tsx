@@ -20,11 +20,11 @@ import {
   Dope_ComponentValueEventEdge as ComponentValueEventEdge,
   Dope_ComponentValueEvent as ComponentValueEvent,
 } from "@/generated/graphql";
-import { DojoProvider, getContractByName } from "@dojoengine/core";
+import { DojoProvider } from "@dojoengine/core";
 import { GraphQLClient } from "graphql-request";
 import { flow, makeObservable, observable } from "mobx";
 import React, { ReactNode } from "react";
-import { Contract, TypedContractV2, RpcProvider, shortString } from "starknet";
+import { Contract, ProviderInterface, shortString } from "starknet";
 import { ABI as configAbi } from "../abis/configAbi";
 import { drugIcons, drugIconsKeys, locationIcons, locationIconsKeys } from "../helpers";
 import { CashMode, DrugsMode, EncountersMode, EncountersOddsMode, HealthMode, ItemSlot, TurnsMode } from "../types";
@@ -111,14 +111,12 @@ export type Config = {
 type ConfigStoreProps = {
   client: GraphQLClient;
   dojoProvider: DojoProvider;
-  rpcProvider?: RpcProvider;
   manifest: any;
 };
 
 export class ConfigStoreClass {
   client: GraphQLClient;
   dojoProvider: DojoProvider;
-  rpcProvider?: RpcProvider;
   manifest: any;
 
   config: Config | undefined = undefined;
@@ -127,12 +125,11 @@ export class ConfigStoreClass {
   isInitialized = false;
   error: any | undefined = undefined;
 
-  constructor({ client, dojoProvider, rpcProvider, manifest }: ConfigStoreProps) {
+  constructor({ client, dojoProvider, manifest }: ConfigStoreProps) {
     // console.log("new ConfigStoreClass");
 
     this.client = client;
     this.dojoProvider = dojoProvider;
-    this.rpcProvider = rpcProvider;
     this.manifest = manifest;
 
     makeObservable(this, {
@@ -330,31 +327,194 @@ export class ConfigStoreClass {
 
     /*************************************************** */
 
-    // Use rpcProvider directly with "latest" block_id for Sepolia compatibility
-    // dojoProvider.call uses "pending" which doesn't work on Sepolia
-    let getConfig: any;
-    if (this.rpcProvider) {
-      const configContract = getContractByName(this.dojoProvider.manifest, "dopewars", "config");
-      if (configContract) {
-        getConfig = yield this.rpcProvider.callContract(
-          {
-            contractAddress: configContract.address,
-            entrypoint: "get_config",
-            calldata: [],
-          },
-          "latest",
-        );
-      } else {
-        throw new Error("Config contract not found in manifest");
-      }
-    } else {
-      ///@ts-ignore
-      getConfig = yield this.dojoProvider.call("dopewars", {
-        contractName: "config",
-        entrypoint: "get_config",
-        calldata: [],
-      });
+    const configContractAddress = this.manifest.contracts.find((c: any) => c.tag === "dopewars-config")?.address;
+    if (!configContractAddress) {
+      throw new Error("Config contract address not found in manifest");
     }
+
+    const provider = this.dojoProvider.provider as unknown as ProviderInterface;
+    let getConfigRaw: any;
+    try {
+      getConfigRaw = yield this.fetchConfigWithLatestBlock(provider, configContractAddress);
+    } catch (error: any) {
+      // If enum parsing fails, use parseResponse: false and manually parse layouts
+      if (error?.message?.includes("Enum must have exactly one active variant")) {
+        console.warn(
+          "Enum parsing error in SeasonSettingsModes, using raw response and manually parsing layouts only",
+          error,
+        );
+        const configContract = new Contract(configAbi, configContractAddress, provider);
+        const rawResponse: string[] = yield configContract.call("get_config", [], {
+          blockIdentifier: "latest",
+          parseResponse: false,
+        });
+
+        // Manually parse only the layouts we need from the raw Cairo serialized response
+        // Structure: Config { layouts: LayoutsConfig { game_store: Array<LayoutItem>, player: Array<LayoutItem> }, ryo_config, season_settings_modes }
+        // Each LayoutItem is: { name: bytes31 (1 felt), idx: u8 (1 felt), bits: u8 (1 felt) }
+        let idx = 0;
+
+        // Parse layouts.game_store array
+        const gameStoreLen = Number(BigInt(rawResponse[idx++]));
+        const gameStore: LayoutItem[] = [];
+        for (let i = 0; i < gameStoreLen; i++) {
+          const name = shortString.decodeShortString(rawResponse[idx++]);
+          const idx_val = Number(BigInt(rawResponse[idx++]));
+          const bits = Number(BigInt(rawResponse[idx++]));
+          gameStore.push({ name, idx: BigInt(idx_val), bits: BigInt(bits) });
+        }
+
+        // Parse layouts.player array
+        const playerLen = Number(BigInt(rawResponse[idx++]));
+        const player: LayoutItem[] = [];
+        for (let i = 0; i < playerLen; i++) {
+          const name = shortString.decodeShortString(rawResponse[idx++]);
+          const idx_val = Number(BigInt(rawResponse[idx++]));
+          const bits = Number(BigInt(rawResponse[idx++]));
+          player.push({ name, idx: BigInt(idx_val), bits: BigInt(bits) });
+        }
+
+        // Create a minimal getConfigRaw with only layouts (we get ryo_config from GraphQL)
+        getConfigRaw = {
+          layouts: {
+            game_store: gameStore,
+            player: player,
+          },
+          // We'll use ryo_config from GraphQL (ryoConfig variable)
+          ryo_config: {},
+          // Set empty season_settings_modes (not critical for initialization)
+          season_settings_modes: {},
+        };
+      } else {
+        throw error;
+      }
+    }
+
+    const toBigInt = (value: any): bigint => {
+      if (typeof value === "bigint") {
+        return value;
+      }
+      if (typeof value === "number") {
+        return BigInt(value);
+      }
+      if (typeof value === "string") {
+        if (value.startsWith("0x")) {
+          return BigInt(value);
+        }
+        const parsed = Number(value);
+        if (Number.isNaN(parsed)) {
+          return BigInt(0);
+        }
+        return BigInt(parsed);
+      }
+      return BigInt(value ?? 0);
+    };
+
+    const decodeLayoutName = (value: any): string => {
+      if (typeof value === "string" && !value.startsWith("0x")) {
+        return value;
+      }
+
+      const hex =
+        typeof value === "string"
+          ? value.startsWith("0x")
+            ? value
+            : `0x${toBigInt(value).toString(16)}`
+          : `0x${toBigInt(value).toString(16)}`;
+
+      try {
+        return shortString.decodeShortString(hex);
+      } catch {
+        return hex;
+      }
+    };
+
+    const mapLayout = (items: Array<any>): Array<LayoutItem> =>
+      items.map((item) => ({
+        name: decodeLayoutName(item.name),
+        idx: toBigInt(item.idx),
+        bits: toBigInt(item.bits),
+      }));
+
+    const toBool = (value: any): boolean => {
+      if (typeof value === "boolean") {
+        return value;
+      }
+      if (typeof value === "string") {
+        return value === "0x1" || value === "1";
+      }
+      return Boolean(Number(value ?? 0));
+    };
+
+    const toNumber = (value: any): number => Number(value ?? 0);
+
+    const mapModes = <T extends Record<string, string>>(
+      values: Array<any> | undefined,
+      enumObj: T,
+    ): Array<T[keyof T]> => {
+      const options = Object.values(enumObj) as Array<T[keyof T]>;
+
+      return (values ?? []).map((value) => {
+        if (typeof value === "string" && !value.startsWith("0x")) {
+          return value as T[keyof T];
+        }
+        const index = Number(value);
+        return options[index] ?? (options[0] as T[keyof T]);
+      });
+    };
+
+    // Use ryo_config from GraphQL if contract parsing failed (manual parsing case)
+    const rawRyoConfig = Object.keys(getConfigRaw.ryo_config || {}).length > 0 ? getConfigRaw.ryo_config : ryoConfig;
+
+    // Get all enum values as defaults for season_settings_modes if parsing failed
+    const getDefaultModes = <T extends Record<string, string>>(enumObj: T): Array<T[keyof T]> => {
+      return Object.values(enumObj) as Array<T[keyof T]>;
+    };
+
+    const getConfig: GetConfig = {
+      layouts: {
+        game_store: mapLayout(getConfigRaw.layouts?.game_store ?? []),
+        player: mapLayout(getConfigRaw.layouts?.player ?? []),
+      },
+      ryo_config:
+        Object.keys(rawRyoConfig).length > 0 && rawRyoConfig !== ryoConfig
+          ? {
+              ...rawRyoConfig,
+              key: toNumber(rawRyoConfig.key),
+              initialized: toBool(rawRyoConfig.initialized),
+              paused: toBool(rawRyoConfig.paused),
+              season_version: toNumber(rawRyoConfig.season_version),
+              season_duration: toNumber(rawRyoConfig.season_duration),
+              season_time_limit: toNumber(rawRyoConfig.season_time_limit),
+              paper_fee: toNumber(rawRyoConfig.paper_fee),
+              paper_reward_launderer: toNumber(rawRyoConfig.paper_reward_launderer),
+              treasury_fee_pct: toNumber(rawRyoConfig.treasury_fee_pct),
+              treasury_balance: toNumber(rawRyoConfig.treasury_balance),
+            }
+          : (ryoConfig as RyoConfig),
+      season_settings_modes:
+        Object.keys(getConfigRaw.season_settings_modes || {}).length > 0
+          ? {
+              cash_modes: mapModes(getConfigRaw.season_settings_modes?.cash_modes, CashMode),
+              health_modes: mapModes(getConfigRaw.season_settings_modes?.health_modes, HealthMode),
+              turns_modes: mapModes(getConfigRaw.season_settings_modes?.turns_modes, TurnsMode),
+              encounters_modes: mapModes(getConfigRaw.season_settings_modes?.encounters_modes, EncountersMode),
+              encounters_odds_modes: mapModes(
+                getConfigRaw.season_settings_modes?.encounters_odds_modes,
+                EncountersOddsMode,
+              ),
+              drugs_modes: mapModes(getConfigRaw.season_settings_modes?.drugs_modes, DrugsMode),
+            }
+          : {
+              // Use all enum values as defaults when parsing failed
+              cash_modes: getDefaultModes(CashMode),
+              health_modes: getDefaultModes(HealthMode),
+              turns_modes: getDefaultModes(TurnsMode),
+              encounters_modes: getDefaultModes(EncountersMode),
+              encounters_odds_modes: getDefaultModes(EncountersOddsMode),
+              drugs_modes: getDefaultModes(DrugsMode),
+            },
+    };
 
     /*************************************************** */
 
@@ -377,6 +537,28 @@ export class ConfigStoreClass {
     // console.log("config:", this.config);
   }
 
+  /**
+   * @dev
+   * Dojo's typed `call` helper defaults to `block_id: "pending"`, which my RPC gateway
+   * currently rejects. To stay aligned with upstream data
+   * structures while avoiding the `block_id` failure we issue the call manually with
+   * `blockIdentifier: "latest"`.
+   *
+   * NOTE: When the upstream gateway accepts `pending` again we can revert to the
+   * original `dojoProvider.call` path (see commented block below) and delete this helper.
+   */
+  private async fetchConfigWithLatestBlock(provider: ProviderInterface, configContractAddress: string): Promise<any> {
+    const configContract = new Contract(configAbi, configContractAddress, provider);
+    return configContract.call("get_config", [], { blockIdentifier: "latest" });
+  }
+
+  // Legacy approach kept for reviewers/context:
+  // const getConfig = await this.dojoProvider.call("dopewars", {
+  //   contractName: "config",
+  //   entrypoint: "get_config",
+  //   calldata: [],
+  // });
+
   getDrug(drugs_mode: string, drug: string): DrugConfigFull {
     return this.config?.drug.find((i) => i.drugs_mode === drugs_mode && i.drug.toLowerCase() === drug.toLowerCase())!;
   }
@@ -396,12 +578,28 @@ export class ConfigStoreClass {
   // layout
 
   getGameStoreLayoutItem(name: string): LayoutItem {
-    // return this.config?.config.layouts.game_store.find((i) => shortString.decodeShortString(i.name) === name)!;
-    return this.config?.config.layouts.game_store.find((i) => i.name === name)!;
+    if (!this.config?.config?.layouts?.game_store) {
+      throw new Error(
+        `Config layouts not loaded. Cannot get game_store layout item: ${name}. Make sure config store is initialized.`,
+      );
+    }
+    const item = this.config.config.layouts.game_store.find((i) => i.name === name);
+    if (!item) {
+      throw new Error(`Game store layout item not found: ${name}`);
+    }
+    return item;
   }
   getPlayerLayoutItem(name: string): LayoutItem {
-    // return this.config?.config.layouts.player.find((i) => shortString.decodeShortString(i.name) === name)!;
-    return this.config?.config.layouts.player.find((i) => i.name === name)!;
+    if (!this.config?.config?.layouts?.player) {
+      throw new Error(
+        `Config layouts not loaded. Cannot get player layout item: ${name}. Make sure config store is initialized.`,
+      );
+    }
+    const item = this.config.config.layouts.player.find((i) => i.name === name);
+    if (!item) {
+      throw new Error(`Player layout item not found: ${name}`);
+    }
+    return item;
   }
 
   // loot

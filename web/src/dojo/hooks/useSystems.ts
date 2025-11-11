@@ -409,34 +409,13 @@ export const useSystems = (): SystemsInterface => {
               historical: false,
             });
 
-            if (gameEntities.items.length > 0) {
-              const games = parseModels(gameEntities, "dopewars-Game");
-              const game = games.find((g) => g.player_id === resolvedPlayerId) ?? games[0];
-
-              if (game) {
-                let lootId = 0;
-                // @ts-ignore
-                if (game.token_id.activeVariant() === "LootId") {
-                  // @ts-ignore
-                  lootId = Number(game.token_id.unwrap());
-                }
-
-                if (lootId > 0) {
-                  const isReleased = dopeLootClaimState[lootId]?.isReleased;
-                  if (!isReleased) {
-                    const lootIdU256 = uint256.bnToUint256(lootId);
-
-                    calls.push({
-                      //@ts-ignore
-                      contractAddress: dopeLootClaimAddress,
-                      entrypoint: "release",
-                      // @ts-ignore
-                      calldata: CallData.compile([lootIdU256.low, lootIdU256.high, resolvedGameId]),
-                    });
-                  }
-                }
-              }
-            }
+            // token_id removed from Game model - Dope collection integration stripped
+            // Loot release logic removed as it was dependent on game.token_id
+            // if (gameEntities.items.length > 0) {
+            //   const games = parseModels(gameEntities, "dopewars-Game");
+            //   const game = games.find((g) => g.player_id === resolvedPlayerId) ?? games[0];
+            //   ... loot release code removed
+            // }
           }
         }
       } catch (error) {

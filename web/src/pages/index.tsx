@@ -69,7 +69,12 @@ export default function Home() {
       return;
     }
 
-    await launder(season?.version);
+    if (!season?.version) {
+      console.error("Cannot launder: season version is undefined");
+      return;
+    }
+
+    await launder(season.version);
     await sleep(1000);
     await refetchSeason();
     await configStore.init();

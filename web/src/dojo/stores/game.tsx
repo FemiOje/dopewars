@@ -265,10 +265,7 @@ export class GameStoreClass {
     // @ts-ignore
     gameInfos.game_mode = gameInfos.game_mode.activeVariant();
     gameInfos.equipment_by_slot = gameInfos.equipment_by_slot?.map((i: string) => Number(i));
-    // @ts-ignore
-    gameInfos.token_id_type = gameInfos.token_id.activeVariant();
-    // @ts-ignore
-    gameInfos.token_id = Number(gameInfos.token_id.unwrap());
+    // token_id, token_id_type removed from Game model - Dope collection integration stripped
 
     this.gameInfos = gameInfos;
     this.gameStorePacked = gameStorePacked;
@@ -405,10 +402,7 @@ export class GameStoreClass {
 
     const gameCreated = parseModels(entities, "dopewars-GameCreated")[0];
     if (gameCreated) {
-      // @ts-ignore
-      gameCreated.token_id_type = gameCreated.token_id.activeVariant();
-      // @ts-ignore
-      gameCreated.token_id = Number(gameCreated.token_id.unwrap());
+      // token_id, token_id_type removed from GameCreated event - Dope collection integration stripped
       this.allGamesCreated.push(gameCreated);
     }
     return gameCreated;

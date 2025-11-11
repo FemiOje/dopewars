@@ -131,10 +131,7 @@ export const useGamesByPlayer = (toriiClient: ToriiClient, playerIdRaw: string):
       if (!gameInfos || !gameStorePacked) return [];
       if (gameInfos.season_version === 0) return [];
 
-      // @ts-ignore
-      gameInfos.token_id_type = gameInfos.token_id?.option;
-      // @ts-ignore
-      gameInfos.token_id = Number(gameInfos.token_id![gameInfos.token_id?.option as keyof typeof gameInfos.token_id]);
+      // token_id, token_id_type removed from Game model - Dope collection integration stripped
 
       const seasonSettings = allSeasonSettings?.dopewarsSeasonSettingsModels?.edges?.find(
         (i) => i?.node?.season_version === gameInfos.season_version,

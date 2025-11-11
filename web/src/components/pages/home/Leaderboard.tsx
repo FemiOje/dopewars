@@ -190,10 +190,7 @@ export const Leaderboard = observer(({ config }: { config?: Config }) => {
             <Text cursor="pointer" onClick={() => onDetails(selectedVersion)}>
               SEASON {selectedVersion} REWARDS
             </Text>
-            <Text color="yellow.400">
-              <PaperIcon color="yellow.400" mr={1} />
-              {formatCash(season.paper_balance || 0).replace("$", "")}
-            </Text>
+            {/* PAPER rewards removed - games are free */}
           </HStack>
           <Arrow
             direction="right"

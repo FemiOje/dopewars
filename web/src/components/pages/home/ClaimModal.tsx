@@ -97,10 +97,8 @@ export const ClaimModal = ({
                             <HStack>
                               <HustlerAvatarIcon
                                 gameId={game.game_id}
-                                // @ts-ignore
-                                tokenIdType={game.token_id_type}
-                                // @ts-ignore
-                                tokenId={game.token_id}
+                                tokenIdType={undefined}
+                                tokenId={undefined}
                                 display="flex"
                                 flexShrink={0}
                               />

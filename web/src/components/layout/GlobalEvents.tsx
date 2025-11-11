@@ -7,9 +7,8 @@ import { formatCashHeader } from "@/utils/ui";
 import { PaperIcon, Siren, Truck } from "../icons";
 import { playSound, Sounds } from "@/hooks/sound";
 import { parseStruct } from "@/dojo/utils";
-import { CairoOption, num, shortString } from "starknet";
+import { num, shortString } from "starknet";
 import { HustlerAvatarIcon } from "../pages/profile/HustlerAvatarIcon";
-import { Dopewars_Game as Game } from "@/generated/graphql";
 import { parseModels } from "@/dope/toriiUtils";
 
 export const GlobalEvents = () => {
@@ -96,20 +95,11 @@ export const GlobalEvents = () => {
 
       // @ts-ignore
       gameCreated.game_mode = gameCreated.game_mode.activeVariant();
-      // @ts-ignore
-      gameCreated.token_id_type = gameCreated.token_id.activeVariant();
-      // @ts-ignore
-      gameCreated.token_id = Number(gameCreated.token_id.unwrap());
+      // token_id, token_id_type, hustler_equipment, hustler_body removed - Dope collection integration stripped
 
       if (BigInt(gameCreated.player_id) !== accountAddress.current) {
         toast({
-          icon: () => (
-            <HustlerAvatarIcon
-              gameId={gameCreated.game_id}
-              tokenIdType={gameCreated.token_id_type}
-              tokenId={Number(gameCreated.token_id)}
-            />
-          ),
+          icon: () => <HustlerAvatarIcon gameId={gameCreated.game_id} tokenIdType={undefined} tokenId={undefined} />,
           message:
             gameCreated.game_mode === "Ranked"
               ? `${gameCreated.player_name} is ready to hustle...`
@@ -133,17 +123,10 @@ export const GlobalEvents = () => {
       const newHighScore = parseStruct(entity.models["dopewars-NewHighScore"]) as NewHighScore;
       newHighScore.player_name = shortString.decodeShortString(num.toHexString(BigInt(newHighScore.player_name)));
 
-      const game = (await gameStore.getGameCreated(newHighScore.game_id)) as unknown as Game;
+      // token_id removed from NewHighScore event - Dope collection integration stripped
 
       toast({
-        icon: () => (
-          <HustlerAvatarIcon
-            gameId={newHighScore.game_id}
-            ///@ts-ignore
-            tokenIdType={game.token_id_type}
-            tokenId={Number(game.token_id)}
-          />
-        ),
+        icon: () => <HustlerAvatarIcon gameId={newHighScore.game_id} tokenIdType={undefined} tokenId={undefined} />,
         message: `${newHighScore.player_name} rules with ${formatCashHeader(newHighScore.cash)}!`,
       });
     }
@@ -155,16 +138,9 @@ export const GlobalEvents = () => {
         if (gameOver.health === 0) {
           playSound(Sounds.Magnum357);
         }
-        const game = (await gameStore.getGameCreated(gameOver.game_id)) as unknown as Game;
+        // token_id removed from GameOver event - Dope collection integration stripped
         toast({
-          icon: () => (
-            <HustlerAvatarIcon
-              gameId={gameOver.game_id}
-              ///@ts-ignore
-              tokenIdType={game.token_id_type}
-              tokenId={Number(game.token_id)}
-            />
-          ),
+          icon: () => <HustlerAvatarIcon gameId={gameOver.game_id} tokenIdType={undefined} tokenId={undefined} />,
           message: gameOver.health === 0 ? `RIP ${gameOver.player_name}!` : `${gameOver.player_name} survived!`,
         });
       }
@@ -202,10 +178,7 @@ export interface GameCreated {
   game_mode: string;
   player_name: string;
   multiplier: number;
-  token_id_type: string;
-  token_id: bigint;
-  hustler_equipment: { slot: string; gear_item_id: CairoOption<number> }[];
-  hustler_body: { slot: string; value: number }[];
+  // token_id, token_id_type, hustler_equipment, hustler_body removed - Dope collection integration stripped
 }
 
 export interface Traveled {
@@ -226,8 +199,7 @@ export interface NewHighScore {
   player_id: string;
   season_version: number;
   player_name: string;
-  token_id_type: string;
-  token_id: bigint;
+  // token_id removed - Dope collection integration stripped
   cash: number;
   health: number;
   reputation: number;
@@ -238,8 +210,7 @@ export interface GameOver {
   player_id: string;
   season_version: number;
   player_name: string;
-  token_id_type: string;
-  token_id: bigint;
+  // token_id removed - Dope collection integration stripped
   turn: number;
   cash: number;
   health: number;
