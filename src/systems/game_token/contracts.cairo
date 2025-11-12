@@ -7,6 +7,7 @@ pub trait IGameTokenSystems<T> {
 pub mod game_token_system_v0 {
     use core::num::traits::Zero;
     use dojo::model::ModelStorage;
+    use dojo::world::WorldStorageTrait;
     use game_components_minigame::interface::IMinigameTokenData;
     use game_components_minigame::minigame::MinigameComponent;
     use openzeppelin::introspection::src5::SRC5Component;
@@ -52,6 +53,9 @@ pub mod game_token_system_v0 {
         creator_address: ContractAddress,
         denshokan_address: ContractAddress,
     ) {
+        let world = self.world(@"dopewars");
+        let (settings_systems_address, _) = world.dns(@"settings_systems").unwrap();
+
         self
             .minigame
             .initializer(
@@ -65,7 +69,7 @@ pub mod game_token_system_v0 {
                 Option::Some("#11ED83"), // color
                 Option::None, // client_url
                 Option::None, // renderer_address - TODO: Implement custom renderer
-                Option::None, // settings_address - TODO: Implement custom settings
+                Option::Some(settings_systems_address), // settings_address
                 Option::None, // objectives_address - TODO: Implement custom objectives
                 denshokan_address,
             );

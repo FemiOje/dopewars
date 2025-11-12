@@ -39,6 +39,7 @@ pub mod models {
     pub mod game_store_packed;
     pub mod game_token;
     pub mod season;
+    pub mod settings;
 }
 
 pub mod packing {
@@ -60,6 +61,10 @@ pub mod systems {
     pub mod ryo;
 
     pub mod game_token {
+        pub mod contracts;
+    }
+
+    pub mod settings {
         pub mod contracts;
     }
 
@@ -88,6 +93,10 @@ pub mod utils {
     pub mod random;
     pub mod randomness_helper;
     pub mod sorted_list;
+}
+
+pub mod libs {
+    pub mod settings;
 }
 
 pub mod interfaces {
