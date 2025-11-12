@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useDojoContext } from "./useDojoContext";
 
 export const useSql = (query: string) => {
@@ -11,7 +11,7 @@ export const useSql = (query: string) => {
   const [isFetched, setIsFetched] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
 
-  const refetch = async () => {
+  const refetch = useCallback(async () => {
     setIsFetched(false);
     setIsFetching(false);
     setData([]);
@@ -38,11 +38,11 @@ export const useSql = (query: string) => {
     } finally {
       setIsFetching(false);
     }
-  };
+  }, [query, sqlEndpoint]);
 
   useEffect(() => {
     refetch();
-  }, [query]);
+  }, [refetch]);
 
   return { data, isFetched, isFetching, refetch };
 };
