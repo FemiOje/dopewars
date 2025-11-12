@@ -3,11 +3,11 @@
 rpc_url = "https://api.cartridge.gg/x/starknet/sepolia"
 account_address = "0x05ef6460b5165a94bc342a57825058c039e6f6c17e3c2daf6350e30cc58c8bd6"
 keystore = "../scard/contracts/deployments/keystore.json"
-world_address="0x05c01553274d7c51aacb772a4396deff54caa3b4e36022219d284b77dd2459ae"
+world_address="0x03b09ebaeba51bc703a8b22bba9aff6ef90841e762b1c0f0889b1c5377798c48"
 
 [world]
 name = "Dope Wars"
-seed = "sepo14seed"
+seed = "sepo15seed"
 description = "Dope Wars is an onchain adaptation of the classic arbitrage game Drug Wars, built by Cartridge in partnership with Dope DAO."
 # website = "https://rollyourown.preview.cartridge.gg/"
 # icon_uri = "file://assets/icon.png"
@@ -19,23 +19,29 @@ default = "dopewars"
 
 [migration]
 skip_contracts = ["dopewars-vrf_provider_mock"]
-disable_multicall = true
+order_inits = [
+    "dopewars-game",
+    "dopewars-config",
+    "dopewars-laundromat",
+    "dopewars-decide",
+    "dopewars-ryo",
+    "dopewars-paper_mock",
+    "dopewars-devtools",
+    "dopewars-game_token_system_v0",
+    "dopewars-settings_systems", 
+]
+# disable_multicall = true
 
 [init_call_args]
 "dopewars-ryo" = [
     "0x0",      # paper address, 0x0 = use world.dns
     "0x051fea4450da9d6aee758bdeba88b2f665bcbf549d2c61421aa724e9ac0ced8f",      # vrf address, 0x0 = use local randomness instead of VRF
-    # "0x0",      # vrf address, 0x0 = use local randomness instead of VRF
     "0x02ca2bae77044d5646f0fc7aaa0edb75bdfa17a5f62635e8fddf930b26d4e764", # treasury / multisig address
 ]
 "dopewars-game_token_system_v0" = [
     "0x02ca2bae77044d5646f0fc7aaa0edb75bdfa17a5f62635e8fddf930b26d4e764", # creator address
     "0x02334dc9c950c74c3228e2a343d495ae36f0b4edf06767a679569e9f9de08776", # token address (Denshokan address)
 ]
-# "dopewars-vrf_provider_mock" = [
-#     "0x6b0aab388dc7b240801b5aa0722bfcd39a1f397e83d5c032c198b18594b665e",
-#     "0x55ca1905d9b3d72b5e710f723c3bbd8f03428fb243f44cd5faee2796b44b204",
-# ]
 
 [writers]
 "dopewars" = [
@@ -46,6 +52,7 @@ disable_multicall = true
     "dopewars-ryo",
     "dopewars-paper_mock",
     "dopewars-devtools",
+    "dopewars-settings_systems",
     "dopewars-game_token_system_v0",
 ]
 
@@ -80,6 +87,9 @@ disable_multicall = true
 "dopewars-GameToken" = ["dopewars-game", "dopewars-laundromat", "dopewars-decide", "dopewars-game_token_system_v0"]
 "dopewars-RandomnessConfig" = ["dopewars-ryo"]
 
+"dopewars-GameSettings" = ["dopewars-settings_systems"]
+"dopewars-GameSettingsMetadata" = ["dopewars-settings_systems"]
+"dopewars-SettingsCounter" = ["dopewars-settings_systems"]
 #
 # events
 #

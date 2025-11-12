@@ -1,8 +1,8 @@
 {
   "world": {
     "class_hash": "0x57994b6a75fad550ca18b41ee82e2110e158c59028c4478109a67965a0e5b1e",
-    "address": "0x5c01553274d7c51aacb772a4396deff54caa3b4e36022219d284b77dd2459ae",
-    "seed": "sepo14seed",
+    "address": "0x3b09ebaeba51bc703a8b22bba9aff6ef90841e762b1c0f0889b1c5377798c48",
+    "seed": "sepo15seed",
     "name": "Dope Wars",
     "entrypoints": [
       "uuid",
@@ -1479,7 +1479,7 @@
   },
   "contracts": [
     {
-      "address": "0x28b8a2e431faf8783649b09e82f78d53e324334e85e7289c708b18934cda86f",
+      "address": "0x5e7528456f323c55d4f7c16404c4c4008cccff2f4b472ea0ee2542dc5c39d8d",
       "class_hash": "0x1dc163702446f9d67290e8ea810c28ff964fd5c299831018df00d3c89c3bd67",
       "abi": [
         {
@@ -2013,7 +2013,7 @@
       ]
     },
     {
-      "address": "0x4744482805a83bc3066fabd3421c016bf4918419f6a365cfda0fc932d447cda",
+      "address": "0x636e8986a865b4f9c40ff1710d7b643ba4a7901c512b6f05923d67807974e24",
       "class_hash": "0x51a7d2360fdc912c2b1796d33b9c7101182875a48f29b5f63eb079fd23f3334",
       "abi": [
         {
@@ -2234,7 +2234,7 @@
       ]
     },
     {
-      "address": "0x5c550975daa51eaf84f6313f0e8eaa71541ae8bbe98ec911da0b51f5fa1aeda",
+      "address": "0x73c043bce37ffc408db0c3fef5095c032b53e06db769af7c06d729da11e0203",
       "class_hash": "0x4bc8ac2948f50179f89e648e924a728bd7b8a0af69db4abd9b988eb54f10262",
       "abi": [
         {
@@ -2447,7 +2447,7 @@
       ]
     },
     {
-      "address": "0x3b9e83aa90930dacbf4a905512f9ec546947af783263fa453a37e06c06758ea",
+      "address": "0x3606b78c3659bf8775657d0ffebd5c283afa5e75c76ed36f9c01c0b6a9bdece",
       "class_hash": "0x23e3772fb74e11644c3cc5dde607b5468ade5a07f2ffc7a0b9b414446f6a442",
       "abi": [
         {
@@ -2872,8 +2872,8 @@
       ]
     },
     {
-      "address": "0x6eb0e835899126a8233434838110b92ddd64c8585af912343becf5ca6fc38a2",
-      "class_hash": "0x54ace9915a0a206eb166b328bc87c95deed9eda3cdb5f35cfdb2dc8853af0a4",
+      "address": "0x18b6cab6dbffe92a044f00efe662283b4b1456893f6aadfe080d376a3d46d5c",
+      "class_hash": "0x71f6663459b7b9147b5a0d55a82fda18c28e3e33f3f2f02c3603b0daa6697f8",
       "abi": [
         {
           "type": "impl",
@@ -3444,7 +3444,7 @@
       ]
     },
     {
-      "address": "0x3088eee0030f13ae6ef44da3e0704b923a6b5ecaac565f8451b52083e0106f5",
+      "address": "0x63432823b193f6a06152a39df3f806a75fa238e91e257fc438e1e848666882b",
       "class_hash": "0x2ff981e36bca7aa336c7971c3098470fcaa94528c4c961409270d62a9cde990",
       "abi": [
         {
@@ -3712,7 +3712,7 @@
       ]
     },
     {
-      "address": "0x265d3139d3b6c6c41616a1eea80585a43b669c1928c59b079f09e53e9e46eab",
+      "address": "0x4928fc9428cfc23f2588e42b743e33d7bf47ac4ea0d728e83592d88de40c827",
       "class_hash": "0x6eb22b7fd8b169ef8962d1014e20639be8c3a87c59d3b5f707e3a3e6890b769",
       "abi": [
         {
@@ -4184,7 +4184,7 @@
       ]
     },
     {
-      "address": "0x65592cac8254ff5181eaced3773ffd41efbc40ca6a5e1efcf7ea0e2e57a5398",
+      "address": "0x107c7982f72030cf0fc5f82b9e90da1b9b82efe85c7025945b718546cced20d",
       "class_hash": "0x4e747451fe710bd9cff3d8d75372e84bc1bb411cff7083efbc9f7799e74f159",
       "abi": [
         {
@@ -4589,6 +4589,459 @@
       "systems": [
         "upgrade"
       ]
+    },
+    {
+      "address": "0x18b5b2f76b0bce33483e0c5f3ceb2f8b3302bdc26ff7f5ccbdd98a4acbaa71d",
+      "class_hash": "0x61ceb8a1a61ad25dfcd413365dd1491f7762f919abde142336c647cfa4bcf3e",
+      "abi": [
+        {
+          "type": "impl",
+          "name": "settings_systems__ContractImpl",
+          "interface_name": "dojo::contract::interface::IContract"
+        },
+        {
+          "type": "interface",
+          "name": "dojo::contract::interface::IContract",
+          "items": []
+        },
+        {
+          "type": "impl",
+          "name": "DojoDeployedContractImpl",
+          "interface_name": "dojo::meta::interface::IDeployedResource"
+        },
+        {
+          "type": "struct",
+          "name": "core::byte_array::ByteArray",
+          "members": [
+            {
+              "name": "data",
+              "type": "core::array::Array::<core::bytes_31::bytes31>"
+            },
+            {
+              "name": "pending_word",
+              "type": "core::felt252"
+            },
+            {
+              "name": "pending_word_len",
+              "type": "core::integer::u32"
+            }
+          ]
+        },
+        {
+          "type": "interface",
+          "name": "dojo::meta::interface::IDeployedResource",
+          "items": [
+            {
+              "type": "function",
+              "name": "dojo_name",
+              "inputs": [],
+              "outputs": [
+                {
+                  "type": "core::byte_array::ByteArray"
+                }
+              ],
+              "state_mutability": "view"
+            }
+          ]
+        },
+        {
+          "type": "function",
+          "name": "dojo_init",
+          "inputs": [],
+          "outputs": [],
+          "state_mutability": "external"
+        },
+        {
+          "type": "impl",
+          "name": "GameSettingsImpl",
+          "interface_name": "game_components_minigame::extensions::settings::interface::IMinigameSettings"
+        },
+        {
+          "type": "enum",
+          "name": "core::bool",
+          "variants": [
+            {
+              "name": "False",
+              "type": "()"
+            },
+            {
+              "name": "True",
+              "type": "()"
+            }
+          ]
+        },
+        {
+          "type": "interface",
+          "name": "game_components_minigame::extensions::settings::interface::IMinigameSettings",
+          "items": [
+            {
+              "type": "function",
+              "name": "settings_exist",
+              "inputs": [
+                {
+                  "name": "settings_id",
+                  "type": "core::integer::u32"
+                }
+              ],
+              "outputs": [
+                {
+                  "type": "core::bool"
+                }
+              ],
+              "state_mutability": "view"
+            }
+          ]
+        },
+        {
+          "type": "impl",
+          "name": "GameSettingsDetailsImpl",
+          "interface_name": "game_components_minigame::extensions::settings::interface::IMinigameSettingsDetails"
+        },
+        {
+          "type": "struct",
+          "name": "game_components_minigame::extensions::settings::structs::GameSetting",
+          "members": [
+            {
+              "name": "name",
+              "type": "core::byte_array::ByteArray"
+            },
+            {
+              "name": "value",
+              "type": "core::byte_array::ByteArray"
+            }
+          ]
+        },
+        {
+          "type": "struct",
+          "name": "core::array::Span::<game_components_minigame::extensions::settings::structs::GameSetting>",
+          "members": [
+            {
+              "name": "snapshot",
+              "type": "@core::array::Array::<game_components_minigame::extensions::settings::structs::GameSetting>"
+            }
+          ]
+        },
+        {
+          "type": "struct",
+          "name": "game_components_minigame::extensions::settings::structs::GameSettingDetails",
+          "members": [
+            {
+              "name": "name",
+              "type": "core::byte_array::ByteArray"
+            },
+            {
+              "name": "description",
+              "type": "core::byte_array::ByteArray"
+            },
+            {
+              "name": "settings",
+              "type": "core::array::Span::<game_components_minigame::extensions::settings::structs::GameSetting>"
+            }
+          ]
+        },
+        {
+          "type": "interface",
+          "name": "game_components_minigame::extensions::settings::interface::IMinigameSettingsDetails",
+          "items": [
+            {
+              "type": "function",
+              "name": "settings_details",
+              "inputs": [
+                {
+                  "name": "settings_id",
+                  "type": "core::integer::u32"
+                }
+              ],
+              "outputs": [
+                {
+                  "type": "game_components_minigame::extensions::settings::structs::GameSettingDetails"
+                }
+              ],
+              "state_mutability": "view"
+            }
+          ]
+        },
+        {
+          "type": "impl",
+          "name": "SettingsSystemsImpl",
+          "interface_name": "rollyourown::systems::settings::contracts::ISettingsSystems"
+        },
+        {
+          "type": "struct",
+          "name": "rollyourown::models::settings::GameSettings",
+          "members": [
+            {
+              "name": "settings_id",
+              "type": "core::integer::u32"
+            },
+            {
+              "name": "initial_cash",
+              "type": "core::integer::u32"
+            },
+            {
+              "name": "initial_health",
+              "type": "core::integer::u8"
+            },
+            {
+              "name": "max_turns",
+              "type": "core::integer::u8"
+            },
+            {
+              "name": "season_version",
+              "type": "core::integer::u16"
+            }
+          ]
+        },
+        {
+          "type": "interface",
+          "name": "rollyourown::systems::settings::contracts::ISettingsSystems",
+          "items": [
+            {
+              "type": "function",
+              "name": "add_settings",
+              "inputs": [
+                {
+                  "name": "name",
+                  "type": "core::felt252"
+                },
+                {
+                  "name": "description",
+                  "type": "core::byte_array::ByteArray"
+                },
+                {
+                  "name": "initial_cash",
+                  "type": "core::integer::u32"
+                },
+                {
+                  "name": "initial_health",
+                  "type": "core::integer::u8"
+                },
+                {
+                  "name": "max_turns",
+                  "type": "core::integer::u8"
+                },
+                {
+                  "name": "season_version",
+                  "type": "core::integer::u16"
+                }
+              ],
+              "outputs": [
+                {
+                  "type": "core::integer::u32"
+                }
+              ],
+              "state_mutability": "external"
+            },
+            {
+              "type": "function",
+              "name": "setting_details",
+              "inputs": [
+                {
+                  "name": "settings_id",
+                  "type": "core::integer::u32"
+                }
+              ],
+              "outputs": [
+                {
+                  "type": "rollyourown::models::settings::GameSettings"
+                }
+              ],
+              "state_mutability": "view"
+            },
+            {
+              "type": "function",
+              "name": "game_settings",
+              "inputs": [
+                {
+                  "name": "game_id",
+                  "type": "core::integer::u64"
+                }
+              ],
+              "outputs": [
+                {
+                  "type": "rollyourown::models::settings::GameSettings"
+                }
+              ],
+              "state_mutability": "view"
+            },
+            {
+              "type": "function",
+              "name": "settings_count",
+              "inputs": [],
+              "outputs": [
+                {
+                  "type": "core::integer::u32"
+                }
+              ],
+              "state_mutability": "view"
+            }
+          ]
+        },
+        {
+          "type": "impl",
+          "name": "WorldProviderImpl",
+          "interface_name": "dojo::contract::components::world_provider::IWorldProvider"
+        },
+        {
+          "type": "struct",
+          "name": "dojo::world::iworld::IWorldDispatcher",
+          "members": [
+            {
+              "name": "contract_address",
+              "type": "core::starknet::contract_address::ContractAddress"
+            }
+          ]
+        },
+        {
+          "type": "interface",
+          "name": "dojo::contract::components::world_provider::IWorldProvider",
+          "items": [
+            {
+              "type": "function",
+              "name": "world_dispatcher",
+              "inputs": [],
+              "outputs": [
+                {
+                  "type": "dojo::world::iworld::IWorldDispatcher"
+                }
+              ],
+              "state_mutability": "view"
+            }
+          ]
+        },
+        {
+          "type": "impl",
+          "name": "UpgradeableImpl",
+          "interface_name": "dojo::contract::components::upgradeable::IUpgradeable"
+        },
+        {
+          "type": "interface",
+          "name": "dojo::contract::components::upgradeable::IUpgradeable",
+          "items": [
+            {
+              "type": "function",
+              "name": "upgrade",
+              "inputs": [
+                {
+                  "name": "new_class_hash",
+                  "type": "core::starknet::class_hash::ClassHash"
+                }
+              ],
+              "outputs": [],
+              "state_mutability": "external"
+            }
+          ]
+        },
+        {
+          "type": "impl",
+          "name": "SRC5Impl",
+          "interface_name": "openzeppelin_introspection::interface::ISRC5"
+        },
+        {
+          "type": "interface",
+          "name": "openzeppelin_introspection::interface::ISRC5",
+          "items": [
+            {
+              "type": "function",
+              "name": "supports_interface",
+              "inputs": [
+                {
+                  "name": "interface_id",
+                  "type": "core::felt252"
+                }
+              ],
+              "outputs": [
+                {
+                  "type": "core::bool"
+                }
+              ],
+              "state_mutability": "view"
+            }
+          ]
+        },
+        {
+          "type": "constructor",
+          "name": "constructor",
+          "inputs": []
+        },
+        {
+          "type": "event",
+          "name": "dojo::contract::components::upgradeable::upgradeable_cpt::Upgraded",
+          "kind": "struct",
+          "members": [
+            {
+              "name": "class_hash",
+              "type": "core::starknet::class_hash::ClassHash",
+              "kind": "data"
+            }
+          ]
+        },
+        {
+          "type": "event",
+          "name": "dojo::contract::components::upgradeable::upgradeable_cpt::Event",
+          "kind": "enum",
+          "variants": [
+            {
+              "name": "Upgraded",
+              "type": "dojo::contract::components::upgradeable::upgradeable_cpt::Upgraded",
+              "kind": "nested"
+            }
+          ]
+        },
+        {
+          "type": "event",
+          "name": "dojo::contract::components::world_provider::world_provider_cpt::Event",
+          "kind": "enum",
+          "variants": []
+        },
+        {
+          "type": "event",
+          "name": "game_components_minigame::extensions::settings::settings::SettingsComponent::Event",
+          "kind": "enum",
+          "variants": []
+        },
+        {
+          "type": "event",
+          "name": "openzeppelin_introspection::src5::SRC5Component::Event",
+          "kind": "enum",
+          "variants": []
+        },
+        {
+          "type": "event",
+          "name": "rollyourown::systems::settings::contracts::settings_systems::Event",
+          "kind": "enum",
+          "variants": [
+            {
+              "name": "UpgradeableEvent",
+              "type": "dojo::contract::components::upgradeable::upgradeable_cpt::Event",
+              "kind": "nested"
+            },
+            {
+              "name": "WorldProviderEvent",
+              "type": "dojo::contract::components::world_provider::world_provider_cpt::Event",
+              "kind": "nested"
+            },
+            {
+              "name": "SettingsEvent",
+              "type": "game_components_minigame::extensions::settings::settings::SettingsComponent::Event",
+              "kind": "flat"
+            },
+            {
+              "name": "SRC5Event",
+              "type": "openzeppelin_introspection::src5::SRC5Component::Event",
+              "kind": "flat"
+            }
+          ]
+        }
+      ],
+      "init_calldata": [],
+      "tag": "dopewars-settings_systems",
+      "selector": "0x4778043bfbe07a72bed5db8b1ccd240f27bfcda84bd91faaa1dfc5061e939df",
+      "systems": [
+        "dojo_init",
+        "add_settings",
+        "upgrade"
+      ]
     }
   ],
   "libraries": [
@@ -4794,6 +5247,18 @@
     },
     {
       "members": [],
+      "class_hash": "0x3b521864c4ed2ea8cccde5c7e871979da909cedda9a22e033683c1d666c5957",
+      "tag": "dopewars-GameSettings",
+      "selector": "0x6698b91c949b5f5d31ac551b2c6a454f867a763ebc0ee43859622435ef5fb74"
+    },
+    {
+      "members": [],
+      "class_hash": "0x1ad4ad51038b13ec8e729c56d69062fde2a9df41cca224fe50734841a2c5181",
+      "tag": "dopewars-GameSettingsMetadata",
+      "selector": "0x1e956cc1f5e2bb8c8af07a17c98af3d89add858e45c24d112b30a5ba87eb554"
+    },
+    {
+      "members": [],
       "class_hash": "0x7e2773c1fe9be66a99eefc825ef48bee3b812083866c159585be5f1c9ce0873",
       "tag": "dopewars-GameStorePacked",
       "selector": "0x121912f143c6df44026c9949fd2c3ecd303fd602c1c5da61e206a79ce86e13f"
@@ -4839,6 +5304,12 @@
       "class_hash": "0x4d040821982bca7346b115d34ce93b294aa0212fbe9c02c3fcc8d5ebfe21bc",
       "tag": "dopewars-SeasonSettings",
       "selector": "0x3ff184e436869b03a532acfde58e4bc6709c0748b57881950208eb1b4d3765"
+    },
+    {
+      "members": [],
+      "class_hash": "0x61e8f9c2098a83cafe8b63a05445ee97fcfaea2d4e0a57aee399f43b9a778b7",
+      "tag": "dopewars-SettingsCounter",
+      "selector": "0x7bb39feab252fd2a4c9bdb9b5fe851fdc818ac1cf3e05bd3374fa4af958e31e"
     },
     {
       "members": [],
