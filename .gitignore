@@ -13,3 +13,5 @@ deployment.md
 AGENTS.md
 STRIPPING_PLAN.md
 scripts/start-dev-ssl.sh
+
+deployments/
