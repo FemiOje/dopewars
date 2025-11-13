@@ -7,7 +7,6 @@ import { Box, Button, Divider, Flex, HStack } from "@chakra-ui/react";
 import { useAccount } from "@starknet-react/core";
 import { observer } from "mobx-react-lite";
 import { useEffect } from "react";
-import { ClaimReward } from "../pages/home";
 import { ProfileLink } from "../pages/profile/Profile";
 import { CashIndicator, DayIndicator, HealthIndicator } from "../player";
 import { ConnectButton } from "../wallet/ConnectButton";
@@ -42,9 +41,7 @@ export const Header = observer(() => {
       py={["0", "16px"]}
       fontSize={["14px", "16px"]}
     >
-      <HStack gap={3} flex="1">
-        {!gameId && <ClaimReward />}
-      </HStack>
+      <HStack gap={3} flex="1"></HStack>
 
       {game /*|| router.asPath.includes("logs")*/ && (
         <HStack

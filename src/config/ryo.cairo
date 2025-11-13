@@ -37,7 +37,7 @@ pub impl RyoConfigImpl of RyoConfigTrait {
             initialized: true,
             paused: false,
             season_version: 1,
-            season_duration: TEMP_VALUE, //ONE_DAY, 
+            season_duration: ONE_WEEK, //ONE_WEEK, 
             season_time_limit: TWO_MIN, // HALF_HOUR, 
             treasury_balance: 0,
         }

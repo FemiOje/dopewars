@@ -14,7 +14,6 @@ export interface SeasonByVersionInterface {
   seasonSettings?: SeasonSettings;
   sortedList?: SortedList;
   isSeasonOpen: boolean;
-  isSeasonWashed: boolean;
   canCreateGame: boolean;
   isFetched: boolean;
   refetch: any;
@@ -51,10 +50,6 @@ export const useSeasonByVersion = (seasonId: number): SeasonByVersionInterface =
     return timestamp < (season?.next_version_timestamp - season?.season_time_limit) * 1000;
   }, [season, timestamp]);
 
-  const isSeasonWashed = useMemo(() => {
-    return sortedList?.processed;
-  }, [sortedList]);
-
   useEffect(() => {
     const handle = setInterval(() => {
       setTimestamp(Date.now());
@@ -68,7 +63,6 @@ export const useSeasonByVersion = (seasonId: number): SeasonByVersionInterface =
     seasonSettings,
     sortedList,
     isSeasonOpen,
-    isSeasonWashed,
     canCreateGame,
     isFetched,
     refetch,

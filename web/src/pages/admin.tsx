@@ -1,6 +1,6 @@
 import { Layout } from "@/components/layout";
-import { ChildrenOrConnect, PaperFaucet, TokenBalance } from "@/components/wallet";
-import { useDojoContext, useRouterContext, useSeasonByVersion, useSystems } from "@/dojo/hooks";
+import { ChildrenOrConnect, TokenBalance } from "@/components/wallet";
+import { useDojoContext, useRouterContext, useSystems } from "@/dojo/hooks";
 import {
   Button,
   Card,
@@ -30,8 +30,7 @@ import { PlayerLayoutTable } from "@/components/pages/admin/PlayerLayoutTable";
 import { useEffect, useState } from "react";
 import { Dropdown } from "@/components/common";
 // import { RyoConfigTable } from "@/components/pages/admin/RyoConfigTable";
-import { Bag, Clock, CopsIcon, DollarBag, Flipflop, PaperIcon } from "@/components/icons";
-import { formatCash } from "@/utils/ui";
+import { Bag, Clock, CopsIcon, Flipflop, PaperIcon } from "@/components/icons";
 import { Ludes } from "@/components/icons/drugs";
 import { Dopewars_Game as Game, Dopewars_GameEdge as GameEdge, useGetAllGamesQuery } from "@/generated/graphql";
 import { shortString } from "starknet";
@@ -65,7 +64,6 @@ const Admin = () => {
             <Flex w="full" alignItems="flex-start" gap={3} flexDirection="row" flexWrap="wrap">
               <RyoAddressCard />
               <RyoPauseCard />
-              <TreasuryClaimCard />
               <ExportAllGamesCard />
             </Flex>
           </TabPanel>
@@ -73,7 +71,6 @@ const Admin = () => {
           <TabPanel p={0}>
             <Flex w="full" alignItems="flex-start" gap={3} flexDirection="row" flexWrap="wrap">
               <RyoSeasonConfigCard />
-              <RyoSuperchargeCard />
             </Flex>
           </TabPanel>
 
@@ -174,50 +171,6 @@ const RyoAddressCard = observer(() => {
           </HStack>
         </VStack>
       </CardBody>
-    </Card>
-  );
-});
-
-const TreasuryClaimCard = observer(() => {
-  const { configStore } = useDojoContext();
-  const { config } = configStore;
-
-  const { claimTreasury, isPending } = useSystems();
-
-  const onClaim = async () => {
-    await claimTreasury();
-    await configStore.init();
-  };
-
-  return (
-    <Card p={1}>
-      <CardHeader textAlign="left" borderBottom="solid 1px" borderColor="neon.500" mb={3}>
-        <PaperIcon /> TREASURY
-      </CardHeader>
-      <CardBody>
-        <VStack alignItems="flex-start">
-          <HStack>
-            <Text w="180px">PAPER BALANCE</Text>
-            <TokenBalance address={config?.ryoAddress.treasury} token={config?.ryoAddress.paper} />
-          </HStack>
-          <HStack>
-            <Text w="180px">PAPER CLAIMABLE</Text>
-            <Text> {config?.ryo.treasury_balance}</Text>
-          </HStack>
-        </VStack>
-      </CardBody>
-      <CardFooter>
-        <VStack>
-          <Text w="220px" flexShrink={0} color="neon.500">
-            Claiming send claimable PAPER balance to Treasury
-          </Text>
-          <ChildrenOrConnect>
-            <Button isLoading={isPending} onClick={onClaim}>
-              Claim
-            </Button>
-          </ChildrenOrConnect>
-        </VStack>
-      </CardFooter>
     </Card>
   );
 });
@@ -409,69 +362,6 @@ const RyoSeasonConfigCard = observer(() => {
               UPDATE
             </Button>
           </ChildrenOrConnect>
-        </VStack>
-      </CardBody>
-      <CardFooter></CardFooter>
-    </Card>
-  );
-});
-
-const RyoSuperchargeCard = observer(() => {
-  const { configStore } = useDojoContext();
-  const { config } = configStore;
-  const { account } = useAccount();
-
-  const [value, setValue] = useState(0);
-  const { season, refetch } = useSeasonByVersion(config?.ryo.season_version || 0);
-
-  const { superchargeJackpot, isPending } = useSystems();
-
-  const onSuperchargeJackpot = async () => {
-    await superchargeJackpot(config?.ryo.season_version, value);
-    await configStore.init();
-    await refetch();
-  };
-
-  return (
-    <Card p={1}>
-      <CardHeader textAlign="left" borderBottom="solid 1px" borderColor="neon.500" mb={3}>
-        <DollarBag /> SUPERCHARGE JACKPOT
-      </CardHeader>
-      <CardBody>
-        <VStack alignItems="flex-start" gap={6}>
-          <Text color="neon.500">
-            Transfer some PAPER from your wallet
-            <br /> to supercharge current season jackpot
-          </Text>
-
-          <VStack alignItems="flex-start">
-            <Text>CURRENT SEASON : {config?.ryo.season_version}</Text>
-            <Text>CURRENT JACKPOT : {formatCash(season?.paper_balance).replace("$", "")}</Text>
-          </VStack>
-
-          <VStack alignItems="flex-start">
-            <HStack>
-              <Text>YOUR BALANCE : </Text>
-              <TokenBalance address={account?.address} token={config?.ryoAddress.paper} icon={PaperIcon} />
-            </HStack>
-
-            <HStack>
-              <Text>PAPER AMOUNT</Text>
-              <Input
-                w="100px"
-                value={value}
-                onChange={(e) => {
-                  setValue(Number(e.target.value));
-                }}
-              />
-              <ChildrenOrConnect>
-                <Button isLoading={isPending} onClick={onSuperchargeJackpot}>
-                  SEND
-                </Button>
-              </ChildrenOrConnect>
-              <PaperFaucet />
-            </HStack>
-          </VStack>
         </VStack>
       </CardBody>
       <CardFooter></CardFooter>

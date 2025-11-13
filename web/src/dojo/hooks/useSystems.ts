@@ -45,10 +45,6 @@ interface SystemsInterface {
 
   // laundromat
   registerScore: (tokenId: string, prevGameId: string, prevPlayerId: string) => Promise<SystemExecuteResult>;
-  claim: (playerId: string, tokenIds: number[]) => Promise<SystemExecuteResult>;
-  launder: (season: number) => Promise<SystemExecuteResult>;
-  claimTreasury: () => Promise<SystemExecuteResult>;
-  superchargeJackpot: (season: number, amount_eth: number) => Promise<SystemExecuteResult>;
   // slot
   rollSlot: (tokenId: number) => Promise<SystemExecuteResult>;
   // dev
@@ -433,83 +429,6 @@ export const useSystems = (): SystemsInterface => {
     [account?.address, dopeLootClaimAddress, dopeLootClaimState, executeAndReceipt, toriiClient],
   );
 
-  const claim = useCallback(
-    async (playerId: string, tokenIds: number[]) => {
-      const { hash, events, parsedEvents } = await executeAndReceipt({
-        contractName: `laundromat`,
-        entrypoint: "claim",
-        calldata: [playerId, tokenIds],
-        // calldata: CallData.compile([playerId, tokenIds]),
-      });
-
-      return {
-        hash,
-      };
-    },
-    [executeAndReceipt],
-  );
-
-  const claimTreasury = useCallback(async () => {
-    const { hash, events, parsedEvents } = await executeAndReceipt({
-      contractName: `laundromat`,
-      entrypoint: "claim_treasury",
-      calldata: [],
-    });
-
-    return {
-      hash,
-    };
-  }, [executeAndReceipt]);
-
-  const superchargeJackpot = useCallback(
-    async (season: number, amountEth: number) => {
-      const paperAddress = selectedChain.paperAddress;
-      const amount = BigInt(amountEth) * ETHER;
-
-      //
-      const approvalCall: Call = {
-        contractAddress: paperAddress,
-        entrypoint: "approve",
-        calldata: CallData.compile({ laundromatAddress, amount: uint256.bnToUint256(amount) }),
-      };
-
-      const superchargeJackpotCall = {
-        contractName: `laundromat`,
-        entrypoint: "supercharge_jackpot",
-        calldata: CallData.compile([season, amountEth]),
-      };
-
-      const { hash } = await executeAndReceipt([approvalCall, superchargeJackpotCall]);
-
-      return {
-        hash,
-      };
-    },
-    [executeAndReceipt, config],
-  );
-
-  const launder = useCallback(
-    async (season: number) => {
-      const call = {
-        contractAddress: laundromatAddress,
-        entrypoint: "launder",
-        calldata: CallData.compile([season]),
-      };
-
-      const calls = await buildRandomnessCalls({
-        account: account!,
-        call,
-        chainConfig: selectedChain,
-      });
-      const { hash } = await executeAndReceipt(calls);
-
-      return {
-        hash,
-      };
-    },
-    [executeAndReceipt, selectedChain],
-  );
-
   //
   //
   //
@@ -654,10 +573,6 @@ export const useSystems = (): SystemsInterface => {
     decide,
     //
     registerScore,
-    claim,
-    claimTreasury,
-    superchargeJackpot,
-    launder,
     //
     setPaused,
     updateRyoConfig,

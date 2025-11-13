@@ -58,7 +58,6 @@ export * from "./Warning";
 export * from "./Weigth";
 export * from "./Katana";
 export * from "./Refresh";
-export * from "./Laundromat";
 export * from "./DynamicReputation";
 export * from "./WalletModal";
 

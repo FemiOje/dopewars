@@ -125,7 +125,7 @@ const cartridgeConnector = ({ selectedChain }: { selectedChain: DojoChainConfig 
 
   if (laundromatAddress) {
     policies.contracts![laundromatAddress] = {
-      methods: [{ entrypoint: "register_score" }, { entrypoint: "claim" }, { entrypoint: "launder" }],
+      methods: [{ entrypoint: "register_score" }],
     };
   }
 
@@ -163,9 +163,9 @@ const cartridgeConnector = ({ selectedChain }: { selectedChain: DojoChainConfig 
     //   policies.contracts![paperAddress].methods.push({ entrypoint: "faucet" });
     // }
 
-    if (laundromatAddress && policies.contracts![laundromatAddress]) {
-      policies.contracts![laundromatAddress].methods.push({ entrypoint: "supercharge_jackpot" });
-    }
+    // if (laundromatAddress && policies.contracts![laundromatAddress]) {
+    //   policies.contracts![laundromatAddress].methods.push({ entrypoint: "supercharge_jackpot" });
+    // }
 
     if (selectedChain.vrfProviderAddress && policies.contracts![selectedChain.vrfProviderAddress]) {
       policies.contracts![selectedChain.vrfProviderAddress].methods.push({ entrypoint: "submit_random" });
