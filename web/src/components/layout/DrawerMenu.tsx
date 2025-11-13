@@ -19,8 +19,7 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 import { ReactNode, useRef } from "react";
-import { Cigarette, Clock, Close, Dots, Home, PaperIcon, Refresh } from "../icons";
-import { Calendar } from "../icons/archive";
+import { Cigarette, Close, Dots, Home, PaperIcon, Refresh } from "../icons";
 import { HeaderButton, MediaPlayer } from ".";
 import { ChainSelector, ConnectButton, TokenBalance } from "../wallet";
 import { Burners } from "../wallet/Burners";
@@ -146,23 +145,6 @@ const DrawerMenu = () => {
                     }}
                   >
                     <Home mr={2} /> HOME
-                  </DrawerListItem>
-
-                  {account && (
-                    <DrawerListItem
-                      onClick={() => {
-                        router.push(`/game/history/0x${BigInt(account.address || 0).toString(16)}`);
-                      }}
-                    >
-                      <Clock mr={2} /> HISTORY
-                    </DrawerListItem>
-                  )}
-                  <DrawerListItem
-                    onClick={() => {
-                      router.push("/season");
-                    }}
-                  >
-                    <Calendar mr={2} /> SEASONS
                   </DrawerListItem>
 
                   {/* <DrawerListItem
