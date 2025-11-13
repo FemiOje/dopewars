@@ -146,18 +146,18 @@ export type DojoChainConfig = {
 //   vrfProviderSecret: undefined,
 // };
 
-// const snSepolia: DojoChainConfig = {
-//   name: "SEPOLIA",
-//   chainConfig: sepolia,
-//   rpcUrl: "https://api.cartridge.gg/x/starknet/sepolia",
-//   toriiUrl: "https://api.cartridge.gg/x/provable-dw-1/torii/graphql",
-//   toriiWsUrl: "wss://api.cartridge.gg/x/provable-dw-1/torii/graphql/ws",
-//   manifest: mergeManifests(manifestSepolia, [manifestDopeSepolia]),
-//   predeployedAccounts: [],
-//   paperAddress: manifestSepolia.contracts.find((i) => i.tag === `${DW_NS}-paper_mock`)?.address || "0x0",
-//   vrfProviderAddress: manifestSepolia.contracts.find((i) => i.tag === `${DW_NS}-vrf_provider_mock`)?.address || "0x0",
-//   vrfProviderSecret: undefined,
-// };
+const snSepolia: DojoChainConfig = {
+  name: "SEPOLIA",
+  chainConfig: sepolia,
+  rpcUrl: "https://api.cartridge.gg/x/starknet/sepolia",
+  toriiUrl: "https://api.cartridge.gg/x/provable-dw-1/torii/graphql",
+  toriiWsUrl: "wss://api.cartridge.gg/x/provable-dw-1/torii/graphql/ws",
+  manifest: mergeManifests(manifestSepolia, [manifestDopeSepolia]),
+  predeployedAccounts: [],
+  paperAddress: manifestSepolia.contracts.find((i) => i.tag === `${DW_NS}-paper_mock`)?.address || "0x0",
+  vrfProviderAddress: manifestSepolia.contracts.find((i) => i.tag === `${DW_NS}-vrf_provider_mock`)?.address || "0x0",
+  vrfProviderSecret: undefined,
+};
 
 // const provableDW: DojoChainConfig = {
 //   name: "WP_PROVABLE_DW",

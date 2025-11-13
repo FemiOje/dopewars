@@ -3,12 +3,12 @@
 rpc_url = "https://api.cartridge.gg/x/starknet/mainnet"
 account_address = "0x4e84d281b3e8d5d78ca6eba482ab2899e9431389c725fd9bee8a8dee405b5e7"
 keystore = "./deployments/keystore.json"
-world_block = 3521940
-world_address = "0x0122dfd536d933c2e97695c9b88280bedf066ad6e185fc86116fa395d8e79790"
+world_block = 3550819
+world_address = "0x07791d923f7b3a906f5480e2cb5ba9e46ad24cf2492bd47b210458c863ef68c2"
 
 [world]
 name = "Dope Wars"
-seed = "dope1seed"
+seed = "dope2seed"
 description = "Dope Wars is an onchain adaptation of the classic arbitrage game Drug Wars, built by Cartridge in partnership with Dope DAO."
 website = "https://dopewars.game/"
 icon_uri = "file://assets/icon.png"

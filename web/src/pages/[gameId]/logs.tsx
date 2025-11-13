@@ -11,7 +11,7 @@ import {
 } from "@/components/layout/GlobalEvents";
 import { HustlerProfile } from "@/components/pages/profile/HustlerProfile";
 import { Loadout } from "@/components/pages/profile/Loadout";
-import { Inventory, PowerMeter } from "@/components/player";
+import { Inventory } from "@/components/player";
 import { DojoEvent } from "@/dojo/class/Events";
 import { GameClass } from "@/dojo/class/Game";
 import { useConfigStore, useGameStore, useRouterContext } from "@/dojo/hooks";
@@ -236,11 +236,6 @@ const CustomLeftPanel = () => {
       </Box>
 
       <HustlerProfile />
-
-      <HStack justifyContent={"space-between"} mt={6}>
-        <Text color="yellow.400">STAKE x{game?.gameInfos.multiplier}</Text>
-        <PowerMeter basePower={0} maxPower={10} power={game?.gameInfos.multiplier} />
-      </HStack>
     </VStack>
   );
 };

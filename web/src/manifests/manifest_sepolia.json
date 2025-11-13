@@ -1,8 +1,8 @@
 {
   "world": {
     "class_hash": "0x57994b6a75fad550ca18b41ee82e2110e158c59028c4478109a67965a0e5b1e",
-    "address": "0x3b09ebaeba51bc703a8b22bba9aff6ef90841e762b1c0f0889b1c5377798c48",
-    "seed": "sepo15seed",
+    "address": "0x23a155b194b217a3eaed9cdca290f185df52d0fac739b97875d9adbd78407c3",
+    "seed": "sepo16seed",
     "name": "Dope Wars",
     "entrypoints": [
       "uuid",
@@ -1479,7 +1479,7 @@
   },
   "contracts": [
     {
-      "address": "0x5e7528456f323c55d4f7c16404c4c4008cccff2f4b472ea0ee2542dc5c39d8d",
+      "address": "0x32c9a54b2f014042c0b6a4d7d29e1ee21f72c51aac3c344d488ed79976d8b06",
       "class_hash": "0x1dc163702446f9d67290e8ea810c28ff964fd5c299831018df00d3c89c3bd67",
       "abi": [
         {
@@ -2013,7 +2013,7 @@
       ]
     },
     {
-      "address": "0x636e8986a865b4f9c40ff1710d7b643ba4a7901c512b6f05923d67807974e24",
+      "address": "0x1f2921fe160b907ae25450af9c3f7b1380288b7c78a0cc84cd1de83acbe6071",
       "class_hash": "0x51a7d2360fdc912c2b1796d33b9c7101182875a48f29b5f63eb079fd23f3334",
       "abi": [
         {
@@ -2234,7 +2234,7 @@
       ]
     },
     {
-      "address": "0x73c043bce37ffc408db0c3fef5095c032b53e06db769af7c06d729da11e0203",
+      "address": "0x692dbfb6a5f80a9517b4d979310bda8c6abfc5b57c26cb01129d3a6e4bd0dea",
       "class_hash": "0x4bc8ac2948f50179f89e648e924a728bd7b8a0af69db4abd9b988eb54f10262",
       "abi": [
         {
@@ -2447,7 +2447,7 @@
       ]
     },
     {
-      "address": "0x3606b78c3659bf8775657d0ffebd5c283afa5e75c76ed36f9c01c0b6a9bdece",
+      "address": "0x7cb8501a004fa4dfe7fcf831bd321edbd2ccc05f07a1bd38d0dacd11980697a",
       "class_hash": "0x23e3772fb74e11644c3cc5dde607b5468ade5a07f2ffc7a0b9b414446f6a442",
       "abi": [
         {
@@ -2872,7 +2872,7 @@
       ]
     },
     {
-      "address": "0x18b6cab6dbffe92a044f00efe662283b4b1456893f6aadfe080d376a3d46d5c",
+      "address": "0x798f164736265b0d321957eefc72d54cc5105bad9ffa1e732e5efd7d31af28f",
       "class_hash": "0x71f6663459b7b9147b5a0d55a82fda18c28e3e33f3f2f02c3603b0daa6697f8",
       "abi": [
         {
@@ -3444,8 +3444,8 @@
       ]
     },
     {
-      "address": "0x63432823b193f6a06152a39df3f806a75fa238e91e257fc438e1e848666882b",
-      "class_hash": "0x2ff981e36bca7aa336c7971c3098470fcaa94528c4c961409270d62a9cde990",
+      "address": "0x1d00cc5247e72989f7275e0b6f97a4c6c919f5a9c311e91c24954deaca983e2",
+      "class_hash": "0x9622c7056084b6d62f6352553a7c5d9d22561b02e984913834401d3e8f953",
       "abi": [
         {
           "type": "impl",
@@ -3503,16 +3503,6 @@
           "interface_name": "rollyourown::systems::laundromat::ILaundromat"
         },
         {
-          "type": "struct",
-          "name": "core::array::Span::<core::integer::u64>",
-          "members": [
-            {
-              "name": "snapshot",
-              "type": "@core::array::Array::<core::integer::u64>"
-            }
-          ]
-        },
-        {
           "type": "interface",
           "name": "rollyourown::systems::laundromat::ILaundromat",
           "items": [
@@ -3531,57 +3521,6 @@
                 {
                   "name": "prev_player_id",
                   "type": "core::starknet::contract_address::ContractAddress"
-                }
-              ],
-              "outputs": [],
-              "state_mutability": "view"
-            },
-            {
-              "type": "function",
-              "name": "launder",
-              "inputs": [
-                {
-                  "name": "season_version",
-                  "type": "core::integer::u16"
-                }
-              ],
-              "outputs": [],
-              "state_mutability": "view"
-            },
-            {
-              "type": "function",
-              "name": "claim",
-              "inputs": [
-                {
-                  "name": "player_id",
-                  "type": "core::starknet::contract_address::ContractAddress"
-                },
-                {
-                  "name": "token_ids",
-                  "type": "core::array::Span::<core::integer::u64>"
-                }
-              ],
-              "outputs": [],
-              "state_mutability": "view"
-            },
-            {
-              "type": "function",
-              "name": "claim_treasury",
-              "inputs": [],
-              "outputs": [],
-              "state_mutability": "view"
-            },
-            {
-              "type": "function",
-              "name": "supercharge_jackpot",
-              "inputs": [
-                {
-                  "name": "season_version",
-                  "type": "core::integer::u16"
-                },
-                {
-                  "name": "amount_eth",
-                  "type": "core::integer::u32"
                 }
               ],
               "outputs": [],
@@ -3712,7 +3651,7 @@
       ]
     },
     {
-      "address": "0x4928fc9428cfc23f2588e42b743e33d7bf47ac4ea0d728e83592d88de40c827",
+      "address": "0x51a943c82244ac9a278f288176ec1addb650d98ddc49f5cbc998c0fd88e647e",
       "class_hash": "0x6eb22b7fd8b169ef8962d1014e20639be8c3a87c59d3b5f707e3a3e6890b769",
       "abi": [
         {
@@ -4184,7 +4123,7 @@
       ]
     },
     {
-      "address": "0x107c7982f72030cf0fc5f82b9e90da1b9b82efe85c7025945b718546cced20d",
+      "address": "0x6583eeda20d5b8be59f8d3a0b65ee06e9d848885fd5c4794d5c8069052ef3db",
       "class_hash": "0x4e747451fe710bd9cff3d8d75372e84bc1bb411cff7083efbc9f7799e74f159",
       "abi": [
         {
@@ -4591,7 +4530,7 @@
       ]
     },
     {
-      "address": "0x18b5b2f76b0bce33483e0c5f3ceb2f8b3302bdc26ff7f5ccbdd98a4acbaa71d",
+      "address": "0x1ede2dd22f6af8f407dcae3152112072a0488670da742f86d2547b33fdfaf5f",
       "class_hash": "0x61ceb8a1a61ad25dfcd413365dd1491f7762f919abde142336c647cfa4bcf3e",
       "abi": [
         {

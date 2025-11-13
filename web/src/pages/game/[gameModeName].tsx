@@ -1,7 +1,5 @@
-import { Button, Input, Tooltip } from "@/components/common";
-import { Warning } from "@/components/icons";
+import { Button, Input } from "@/components/common";
 import { Footer, Layout } from "@/components/layout";
-import { PowerMeter } from "@/components/player";
 import { ChildrenOrConnect } from "@/components/wallet";
 import { gameModeFromName, gameModeFromNameKeys } from "@/dojo/helpers";
 import { useConfigStore, useRouterContext, useSeasonByVersion, useSystems } from "@/dojo/hooks";
@@ -38,7 +36,6 @@ const New = observer(() => {
   const inputRef = useRef<null | HTMLDivElement>(null);
   const [error, setError] = useState("");
   const [name, setName] = useState("");
-  const [multiplier, setMultipler] = useState(1);
   const isMobile = IsMobile();
 
   useEffect(() => {
@@ -77,7 +74,8 @@ const New = observer(() => {
       }
 
       // create the game with minted token (no token selection needed - uses default equipment)
-      await createGame(gameMode, name, multiplier, minigameTokenId);
+      // Multiplier is always 1 for budokan tournament
+      await createGame(gameMode, name, 1, minigameTokenId);
     } catch (e) {
       console.log(e);
       setError("Game creation failed");
@@ -139,37 +137,6 @@ const New = observer(() => {
               </Heading>
             )}
           </VStack>
-
-          {/* Multiplier selection for Ranked mode - games are free, multiplier affects score multiplier only */}
-          {gameMode == GameMode.Ranked && (
-            <Card p={3} w="300px">
-              <VStack gap={3} alignItems="center">
-                <HStack w="full" justifyContent={"space-between"}>
-                  <Text color="yellow.400">MULTIPLIER x{multiplier}</Text>
-                  <PowerMeter
-                    basePower={0}
-                    maxPower={10}
-                    power={multiplier}
-                    onSelect={(i: number) => {
-                      setMultipler(i + 1);
-                    }}
-                  />
-                  <Tooltip
-                    color="yellow.400"
-                    title="Score Multiplier"
-                    text="The higher the multiplier, the greater your score multiplier. Games are free to play."
-                  >
-                    <span>
-                      <Warning color="yellow.400" height={"16px"} width={"16px"} />
-                    </span>
-                  </Tooltip>
-                </HStack>
-                <Text fontSize="12px" color="gray.400">
-                  Games are free - multiplier affects score only
-                </Text>
-              </VStack>
-            </Card>
-          )}
 
           <VStack w="full" ref={inputRef}>
             <Input

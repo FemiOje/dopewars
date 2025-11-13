@@ -259,7 +259,7 @@ export const Leaderboard = observer(({ config }: { config?: Config }) => {
                           cursor="pointer"
                           onClick={() => router.push(`/0x${game.game_id.toString(16)}/logs`)}
                         >
-                          {displayName} <span style={{ fontSize: "9px" }}>(x{game.multiplier})</span>
+                          {displayName}
                         </Text>
                       </HStack>
 

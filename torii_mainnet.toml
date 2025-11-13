@@ -1,6 +1,6 @@
 rpc = "https://api.cartridge.gg/x/starknet/mainnet"
 
-world_address = "0x0122dfd536d933c2e97695c9b88280bedf066ad6e185fc86116fa395d8e79790"
+world_address = "0x07791d923f7b3a906f5480e2cb5ba9e46ad24cf2492bd47b210458c863ef68c2"
 
 [indexing]
 allowed_origins = ["*"]
