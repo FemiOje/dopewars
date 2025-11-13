@@ -3,8 +3,8 @@
 rpc_url = "https://api.cartridge.gg/x/starknet/mainnet"
 account_address = "0x4e84d281b3e8d5d78ca6eba482ab2899e9431389c725fd9bee8a8dee405b5e7"
 keystore = "./deployments/keystore.json"
-# world_block = 889000
-# world_address = "0x04f3dccb47477c087ad9c76b8067b8aadded57f8df7f2d7543e6066bcb25332c"
+world_block = 3521940
+world_address = "0x0122dfd536d933c2e97695c9b88280bedf066ad6e185fc86116fa395d8e79790"
 
 [world]
 name = "Dope Wars"
@@ -24,6 +24,15 @@ skip_contracts = [
     "dopewars-paper_mock",
     "dopewars-vrf_provider_mock",
 ]
+order_inits = [
+    "dopewars-game",
+    "dopewars-config",
+    "dopewars-laundromat",
+    "dopewars-decide",
+    "dopewars-ryo",
+    "dopewars-game_token_system_v0",
+    "dopewars-settings_systems", 
+]
 
 [init_call_args]
 "dopewars-ryo" = [
@@ -38,17 +47,15 @@ skip_contracts = [
 
 
 [writers]
-# "dopewars-ERC20BalanceEvent" = ["dopewars-paper_mock"]
 
 # "dopewars" = [
+#     "dopewars-game",
 #     "dopewars-config",
 #     "dopewars-laundromat",
-#     "dopewars-game",
 #     "dopewars-decide",
 #     "dopewars-ryo",
-#     "dopewars-paper_mock",
-#     "dopewars-devtools",
 #     "dopewars-game_token_system_v0",
+#     "dopewars-settings_systems", 
 # ]
 
 "dopewars-GameConfig" = [
@@ -76,6 +83,10 @@ skip_contracts = [
 "dopewars-SortedList" = ["dopewars-game", "dopewars-laundromat"]
 "dopewars-SortedListItem" = ["dopewars-game", "dopewars-laundromat"]
 "dopewars-RyoAddress" = ["dopewars-ryo"]
+
+"dopewars-GameSettings" = ["dopewars-settings_systems"]
+"dopewars-GameSettingsMetadata" = ["dopewars-settings_systems"]
+"dopewars-SettingsCounter" = ["dopewars-settings_systems"]
 
 # events
 "dopewars-GameCreated" = ["dopewars-game"]

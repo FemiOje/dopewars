@@ -87,14 +87,14 @@ export function StarknetProvider({ children, selectedChain }: { children: ReactN
 
 const cartridgeConnector = ({ selectedChain }: { selectedChain: DojoChainConfig }) => {
   // console.log("cartridgeConnector", selectedChain.name);
-  const paperAddress = selectedChain.paperAddress;
+  // const paperAddress = selectedChain.paperAddress;
   const gameAddress = getContractByName(selectedChain.manifest, DW_NS, "game")?.address;
   const decideAddress = getContractByName(selectedChain.manifest, DW_NS, "decide")?.address;
   const laundromatAddress = getContractByName(selectedChain.manifest, DW_NS, "laundromat")?.address;
   const gameTokenAddress = getContractByName(selectedChain.manifest, DW_NS, "game_token_system_v0")?.address;
-  const dopeLootClaimAddress = getContractByName(selectedChain.manifest, "dope", "DopeLootClaim")?.address;
-  const dopeGearAddress = getContractByName(selectedChain.manifest, "dope", "DopeGear")?.address;
-  const dopeHustlersAddress = getContractByName(selectedChain.manifest, "dope", "DopeHustlers")?.address;
+  // const dopeLootClaimAddress = getContractByName(selectedChain.manifest, "dope", "DopeLootClaim")?.address;
+  // const dopeGearAddress = getContractByName(selectedChain.manifest, "dope", "DopeGear")?.address;
+  // const dopeHustlersAddress = getContractByName(selectedChain.manifest, "dope", "DopeHustlers")?.address;
 
   const policies: SessionPolicies = { contracts: {} };
 
@@ -103,17 +103,13 @@ const cartridgeConnector = ({ selectedChain }: { selectedChain: DojoChainConfig 
     policies.contracts![selectedChain.vrfProviderAddress] = { methods: [{ entrypoint: "request_random" }] };
   }
 
-  if (paperAddress) {
-    policies.contracts![paperAddress] = { methods: [{ entrypoint: "approve" }] };
-  }
+  // if (paperAddress) {
+  //   policies.contracts![paperAddress] = { methods: [{ entrypoint: "approve" }] };
+  // }
 
   if (gameAddress) {
     policies.contracts![gameAddress] = {
-      methods: [
-        { entrypoint: "create_game" },
-        { entrypoint: "travel" },
-        { entrypoint: "end_game" },
-      ],
+      methods: [{ entrypoint: "create_game" }, { entrypoint: "travel" }, { entrypoint: "end_game" }],
     };
   }
 
@@ -133,28 +129,28 @@ const cartridgeConnector = ({ selectedChain }: { selectedChain: DojoChainConfig 
     };
   }
 
-  if (dopeLootClaimAddress) {
-    policies.contracts![dopeLootClaimAddress] = {
-      methods: [{ entrypoint: "release" }, { entrypoint: "claim" }, { entrypoint: "open" }],
-    };
-  }
+  // if (dopeLootClaimAddress) {
+  //   policies.contracts![dopeLootClaimAddress] = {
+  //     methods: [{ entrypoint: "release" }, { entrypoint: "claim" }, { entrypoint: "open" }],
+  //   };
+  // }
 
-  if (dopeGearAddress) {
-    policies.contracts![dopeGearAddress] = {
-      methods: [{ entrypoint: "mint" }, { entrypoint: "set_approval_for_all" }],
-    };
-  }
+  // if (dopeGearAddress) {
+  //   policies.contracts![dopeGearAddress] = {
+  //     methods: [{ entrypoint: "mint" }, { entrypoint: "set_approval_for_all" }],
+  //   };
+  // }
 
-  if (dopeHustlersAddress) {
-    policies.contracts![dopeHustlersAddress] = {
-      methods: [
-        { entrypoint: "update_hustler" },
-        { entrypoint: "update_hustler_body" },
-        { entrypoint: "equip" },
-        { entrypoint: "unequip" },
-      ],
-    };
-  }
+  // if (dopeHustlersAddress) {
+  //   policies.contracts![dopeHustlersAddress] = {
+  //     methods: [
+  //       { entrypoint: "update_hustler" },
+  //       { entrypoint: "update_hustler_body" },
+  //       { entrypoint: "equip" },
+  //       { entrypoint: "unequip" },
+  //     ],
+  //   };
+  // }
 
   if (selectedChain.name !== "MAINNET") {
     const devtoolsAddress = getContractByName(selectedChain.manifest, DW_NS, "devtools")?.address;
@@ -163,9 +159,9 @@ const cartridgeConnector = ({ selectedChain }: { selectedChain: DojoChainConfig 
       policies.contracts![devtoolsAddress] = { methods: [{ entrypoint: "create_fake_game" }] };
     }
 
-    if (paperAddress && policies.contracts![paperAddress]) {
-      policies.contracts![paperAddress].methods.push({ entrypoint: "faucet" });
-    }
+    // if (paperAddress && policies.contracts![paperAddress]) {
+    //   policies.contracts![paperAddress].methods.push({ entrypoint: "faucet" });
+    // }
 
     if (laundromatAddress && policies.contracts![laundromatAddress]) {
       policies.contracts![laundromatAddress].methods.push({ entrypoint: "supercharge_jackpot" });
