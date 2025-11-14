@@ -8,6 +8,13 @@ import { observer } from "mobx-react-lite";
 import { AccountInterface } from "starknet";
 import { HustlerAvatarIcon } from "../profile/HustlerAvatarIcon";
 
+const truncateAddress = (address: string, startLength: number = 6, endLength: number = 4): string => {
+  if (!address || address.length <= startLength + endLength) {
+    return address;
+  }
+  return `${address.slice(0, startLength)}...${address.slice(-endLength)}`;
+};
+
 export const YourGames = observer(() => {
   const { account } = useAccount();
   const { yourGames, isFetchingYourGames } = useYourGames();
@@ -87,7 +94,7 @@ const YourGameEntry = ({ game }: { game: any; account: AccountInterface | undefi
               Token #{game.minigame_token_id}
             </Text>
             <Text color={colors.neon["400"].toString()} fontWeight="bold">
-              {game.player_name as string}
+              {truncateAddress(game.player_name as string)}
             </Text>
           </VStack>
         </HStack>
