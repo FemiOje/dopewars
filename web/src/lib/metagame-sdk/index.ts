@@ -41,9 +41,9 @@ export async function getGameTokens(ownerAddress: string, tokenAddress?: string)
 
   const paddedOwner = padAddress(ownerAddress);
   const query = `
-    SELECT DISTINCT o.token_id
-    FROM '${namespace}-OwnersUpdate' o
-    WHERE o.owner = "${paddedOwner}"
+    SELECT DISTINCT gt.token_id
+    FROM '${namespace}-GameToken' gt
+    WHERE gt.player_id = "${paddedOwner}"
   `;
 
   try {

@@ -26,6 +26,7 @@ export const MetagameProvider = ({ children }: MetagameProviderProps) => {
     initMetagame({
       toriiUrl: selectedChain.toriiUrl,
       worldAddress: selectedChain.manifest.world.address,
+      namespace: selectedChain.namespace,
     })
       .then((client) => {
         console.log("✅ Metagame SDK setup complete!");

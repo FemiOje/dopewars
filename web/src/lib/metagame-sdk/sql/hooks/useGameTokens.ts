@@ -3,7 +3,7 @@
 import { gamesQuery, gamesCountQuery } from "../queries/sql";
 import { useSqlQuery, type SqlQueryResult } from "../services/sqlService";
 import { feltToString } from "../../shared/lib";
-import { useMemo, useState, useCallback } from "react";
+import { useMemo, useState, useCallback, useEffect } from "react";
 import { getMetagameClientSafe } from "../../shared/singleton";
 import { parseSettingsData, parseContextData } from "../../shared/utils/dataTransformers";
 import type { GameTokenData } from "../../shared/types";
@@ -100,8 +100,11 @@ export const useGameTokens = ({
   const finalSortOrder = sortOrder ?? defaultSortOrder;
 
   const query = useMemo(() => {
-    if (!client) return null;
-    return gamesQuery({
+    if (!client) {
+      console.warn("⚠️ Metagame client not available for query");
+      return null;
+    }
+    const generatedQuery = gamesQuery({
       namespace: client.getNamespace(),
       owner,
       gameAddresses,
@@ -123,6 +126,13 @@ export const useGameTokens = ({
       sortBy,
       sortOrder: finalSortOrder,
     });
+    console.log("📝 Generated SQL query for games:", {
+      namespace: client.getNamespace(),
+      owner,
+      gameAddresses,
+      queryPreview: generatedQuery.substring(0, 300) + "...",
+    });
+    return generatedQuery;
   }, [
     client,
     owner,
@@ -199,6 +209,25 @@ export const useGameTokens = ({
     refetch: refetchCount,
   } = useSqlQuery(toriiUrl, countQuery, true);
 
+  // Log query results for debugging
+  useEffect(() => {
+    if (!loading && query) {
+      if (queryError) {
+        console.error("❌ SQL query error in useGameTokens:", {
+          error: queryError,
+          toriiUrl,
+          queryPreview: query.substring(0, 200),
+        });
+      } else {
+        console.log("📊 Raw game data received:", {
+          count: rawGameData?.length || 0,
+          data: rawGameData,
+          toriiUrl,
+        });
+      }
+    }
+  }, [rawGameData, loading, queryError, query, toriiUrl]);
+
   const error = queryError || countError;
   const isLoading = loading || countLoading;
 
@@ -233,22 +262,37 @@ export const useGameTokens = ({
           }
         : undefined;
 
+      // Convert token_id from hex string to number if needed
+      let tokenId = 0;
+      if (game.token_id) {
+        const tokenIdStr = game.token_id.toString().replace(/["']/g, "").replace(/^0x/, "");
+        tokenId = parseInt(tokenIdStr, 16) || parseInt(tokenIdStr, 10) || 0;
+      }
+
       const filteredGame: GameTokenData = {
-        game_id: Number(game.game_id),
-        game_over: game.game_over,
+        game_id: Number(game.game_id) || 0,
+        game_over: Boolean(game.game_over),
         lifecycle: {
-          start: Number(game.lifecycle_start) || undefined,
-          end: Number(game.lifecycle_end) || undefined,
+          start: game.lifecycle_start ? Number(game.lifecycle_start) : undefined,
+          end: game.lifecycle_end ? Number(game.lifecycle_end) : undefined,
         },
-        minted_at: Number(game.minted_at) || undefined,
-        minted_by: Number(game.minted_by) || undefined,
-        minted_by_address: game.minted_by_address,
+        minted_at: game.minted_at
+          ? typeof game.minted_at === "string"
+            ? Math.floor(new Date(game.minted_at).getTime() / 1000)
+            : Number(game.minted_at)
+          : undefined,
+        minted_by: game.minted_by ? Number(game.minted_by) : undefined,
+        minted_by_address: game.minted_by_address || game.owner,
         owner: game.owner,
         settings_id: game.settings_id == null ? undefined : Number(game.settings_id),
         soulbound: Boolean(game.soulbound),
         completed_all_objectives: Boolean(game.completed_all_objectives),
-        token_id: Number(game.token_id) || 0,
-        player_name: feltToString(game.player_name) || undefined,
+        token_id: tokenId,
+        player_name: game.player_name
+          ? typeof game.player_name === "string"
+            ? game.player_name
+            : feltToString(game.player_name)
+          : undefined,
         metadata: undefined,
         context: parsedContext
           ? {

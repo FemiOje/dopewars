@@ -99,8 +99,28 @@ export async function executeSqlQuery<T>(
   }
 
   try {
+    // Normalize URL - ensure it doesn't have /graphql suffix
+    let normalizedUrl = toriiUrl;
+    if (normalizedUrl.endsWith("/graphql")) {
+      normalizedUrl = normalizedUrl.replace("/graphql", "");
+    }
+    if (normalizedUrl.endsWith("/graphql/")) {
+      normalizedUrl = normalizedUrl.replace("/graphql/", "");
+    }
+
+    const sqlUrl = `${normalizedUrl}/sql`;
     const encodedQuery = encodeURIComponent(query);
-    const response = await fetch(`${toriiUrl}/sql?query=${encodedQuery}`, {
+    const fullUrl = `${sqlUrl}?query=${encodedQuery}`;
+
+    if (logging) {
+      console.log("🔍 Executing SQL query:", {
+        url: sqlUrl,
+        queryPreview: query.substring(0, 200) + "...",
+        fullQuery: query,
+      });
+    }
+
+    const response = await fetch(fullUrl, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -112,6 +132,12 @@ export async function executeSqlQuery<T>(
     if (!response.ok) {
       const errorData = responseData as ErrorResponse;
       const errorMessage = errorData.error || errorData.message || "Failed to execute query";
+      console.error("❌ SQL query error:", {
+        status: response.status,
+        statusText: response.statusText,
+        error: errorMessage,
+        response: responseData,
+      });
       if (logging) {
         logger.error("SQL query error:", errorMessage);
       }
@@ -120,11 +146,19 @@ export async function executeSqlQuery<T>(
 
     const result = responseData as T[];
     if (logging) {
+      console.log("✅ SQL query result:", {
+        resultCount: result.length,
+        data: result,
+      });
       logger.debug("SQL query result:", result);
     }
     return { data: result, error: null };
   } catch (err) {
     const errorMessage = err instanceof Error ? err.message : "An unknown error occurred";
+    console.error("❌ SQL query exception:", {
+      error: errorMessage,
+      stack: err instanceof Error ? err.stack : undefined,
+    });
     if (logging) {
       logger.error("SQL query error:", errorMessage);
     }
