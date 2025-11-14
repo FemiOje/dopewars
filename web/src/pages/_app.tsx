@@ -2,6 +2,7 @@ import { LoadingModal, MakeItRain, QuitGameModal, RefreshGameModal } from "@/com
 import { AccountDetailsModal, ConnectModal } from "@/components/wallet";
 import { DeployingModal } from "@/components/wallet/DeployingModal";
 import { DojoContextProvider } from "@/dojo/context/DojoContext";
+import { MetagameProvider } from "@/dojo/context/MetagameContext";
 import { useAutoBurner } from "@/dojo/hooks/useAutoBurner";
 import { dojoContextConfig } from "@/dojo/setup/config";
 import useKonamiCode, { starkpimpSequence } from "@/hooks/useKonamiCode";
@@ -51,28 +52,30 @@ export default function App({ Component, pageProps }: AppProps) {
               content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
             />
           </NextHead>
-          {isRightSequence && <MakeItRain />}
-          <Component {...pageProps} />
-          <SpeedInsights />
-          {/* <Debug /> */}
+          <MetagameProvider>
+            {isRightSequence && <MakeItRain />}
+            <Component {...pageProps} />
+            <SpeedInsights />
+            {/* <Debug /> */}
 
-          {/* Common modales */}
-          <LoadingModal />
-          <DeployingModal />
-          <ConnectModal />
-          <AccountDetailsModal />
-          <QuitGameModal />
-          <RefreshGameModal />
-          <SeasonDetailsModal />
+            {/* Common modales */}
+            <LoadingModal />
+            <DeployingModal />
+            <ConnectModal />
+            <AccountDetailsModal />
+            <QuitGameModal />
+            <RefreshGameModal />
+            <SeasonDetailsModal />
 
-          <GlobalEvents />
+            <GlobalEvents />
 
-          <Toaster
-            gutter={0}
-            containerStyle={{
-              inset: 0,
-            }}
-          />
+            <Toaster
+              gutter={0}
+              containerStyle={{
+                inset: 0,
+              }}
+            />
+          </MetagameProvider>
         </DojoContextProvider>
       </ChakraProvider>
     </>
