@@ -4,4 +4,4 @@ pub const SETTINGS_VERSION: felt252 = '0.0.1';
 
 pub fn DEFAULT_NS() -> ByteArray {
     "dopewars"
-} 
+}

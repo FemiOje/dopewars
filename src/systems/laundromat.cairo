@@ -6,8 +6,8 @@ pub trait ILaundromat<T> {
     // fn launder(self: @T, season_version: u16);
 
     // fn claim(self: @T, player_id: ContractAddress, token_ids: Span<u64>);
-    // fn claim_treasury(self: @T);
-    // fn supercharge_jackpot(self: @T, season_version: u16, amount_eth: u32);
+// fn claim_treasury(self: @T);
+// fn supercharge_jackpot(self: @T, season_version: u16, amount_eth: u32);
 }
 
 #[dojo::contract]
@@ -37,21 +37,15 @@ pub mod laundromat {
         // interfaces::{paper::{IPaperDispatcher, IPaperDispatcherTrait}}, // PAPER removed
         // libraries::dopewars_items::{IDopewarsItemsDispatcherTrait,
         // IDopewarsItemsLibraryDispatcher},
-        models::{game::{
-            // Game, 
-            GameImpl, 
-            GameTrait
-        }, season::{SeasonImpl, SeasonTrait}},
+        models::{game::{// Game,
+        GameImpl, GameTrait}, season::{SeasonImpl, SeasonTrait}},
         packing::game_store::{GameStoreImpl}, store::{StoreImpl, StoreTrait},
-        utils::{
-            // payout_items::{add_items_payout},
-            // payout_structure::{get_payed_count}, 
-            random::{RandomImpl},
-            // randomness_helper::{RandomnessHelperTrait},
-            sorted_list::{SortedListImpl, SortedListTrait},
-        },
+        utils::{// payout_items::{add_items_payout},
+        // payout_structure::{get_payed_count},
+        random::{RandomImpl}, // randomness_helper::{RandomnessHelperTrait},
+        sorted_list::{SortedListImpl, SortedListTrait}},
     };
-    use starknet::{ContractAddress};
+    use starknet::ContractAddress;
     // use cartridge_vrf::{IVrfProviderDispatcher, IVrfProviderDispatcherTrait, Source};
 
     #[abi(embed_v0)]
@@ -177,214 +171,214 @@ pub mod laundromat {
             // Update token state
             post_action(token_address, game.minigame_token_id);
         }
-
         // fn launder(self: @ContractState, season_version: u16) {
-        //     let world = self.world(@"dopewars");
-        //     let mut store = StoreImpl::new(world);
+    //     let world = self.world(@"dopewars");
+    //     let mut store = StoreImpl::new(world);
 
         //     let randomness_config = store.randomness_config();
-        //     let _player_id = get_caller_address();
+    //     let _player_id = get_caller_address();
 
         //     // around 276k steps / 10
-        //     // almost free now, compute all in one
-        //     let process_batch_size = 100;
+    //     // almost free now, compute all in one
+    //     let process_batch_size = 100;
 
         //     let season = store.season(season_version);
 
         //     let mut ryo_config = store.ryo_config();
 
         //     // check if exists
-        //     assert(season.exists(), 'invalid season_version');
-        //     // check if close
-        //     assert(!season.is_open(), 'season is still opened');
+    //     assert(season.exists(), 'invalid season_version');
+    //     // check if close
+    //     assert(!season.is_open(), 'season is still opened');
 
         //     // retrieve Season SortedList
-        //     let list_id = season_version.into();
-        //     let mut sorted_list = SortedListImpl::get(@store, list_id);
+    //     let list_id = season_version.into();
+    //     let mut sorted_list = SortedListImpl::get(@store, list_id);
 
         //     // set process_max_size then lock list (PAPER removed - no stake calculations)
-        //     if !sorted_list.locked {
-        //         let process_max_size = get_payed_count(sorted_list.size);
-        //         sorted_list.lock(ref store, process_max_size);
-        //     }
+    //     if !sorted_list.locked {
+    //         let process_max_size = get_payed_count(sorted_list.size);
+    //         sorted_list.lock(ref store, process_max_size);
+    //     }
 
         //     // if not process, process batch_size items
-        //     if !sorted_list.processed {
-        //         sorted_list.process::<Game>(ref store, process_batch_size);
-        //     }
+    //     if !sorted_list.processed {
+    //         sorted_list.process::<Game>(ref store, process_batch_size);
+    //     }
 
         //     // if process, create new season
-        //     if sorted_list.processed {
-        //         // retrieve next season
-        //         let next_season = store.season(season_version + 1);
+    //     if sorted_list.processed {
+    //         // retrieve next season
+    //         let next_season = store.season(season_version + 1);
 
         //         // check if not already created
-        //         if !next_season.exists() {
-        //             // update current version
-        //             ryo_config.season_version += 1;
+    //         if !next_season.exists() {
+    //             // update current version
+    //             ryo_config.season_version += 1;
 
         //             store.save_ryo_config(@ryo_config);
 
         //             // create new season
-        //             let game_context = core::poseidon::poseidon_hash_span(
-        //                 array![season_version.into(), 'launder'].span(),
-        //             );
-        //             let mut randomizer = RandomnessHelperTrait::create_randomizer(
-        //                 randomness_config, game_context,
-        //             );
-        //             let mut season_manager = SeasonManagerTrait::new(store);
-        //             season_manager.new_season(ref randomizer, ryo_config.season_version);
+    //             let game_context = core::poseidon::poseidon_hash_span(
+    //                 array![season_version.into(), 'launder'].span(),
+    //             );
+    //             let mut randomizer = RandomnessHelperTrait::create_randomizer(
+    //                 randomness_config, game_context,
+    //             );
+    //             let mut season_manager = SeasonManagerTrait::new(store);
+    //             season_manager.new_season(ref randomizer, ryo_config.season_version);
 
         //             // emit NewSeason
-        //             store
-        //                 .world
-        //                 .emit_event(
-        //                     @NewSeason {
-        //                         key: ryo_config.season_version,
-        //                         season_version: ryo_config.season_version,
-        //                     },
-        //                 );
-        //         } else {
-        //             assert(false, 'launder already ended');
-        //         }
-        //     }
+    //             store
+    //                 .world
+    //                 .emit_event(
+    //                     @NewSeason {
+    //                         key: ryo_config.season_version,
+    //                         season_version: ryo_config.season_version,
+    //                     },
+    //                 );
+    //         } else {
+    //             assert(false, 'launder already ended');
+    //         }
+    //     }
 
         //     // PAPER removed - no longer rewarding launderer
-        //     // let paper_address = store.ryo_addresses().paper;
-        //     // let paper_reward_launderer: u256 = ryo_config.paper_reward_launderer.into() * ETHER;
-        //     // IPaperDispatcher { contract_address: paper_address }
-        //     //     .transfer(get_caller_address(), paper_reward_launderer);
-        // }
+    //     // let paper_address = store.ryo_addresses().paper;
+    //     // let paper_reward_launderer: u256 = ryo_config.paper_reward_launderer.into() *
+    //     ETHER;
+    //     // IPaperDispatcher { contract_address: paper_address }
+    //     //     .transfer(get_caller_address(), paper_reward_launderer);
+    // }
 
         // fn claim(self: @ContractState, player_id: ContractAddress, token_ids: Span<u64>) {
-        //     let world = self.world(@"dopewars");
-        //     let mut _dope_world = self.world(@"dope");
+    //     let world = self.world(@"dopewars");
+    //     let mut _dope_world = self.world(@"dope");
 
         //     let mut store = StoreImpl::new(world);
 
         //     // Verify caller is player_id
-        //     let caller = get_caller_address();
-        //     assert(caller == player_id, 'caller must be player_id');
-        //     let expected_owner = player_id;
+    //     let caller = get_caller_address();
+    //     assert(caller == player_id, 'caller must be player_id');
+    //     let expected_owner = player_id;
 
         //     let mut token_ids = token_ids;
 
         //     // // check max batch size
-        //     // assert(token_ids.len() <= 10, 'too much token_ids');
+    //     // assert(token_ids.len() <= 10, 'too much token_ids');
 
         //     let mut _gear_ids: Array<u256> = array![];
-        //     let mut _gear_ids_values: Array<u256> = array![];
-        //     let mut _hustler_count = 0;
+    //     let mut _gear_ids_values: Array<u256> = array![];
+    //     let mut _hustler_count = 0;
 
         //     // let hustler_dispatcher = IDopeHustlersABIDispatcher {
-        //     //     contract_address: dope_world.dns_address(@"DopeHustlers").unwrap(),
-        //     // };
-        //     // let gear_dispatcher = IDopeGearABIDispatcher {
-        //     //     contract_address: dope_world.dns_address(@"DopeGear").unwrap(),
-        //     // };
+    //     //     contract_address: dope_world.dns_address(@"DopeHustlers").unwrap(),
+    //     // };
+    //     // let gear_dispatcher = IDopeGearABIDispatcher {
+    //     //     contract_address: dope_world.dns_address(@"DopeGear").unwrap(),
+    //     // };
 
         //     let bushido_store = BushidoStoreTrait::new(world);
-        //     let mut total_claimable = 0;
-        //     let token_address = self._get_game_token_address();
+    //     let mut total_claimable = 0;
+    //     let token_address = self._get_game_token_address();
 
         //     while let Option::Some(token_id) = token_ids.pop_front() {
-        //         assert_token_ownership(token_address, *token_id);
+    //         assert_token_ownership(token_address, *token_id);
 
         //         let mut game = store.game_by_token_id(*token_id);
-        //         let current_owner = resolve_current_owner_by_token(world, *token_id);
-        //         assert(current_owner == expected_owner, 'caller must be owner of token');
+    //         let current_owner = resolve_current_owner_by_token(world, *token_id);
+    //         assert(current_owner == expected_owner, 'caller must be owner of token');
 
         //         // retrieve Season SortedList
-        //         let list_id = game.season_version.into();
-        //         let mut sorted_list = SortedListImpl::get(@store, list_id);
+    //         let list_id = game.season_version.into();
+    //         let mut sorted_list = SortedListImpl::get(@store, list_id);
 
         //         // check season status
-        //         assert(sorted_list.locked, 'season has not ended');
-        //         assert(sorted_list.processed, 'need more launder');
+    //         assert(sorted_list.locked, 'season has not ended');
+    //         assert(sorted_list.processed, 'need more launder');
 
         //         // any other check missing ?
-        //         assert(game.registered, 'unregistered game');
-        //         assert(game.position > 0, 'invalid position');
-        //         assert(!game.claimed, 'already claimed');
+    //         assert(game.registered, 'unregistered game');
+    //         assert(game.position > 0, 'invalid position');
+    //         assert(!game.claimed, 'already claimed');
 
         //         total_claimable = total_claimable + game.claimable;
 
         //         // update claimed & save
-        //         game.claimed = true;
-        //         store.set_game(@game);
+    //         game.claimed = true;
+    //         store.set_game(@game);
 
         //         // // add items rewards ids
-        //         // add_items_payout(
-        //         //     ref dope_world,
-        //         //     ref gear_ids,
-        //         //     ref gear_ids_values,
-        //         //     ref hustler_count,
-        //         //     game.season_version,
-        //         //     game.position,
-        //         // );
+    //         // add_items_payout(
+    //         //     ref dope_world,
+    //         //     ref gear_ids,
+    //         //     ref gear_ids_values,
+    //         //     ref hustler_count,
+    //         //     game.season_version,
+    //         //     game.position,
+    //         // );
 
         //         // emit Claimed event
-        //         store
-        //             .world
-        //             .emit_event(
-        //                 @Claimed {
-        //                     game_id: game.game_id,
-        //                     player_id,
-        //                     season_version: game.season_version,
-        //                     paper: game.claimable,
-        //                     rank: game.position,
-        //                 },
-        //             );
+    //         store
+    //             .world
+    //             .emit_event(
+    //                 @Claimed {
+    //                     game_id: game.game_id,
+    //                     player_id,
+    //                     season_version: game.season_version,
+    //                     paper: game.claimable,
+    //                     rank: game.position,
+    //                 },
+    //             );
 
         //         if game.position == 1 {
-        //             bushido_store
-        //                 .progress(
-        //                     current_owner.into(),
-        //                     Tasks::KINGPIN,
-        //                     1,
-        //                     starknet::get_block_timestamp(),
-        //                 );
-        //         }
-        //     }
+    //             bushido_store
+    //                 .progress(
+    //                     current_owner.into(),
+    //                     Tasks::KINGPIN,
+    //                     1,
+    //                     starknet::get_block_timestamp(),
+    //                 );
+    //         }
+    //     }
 
         //     // PAPER removed - no longer tracking PAPER tasks or transferring rewards
-        //     // bushido_store
-        //     //     .progress(
-        //     //         expected_owner.into(),
-        //     //         Tasks::PAPER,
-        //     //         total_claimable.into(),
-        //     //         starknet::get_block_timestamp(),
-        //     //     );
+    //     // bushido_store
+    //     //     .progress(
+    //     //         expected_owner.into(),
+    //     //         Tasks::PAPER,
+    //     //         total_claimable.into(),
+    //     //         starknet::get_block_timestamp(),
+    //     //     );
 
         //     // PAPER removed - no longer transferring rewards
-        //     // let paper_address = store.ryo_addresses().paper;
-        //     // let total_claimable: u256 = total_claimable.into() * ETHER;
-        //     // IPaperDispatcher { contract_address: paper_address }
-        //     //     .transfer(expected_owner, total_claimable);
-        //     // // mint gear items
-        // // gear_dispatcher
-        // //     .mint_batch(player_id, gear_ids.span(), gear_ids_values.span(), array![].span());
+    //     // let paper_address = store.ryo_addresses().paper;
+    //     // let total_claimable: u256 = total_claimable.into() * ETHER;
+    //     // IPaperDispatcher { contract_address: paper_address }
+    //     //     .transfer(expected_owner, total_claimable);
+    //     // // mint gear items
+    // // gear_dispatcher
+    // //     .mint_batch(player_id, gear_ids.span(), gear_ids_values.span(), array![].span());
 
         //     // // mint hustlers
-        // // while hustler_count > 0 {
-        // //     hustler_dispatcher.mint_hustler_to(player_id);
-        // //     hustler_count -= 1;
-        // // }
-        // }
+    // // while hustler_count > 0 {
+    // //     hustler_dispatcher.mint_hustler_to(player_id);
+    // //     hustler_count -= 1;
+    // // }
+    // }
 
         // fn claim_treasury(self: @ContractState) {
-        //     // PAPER removed - treasury claiming no longer supported
-        //     // This function is kept for interface compatibility but does nothing
-        //     let _store = StoreImpl::new(self.world(@"dopewars"));
-        // }
+    //     // PAPER removed - treasury claiming no longer supported
+    //     // This function is kept for interface compatibility but does nothing
+    //     let _store = StoreImpl::new(self.world(@"dopewars"));
+    // }
 
         // fn supercharge_jackpot(self: @ContractState, season_version: u16, amount_eth: u32) {
-        //     // PAPER removed - jackpot supercharging no longer supported
-        //     // This function is kept for interface compatibility but does nothing
-        //     let _store = StoreImpl::new(self.world(@"dopewars"));
-        //     let _season = _store.season(season_version);
-        //     let _amount = amount_eth;
-        // }
+    //     // PAPER removed - jackpot supercharging no longer supported
+    //     // This function is kept for interface compatibility but does nothing
+    //     let _store = StoreImpl::new(self.world(@"dopewars"));
+    //     let _season = _store.season(season_version);
+    //     let _amount = amount_eth;
+    // }
     }
 
     #[generate_trait]

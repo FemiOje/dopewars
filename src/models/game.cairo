@@ -8,7 +8,6 @@ pub type GearId = felt252;
 // TokenId enum removed - Dope collection integration stripped
 // All games now use default equipment
 
-
 #[derive(Copy, Drop, Serde, PartialEq, IntrospectPacked, Default, DojoStore)]
 pub enum GameMode {
     #[default]

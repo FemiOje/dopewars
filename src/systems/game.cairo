@@ -19,11 +19,7 @@ pub enum EncounterActions {
 #[starknet::interface]
 pub trait IGameActions<T> {
     fn create_game(
-        self: @T,
-        game_mode: GameMode,
-        player_name: felt252,
-        multiplier: u8,
-        minigame_token_id: u64,
+        self: @T, game_mode: GameMode, player_name: felt252, multiplier: u8, minigame_token_id: u64,
     );
     fn end_game(self: @T, token_id: u64, actions: Span<Actions>);
     fn travel(self: @T, token_id: u64, next_location: Locations, actions: Span<Actions>);
@@ -100,22 +96,13 @@ pub mod game {
             // Dope collection integration removed - no token_id needed
 
             let mut game_created = GameCreated {
-                game_id,
-                player_id,
-                game_mode,
-                player_name,
-                multiplier,
+                game_id, player_id, game_mode, player_name, multiplier,
             };
 
             // create game
             let mut game_config = store.game_config(season_version);
             let mut game = GameImpl::new(
-                game_id,
-                player_id,
-                season_version,
-                game_mode,
-                player_name,
-                multiplier,
+                game_id, player_id, season_version, game_mode, player_name, multiplier,
             );
 
             game.minigame_token_id = minigame_token_id;

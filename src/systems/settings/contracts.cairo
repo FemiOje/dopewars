@@ -21,19 +21,18 @@ pub trait ISettingsSystems<T> {
 
 #[dojo::contract]
 mod settings_systems {
+    use dojo::model::ModelStorage;
+    use dojo::world::{WorldStorage, WorldStorageTrait};
+    use game_components_minigame::extensions::settings::interface::{
+        IMinigameSettings, IMinigameSettingsDetails,
+    };
+    use game_components_minigame::extensions::settings::settings::SettingsComponent;
+    use game_components_minigame::extensions::settings::structs::{GameSetting, GameSettingDetails};
+    use game_components_minigame::interface::{IMinigameDispatcher, IMinigameDispatcherTrait};
+    use openzeppelin_introspection::src5::SRC5Component;
     use rollyourown::constants::{DEFAULT_NS, SETTINGS_VERSION};
     use rollyourown::libs::settings::generate_settings_array;
     use rollyourown::models::settings::{GameSettings, GameSettingsMetadata, SettingsCounter};
-
-    use dojo::model::ModelStorage;
-    use dojo::world::{WorldStorage, WorldStorageTrait};
-    use game_components_minigame::extensions::settings::interface::{IMinigameSettings, IMinigameSettingsDetails};
-    use game_components_minigame::extensions::settings::settings::SettingsComponent;
-    use game_components_minigame::extensions::settings::structs::{GameSetting, GameSettingDetails};
-
-    use game_components_minigame::interface::{IMinigameDispatcher, IMinigameDispatcherTrait};
-
-    use openzeppelin_introspection::src5::SRC5Component;
     use starknet::ContractAddress;
     use super::ISettingsSystems;
 
@@ -67,11 +66,7 @@ mod settings_systems {
         self.settings.initializer();
 
         let default_settings = GameSettings {
-            settings_id: 0,
-            initial_cash: 1000,
-            initial_health: 5,
-            max_turns: 6,
-            season_version: 1,
+            settings_id: 0, initial_cash: 1000, initial_health: 5, max_turns: 6, season_version: 1,
         };
 
         world.write_model(@default_settings);
@@ -88,7 +83,9 @@ mod settings_systems {
             );
 
         let (game_token_systems_address, _) = world.dns(@"game_token_system_v0").unwrap();
-        let minigame_dispatcher = IMinigameDispatcher { contract_address: game_token_systems_address };
+        let minigame_dispatcher = IMinigameDispatcher {
+            contract_address: game_token_systems_address,
+        };
         let minigame_token_address = minigame_dispatcher.token_address();
 
         let settings: Span<GameSetting> = generate_settings_array(default_settings);
@@ -127,7 +124,9 @@ mod settings_systems {
                 _settings_name.append_word(settings_details.name, 31);
             }
 
-            GameSettingDetails { name: _settings_name, description: settings_details.description, settings }
+            GameSettingDetails {
+                name: _settings_name, description: settings_details.description, settings,
+            }
         }
     }
 
@@ -172,7 +171,9 @@ mod settings_systems {
             let settings: Span<GameSetting> = generate_settings_array(game_settings);
 
             let (game_token_systems_address, _) = world.dns(@"game_token_systems").unwrap();
-            let minigame_dispatcher = IMinigameDispatcher { contract_address: game_token_systems_address };
+            let minigame_dispatcher = IMinigameDispatcher {
+                contract_address: game_token_systems_address,
+            };
             let minigame_token_address = minigame_dispatcher.token_address();
 
             let mut _name = Default::default();
@@ -204,7 +205,9 @@ mod settings_systems {
         fn game_settings(self: @ContractState, game_id: u64) -> GameSettings {
             let world: WorldStorage = self.world(@DEFAULT_NS());
             let (game_token_systems_address, _) = world.dns(@"game_token_systems").unwrap();
-            let minigame_dispatcher = IMinigameDispatcher { contract_address: game_token_systems_address };
+            let minigame_dispatcher = IMinigameDispatcher {
+                contract_address: game_token_systems_address,
+            };
             let minigame_token_address = minigame_dispatcher.token_address();
             let settings_id = self.settings.get_settings_id(game_id, minigame_token_address);
             let game_settings: GameSettings = world.read_model(settings_id);
@@ -221,10 +224,7 @@ mod settings_systems {
     #[generate_trait]
     impl InternalImpl of InternalTrait {
         fn _validate_settings(
-            ref self: ContractState,
-            initial_cash: u32,
-            initial_health: u8,
-            max_turns: u8,
+            ref self: ContractState, initial_cash: u32, initial_health: u8, max_turns: u8,
         ) {
             // Validate initial_cash is within reasonable bounds
             assert!(initial_cash > 0, "Initial cash must be positive");

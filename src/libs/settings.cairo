@@ -1,5 +1,5 @@
-use rollyourown::models::settings::GameSettings;
 use game_components_minigame::extensions::settings::structs::GameSetting;
+use rollyourown::models::settings::GameSettings;
 
 pub fn generate_settings_array(game_settings: GameSettings) -> Span<GameSetting> {
     array![

@@ -41,12 +41,7 @@ pub trait SortableItem<T> {
     fn get_value(self: T) -> u32;
     fn get_by_keys(store: @Store, keys: (u32, ContractAddress)) -> T;
     // fn get_position(self: T) -> u16;
-    fn set_position(
-        ref self: T,
-        ref store: Store,
-        position: u16,
-        entrants: u32,
-    );
+    fn set_position(ref self: T, ref store: Store, position: u16, entrants: u32);
     fn get_multiplier(self: T) -> u32;
 }
 
@@ -67,12 +62,7 @@ pub impl SortableItemGameImpl of SortableItem<Game> {
         store.game(game_id, player_id)
     }
 
-    fn set_position(
-        ref self: Game,
-        ref store: Store,
-        position: u16,
-        entrants: u32,
-    ) {
+    fn set_position(ref self: Game, ref store: Store, position: u16, entrants: u32) {
         // PAPER removed - claimable is always 0, only track position for leaderboard
         self.position = position;
         self.claimable = 0; // PAPER removed - no rewards
@@ -200,9 +190,7 @@ pub impl SortedListImpl of SortedListTrait {
     //
     //
 
-    fn lock(
-        ref self: SortedList, ref store: Store, process_max_size: u32,
-    ) {
+    fn lock(ref self: SortedList, ref store: Store, process_max_size: u32) {
         assert(!self.locked, 'list already locked');
         assert(process_max_size > 0, 'invalid process_max_size');
 
@@ -231,10 +219,7 @@ pub impl SortedListImpl of SortedListTrait {
 
         let mut curr = store.sorted_list_item(self.list_id, curr_k0, curr_k1);
         let mut curr_item = SortableItem::<T>::get_by_keys(@store, (curr.item_k0, curr.item_k1));
-        let mut curr_position: u16 = self
-            .process_size
-            .try_into()
-            .unwrap();
+        let mut curr_position: u16 = self.process_size.try_into().unwrap();
 
         let mut i = 0;
 
