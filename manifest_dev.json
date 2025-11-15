@@ -1,7 +1,7 @@
 {
   "world": {
     "class_hash": "0x57994b6a75fad550ca18b41ee82e2110e158c59028c4478109a67965a0e5b1e",
-    "address": "0x6bc05ce8b9d77bc18f9ce94aa33cdf3dc3f3c766cbc63c3d7cd9485e568cc85",
+    "address": "0x41e2f43bc278d01381e67640afdc36467cb86cbc431cb9cd0e2085983d20bbc",
     "seed": "dopeseed",
     "name": "Dope Wars",
     "entrypoints": [
@@ -1479,7 +1479,7 @@
   },
   "contracts": [
     {
-      "address": "0x18eb8bb9372bdc74585822740d85c91b81175f91cc0ee0619fe64bda1aad810",
+      "address": "0x38ab5ebabc939765e665455c57c622e17d1fc51a1d0bca1302d6dfa2ef64268",
       "class_hash": "0x18e9f6ec125a8906e40be1d97bb319e9f40f80232c7f9787bd7eaabd263ad04",
       "abi": [
         {
@@ -2037,8 +2037,8 @@
       ]
     },
     {
-      "address": "0xa34c2b00f78ac4fec4400368961e75b9f003d847c445b3c3ff49ee9b0bfee7",
-      "class_hash": "0x8daa1100d9e886beb44d961f9f726834a301f0402b307c3f5c6e6dc6dbf3db",
+      "address": "0x188ad829485c6b434d8ebf2ee680268f1fe94d641999b8f7f1ffabd5ee2d2f1",
+      "class_hash": "0x1e395ab07531fb6ac689a46779295cb7a02826220944ce4ff1bfcb89bb5fe60",
       "abi": [
         {
           "type": "impl",
@@ -2258,7 +2258,7 @@
       ]
     },
     {
-      "address": "0x15c35cb2d25844b1af29f710dd97533520a306941750906190f207387ac21ba",
+      "address": "0x2ed532976e4bdfa387b43095cb92df0996cf540f564ee16dfc3e6c31e8fa573",
       "class_hash": "0x2184e6fae8b028b52a610912ffd2a294847d4632e45d3c863c28b062a1213ce",
       "abi": [
         {
@@ -2471,8 +2471,8 @@
       ]
     },
     {
-      "address": "0xcdc99c98deb5c91e9d2f1e3cf362cda3ad5c742a1987d21f8ac6b36de11877",
-      "class_hash": "0x6c8ddfabab7d743eabf47917a231747fc1c932a42d410c74dd8c8f9197fd464",
+      "address": "0x1cf581bc449418364ccc1fcda063ebf85abbb5c705f26699e0cb2c0e94c7f2b",
+      "class_hash": "0x630a539962f181b8ff2f0dc4fb1ce586ff5849fed7b350b3f493e86316849da",
       "abi": [
         {
           "type": "impl",
@@ -2914,8 +2914,8 @@
       ]
     },
     {
-      "address": "0x3cd4af3356c2c48eb4a900d0ade808e307c3b9eb8176e6a90d27b3469ff8b08",
-      "class_hash": "0x728a92dd50e600b6b9d1815eef397981eddf26f97f1683f8e3ac95b9ff4b41e",
+      "address": "0x6e18da94306959e7ac81711976b84931f7b4553f571cd147a4ce2298666302c",
+      "class_hash": "0x7709e9237008ac4ad9bbcaea7839bed698332cc6949fc1eadabfc68aa7404cd",
       "abi": [
         {
           "type": "impl",
@@ -3182,7 +3182,7 @@
       ]
     },
     {
-      "address": "0x487617909da72c8906644cd554702704c34900238d1c8c6daac96511c1b61b8",
+      "address": "0x7bcedad551b119043d6a9dd2f99721e4ac71af6a4110ff1581c45fd200770a8",
       "class_hash": "0x31bb8549bc6a61d6e706d39c182cc3ddf76c24f3076028347facd05b8ce6003",
       "abi": [
         {
@@ -3610,7 +3610,7 @@
       ]
     },
     {
-      "address": "0x49456ff50f35b3ced9f341ebde6c562676afc274a5b9e4ff5f9510d63d010ba",
+      "address": "0x4ed3b18897fb595cc31180c7fce0e7ac15423fb6988ed8afb7d0f88e211708",
       "class_hash": "0x75387daf9f63b88c264ec815564d2eb99c58eb085749e4c35116cb528e4a67a",
       "abi": [
         {
@@ -4111,7 +4111,7 @@
       ]
     },
     {
-      "address": "0x7d8397ac56d55a7ab9082963516c61c692c672043f8e9adfee2eefa676759b8",
+      "address": "0x67937821a50d5db1adc8f755dfbbb3e3f96344bc16b2cf91e2d8dd519c87363",
       "class_hash": "0x3da3ba11ab50008af9900123f2773c95b279065b2c188b0d17673d3debf2a",
       "abi": [
         {
@@ -4882,13 +4882,13 @@
     },
     {
       "members": [],
-      "class_hash": "0x5556614cc63016885f1a449a77b626ffb65e4dcd9e5032fcfaab1a40f32e065",
+      "class_hash": "0x365c67075ab25b8967d48f02632eb355a3672de0d1ac0e896fea727d7420fe6",
       "tag": "dopewars_v0-GameCreated",
       "selector": "0x15f4b98b50151aa43450e06b5082fd7c8984592002f56ca3a3468b5ac6e163c"
     },
     {
       "members": [],
-      "class_hash": "0x304b3daec5c3d74a49909c7ccc2c6cdc28a8d13ca2a3366f00fdaae33a86d0a",
+      "class_hash": "0x646b2bbf21f30b3e73ade16668a7651d3011ab9fd9d20fcaf7c1366dc132653",
       "tag": "dopewars_v0-GameOver",
       "selector": "0x5cf23d3fbf8f6fd0b543e62b8280c0767cb08614c05c72a8244869cca770bad"
     },
@@ -4900,7 +4900,7 @@
     },
     {
       "members": [],
-      "class_hash": "0x3ae46b9e0dcbcaf204b31e49fc97b31a94e358f3851ca640100efac3f2f3c73",
+      "class_hash": "0x24c1a7deae611d96c5aa257819bed4f9fda90edc44ba9f53aa80ecdb2f1a8fa",
       "tag": "dopewars_v0-NewHighScore",
       "selector": "0x637a260773b915cfa645a4cb287e650ba31169e7a6d76b1b55f85d6714c3421"
     },

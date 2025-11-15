@@ -1,5 +1,7 @@
 use rollyourown::config::locations::Locations;
-use rollyourown::models::game::{GameMode, TokenId};
+use rollyourown::models::game::{GameMode,
+    TokenId
+};
 use rollyourown::packing::game_store::GameStoreImpl;
 use rollyourown::systems::helpers::{shopping, trading};
 
@@ -31,14 +33,16 @@ mod game {
     use cartridge_vrf::{IVrfProviderDispatcher, IVrfProviderDispatcherTrait, Source};
     use dojo::event::EventStorage;
     use dojo::world::{IWorldDispatcherTrait, WorldStorageTrait};
-    use dope_types::dope_hustlers::{HustlerSlots, HustlerStoreImpl, HustlerStoreTrait};
+    // use dope_types::dope_hustlers::{HustlerSlots, HustlerStoreImpl, HustlerStoreTrait};
     use rollyourown::achievements::achievements_v1::Tasks;
     use rollyourown::config::locations::Locations;
     use rollyourown::constants::ns;
     use rollyourown::events::GameCreated;
     use rollyourown::helpers::season_manager::SeasonManagerTrait;
     use rollyourown::interfaces::erc721::{IERC721ABIDispatcher, IERC721ABIDispatcherTrait};
-    use rollyourown::models::game::{GameImpl, GameMode, TokenId};
+    use rollyourown::models::game::{GameImpl, GameMode, 
+    TokenId
+};
     use rollyourown::packing::game_store::{GameStore, GameStoreImpl};
     use rollyourown::packing::player::PlayerImpl;
     use rollyourown::store::{StoreImpl, StoreTrait};
@@ -92,8 +96,8 @@ mod game {
                 player_name,
                 multiplier,
                 token_id,
-                hustler_equipment: array![].span(),
-                hustler_body: array![].span(),
+                // hustler_equipment: array![].span(),
+                // hustler_body: array![].span(),
             };
 
             match token_id {
@@ -148,34 +152,34 @@ mod game {
                         'caller is not hustler owner',
                     );
 
-                    let mut hustler_store = HustlerStoreImpl::new(dope_world);
+                    // let mut hustler_store = HustlerStoreImpl::new(dope_world);
 
-                    game_created
-                        .hustler_equipment = hustler_store
-                        .hustler_slot_full(hustler_id.into());
+                    // game_created
+                    //     .hustler_equipment = hustler_store
+                    //     .hustler_slot_full(hustler_id.into());
 
-                    game_created.hustler_body = hustler_store.hustler_body_full(hustler_id.into());
+                    // game_created.hustler_body = hustler_store.hustler_body_full(hustler_id.into());
 
-                    let accessory = hustler_store
-                        .hustler_slot(hustler_id.into(), HustlerSlots::Accessory);
+                    // let accessory = hustler_store
+                    //     .hustler_slot(hustler_id.into(), HustlerSlots::Accessory);
 
-                    let bushido_store = BushidoStoreTrait::new(world);
-                    if accessory.gear_item_id.is_some() {
-                        bushido_store
-                            .progress(
-                                player_id.into(),
-                                Tasks::ELEGANT,
-                                1,
-                                starknet::get_block_timestamp(),
-                            );
-                    };
+                    // let bushido_store = BushidoStoreTrait::new(world);
+                    // if accessory.gear_item_id.is_some() {
+                    //     bushido_store
+                    //         .progress(
+                    //             player_id.into(),
+                    //             Tasks::ELEGANT,
+                    //             1,
+                    //             starknet::get_block_timestamp(),
+                    //         );
+                    // };
                 },
             }
 
             // create game
             let mut game_config = store.game_config(season_version);
             let mut game = GameImpl::new(
-                dope_world,
+                // dope_world,
                 game_id,
                 player_id,
                 season_version,

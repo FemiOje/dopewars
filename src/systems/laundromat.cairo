@@ -16,9 +16,9 @@ mod laundromat {
     use cartridge_vrf::{IVrfProviderDispatcher, IVrfProviderDispatcherTrait, Source};
     use dojo::event::EventStorage;
     use dojo::world::WorldStorageTrait;
-    use dope_types::dope_gear::{GearItem, IDopeGearABIDispatcher, IDopeGearABIDispatcherTrait};
-    use dope_types::dope_hustlers::{IDopeHustlersABIDispatcher, IDopeHustlersABIDispatcherTrait};
-    use dope_types::helpers::is_og;
+    // use dope_types::dope_gear::{GearItem, IDopeGearABIDispatcher, IDopeGearABIDispatcherTrait};
+    // use dope_types::dope_hustlers::{IDopeHustlersABIDispatcher, IDopeHustlersABIDispatcherTrait};
+    // use dope_types::helpers::is_og;
     use rollyourown::achievements::achievements_v1::Tasks;
     use rollyourown::constants::{ETHER, MAX_MULTIPLIER, ns};
     use rollyourown::events::{Claimed, NewSeason};
@@ -27,7 +27,9 @@ mod laundromat {
     use rollyourown::libraries::dopewars_items::{
         IDopewarsItemsDispatcherTrait, IDopewarsItemsLibraryDispatcher,
     };
-    use rollyourown::models::game::{Game, GameImpl, GameTrait, TokenId};
+    use rollyourown::models::game::{Game, GameImpl, GameTrait,
+        // TokenId
+    };
     use rollyourown::models::season::{SeasonImpl, SeasonTrait};
     use rollyourown::packing::game_store::GameStoreImpl;
     use rollyourown::store::{StoreImpl, StoreTrait};
@@ -102,55 +104,55 @@ mod laundromat {
                     );
             }
 
-            if let TokenId::HustlerId(huster_id) = game.token_id {
-                if is_og(huster_id.into()) {
-                    bushido_store
-                        .progress(player_id.into(), Tasks::OG, 1, starknet::get_block_timestamp());
-                }
+            // if let TokenId::HustlerId(huster_id) = game.token_id {
+            //     if is_og(huster_id.into()) {
+            //         bushido_store
+            //             .progress(player_id.into(), Tasks::OG, 1, starknet::get_block_timestamp());
+            //     }
 
-                let weapon_id: u256 = (*game.equipment_by_slot.at(0)).into();
-                let clothe_id: u256 = (*game.equipment_by_slot.at(1)).into();
-                let foot_id: u256 = (*game.equipment_by_slot.at(2)).into();
-                let vehicle_id: u256 = (*game.equipment_by_slot.at(3)).into();
+            //     let weapon_id: u256 = (*game.equipment_by_slot.at(0)).into();
+            //     let clothe_id: u256 = (*game.equipment_by_slot.at(1)).into();
+            //     let foot_id: u256 = (*game.equipment_by_slot.at(2)).into();
+            //     let vehicle_id: u256 = (*game.equipment_by_slot.at(3)).into();
 
-                let weapon: GearItem = weapon_id.into();
-                let clothe: GearItem = clothe_id.into();
-                let foot: GearItem = foot_id.into();
-                let vehicle: GearItem = vehicle_id.into();
+            //     let weapon: GearItem = weapon_id.into();
+            //     let clothe: GearItem = clothe_id.into();
+            //     let foot: GearItem = foot_id.into();
+            //     let vehicle: GearItem = vehicle_id.into();
 
-                if weapon.suffix > 0
-                    && weapon.suffix == clothe.suffix
-                    && weapon.suffix == foot.suffix
-                    && weapon.suffix == vehicle.suffix {
-                    bushido_store
-                        .progress(
-                            player_id.into(), Tasks::GEAR_FROM, 1, starknet::get_block_timestamp(),
-                        );
-                }
+            //     if weapon.suffix > 0
+            //         && weapon.suffix == clothe.suffix
+            //         && weapon.suffix == foot.suffix
+            //         && weapon.suffix == vehicle.suffix {
+            //         bushido_store
+            //             .progress(
+            //                 player_id.into(), Tasks::GEAR_FROM, 1, starknet::get_block_timestamp(),
+            //             );
+            //     }
 
-                let items_disp = IDopewarsItemsLibraryDispatcher {
-                    class_hash: world.dns_class_hash(@"DopewarsItems_v0").unwrap(),
-                };
+            //     let items_disp = IDopewarsItemsLibraryDispatcher {
+            //         class_hash: world.dns_class_hash(@"DopewarsItems_v0").unwrap(),
+            //     };
 
-                let weapon_tier = items_disp.get_item_tier(weapon.slot, weapon.item);
-                let clothe_tier = items_disp.get_item_tier(clothe.slot, clothe.item);
-                let foot_tier = items_disp.get_item_tier(foot.slot, foot.item);
-                let vehicle_tier = items_disp.get_item_tier(vehicle.slot, vehicle.item);
+            //     let weapon_tier = items_disp.get_item_tier(weapon.slot, weapon.item);
+            //     let clothe_tier = items_disp.get_item_tier(clothe.slot, clothe.item);
+            //     let foot_tier = items_disp.get_item_tier(foot.slot, foot.item);
+            //     let vehicle_tier = items_disp.get_item_tier(vehicle.slot, vehicle.item);
 
-                if weapon_tier == clothe_tier
-                    && weapon_tier == foot_tier
-                    && weapon_tier == vehicle_tier {
-                    let task = match weapon_tier {
-                        0 => panic!("invalid tier"),
-                        1 => Tasks::FULL_LATE,
-                        2 => Tasks::FULL_MID,
-                        3 => Tasks::FULL_EARLY,
-                        _ => panic!("invalid tier"),
-                    };
-                    bushido_store
-                        .progress(player_id.into(), task, 1, starknet::get_block_timestamp());
-                }
-            }
+            //     if weapon_tier == clothe_tier
+            //         && weapon_tier == foot_tier
+            //         && weapon_tier == vehicle_tier {
+            //         let task = match weapon_tier {
+            //             0 => panic!("invalid tier"),
+            //             1 => Tasks::FULL_LATE,
+            //             2 => Tasks::FULL_MID,
+            //             3 => Tasks::FULL_EARLY,
+            //             _ => panic!("invalid tier"),
+            //         };
+            //         bushido_store
+            //             .progress(player_id.into(), task, 1, starknet::get_block_timestamp());
+            //     }
+            // }
         }
 
         fn launder(self: @ContractState, season_version: u16) {
@@ -234,7 +236,7 @@ mod laundromat {
 
         fn claim(self: @ContractState, player_id: ContractAddress, game_ids: Span<u32>) {
             let world = self.world(@ns());
-            let mut dope_world = self.world(@"dope");
+            // let mut dope_world = self.world(@"dope");
 
             let mut store = StoreImpl::new(world);
 
@@ -243,16 +245,16 @@ mod laundromat {
             // // check max batch size
             // assert(game_ids.len() <= 10, 'too much game_ids');
 
-            let mut gear_ids: Array<u256> = array![];
-            let mut gear_ids_values: Array<u256> = array![];
-            let mut hustler_count = 0;
+            // let mut gear_ids: Array<u256> = array![];
+            // let mut gear_ids_values: Array<u256> = array![];
+            // let mut hustler_count = 0;
 
-            let hustler_dispatcher = IDopeHustlersABIDispatcher {
-                contract_address: dope_world.dns_address(@"DopeHustlers").unwrap(),
-            };
-            let gear_dispatcher = IDopeGearABIDispatcher {
-                contract_address: dope_world.dns_address(@"DopeGear").unwrap(),
-            };
+            // let hustler_dispatcher = IDopeHustlersABIDispatcher {
+            //     contract_address: dope_world.dns_address(@"DopeHustlers").unwrap(),
+            // };
+            // let gear_dispatcher = IDopeGearABIDispatcher {
+            //     contract_address: dope_world.dns_address(@"DopeGear").unwrap(),
+            // };
 
             let bushido_store = BushidoStoreTrait::new(world);
             let mut total_claimable = 0;
@@ -280,14 +282,14 @@ mod laundromat {
                 store.set_game(@game);
 
                 // add items rewards ids
-                add_items_payout(
-                    ref dope_world,
-                    ref gear_ids,
-                    ref gear_ids_values,
-                    ref hustler_count,
-                    game.season_version,
-                    game.position,
-                );
+                // add_items_payout(
+                //     ref dope_world,
+                //     ref gear_ids,
+                //     ref gear_ids_values,
+                //     ref hustler_count,
+                //     game.season_version,
+                //     game.position,
+                // );
 
                 // emit Claimed event
                 store
@@ -327,14 +329,14 @@ mod laundromat {
                 .transfer(player_id, total_claimable);
 
             // mint gear items
-            gear_dispatcher
-                .mint_batch(player_id, gear_ids.span(), gear_ids_values.span(), array![].span());
+            // gear_dispatcher
+            //     .mint_batch(player_id, gear_ids.span(), gear_ids_values.span(), array![].span());
 
             // mint hustlers
-            while hustler_count > 0 {
-                hustler_dispatcher.mint_hustler_to(player_id);
-                hustler_count -= 1;
-            }
+            // while hustler_count > 0 {
+            //     hustler_dispatcher.mint_hustler_to(player_id);
+            //     hustler_count -= 1;
+            // }
         }
 
         fn claim_treasury(self: @ContractState) {

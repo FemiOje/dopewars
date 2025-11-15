@@ -10,61 +10,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "alexandria_bytes"
-version = "0.6.1"
-source = "git+https://github.com/keep-starknet-strange/alexandria.git?tag=v0.6.1#3f5e6476f350bb09e919e2725489c29442f313ca"
-dependencies = [
- "alexandria_data_structures",
- "alexandria_math",
-]
-
-[[package]]
-name = "alexandria_data_structures"
-version = "0.6.1"
-source = "git+https://github.com/keep-starknet-strange/alexandria.git?tag=v0.6.1#3f5e6476f350bb09e919e2725489c29442f313ca"
-
-[[package]]
-name = "alexandria_encoding"
-version = "0.6.1"
-source = "git+https://github.com/keep-starknet-strange/alexandria.git?tag=v0.6.1#3f5e6476f350bb09e919e2725489c29442f313ca"
-dependencies = [
- "alexandria_bytes",
- "alexandria_data_structures",
- "alexandria_math",
- "alexandria_numeric",
-]
-
-[[package]]
-name = "alexandria_math"
-version = "0.6.1"
-source = "git+https://github.com/keep-starknet-strange/alexandria.git?tag=v0.6.1#3f5e6476f350bb09e919e2725489c29442f313ca"
-
-[[package]]
-name = "alexandria_merkle_tree"
-version = "0.6.1"
-source = "git+https://github.com/keep-starknet-strange/alexandria.git?tag=v0.6.1#3f5e6476f350bb09e919e2725489c29442f313ca"
-dependencies = [
- "alexandria_math",
-]
-
-[[package]]
-name = "alexandria_numeric"
-version = "0.6.1"
-source = "git+https://github.com/keep-starknet-strange/alexandria.git?tag=v0.6.1#3f5e6476f350bb09e919e2725489c29442f313ca"
-dependencies = [
- "alexandria_math",
- "alexandria_searching",
-]
-
-[[package]]
-name = "alexandria_searching"
-version = "0.6.1"
-source = "git+https://github.com/keep-starknet-strange/alexandria.git?tag=v0.6.1#3f5e6476f350bb09e919e2725489c29442f313ca"
-dependencies = [
- "alexandria_data_structures",
-]
-
-[[package]]
 name = "cartridge_vrf"
 version = "0.1.0"
 source = "git+https://github.com/cartridge-gg/vrf#f748d4acab736464dcd96c5a4d047ed3aeb63801"
@@ -87,43 +32,6 @@ name = "dojo_cairo_macros"
 version = "1.7.1"
 source = "registry+https://scarbs.xyz/"
 checksum = "sha256:18059a9ac9ec2c0c708baad382728a99970b621b1eaab780fd9a8ec2dc975c98"
-
-[[package]]
-name = "dope_generated"
-version = "0.1.0"
-dependencies = [
- "dojo",
- "dope_tools",
-]
-
-[[package]]
-name = "dope_tools"
-version = "0.1.0"
-dependencies = [
- "alexandria_bytes",
- "alexandria_encoding",
- "alexandria_merkle_tree",
- "dojo",
- "dope_generated",
- "graffiti",
- "openzeppelin",
-]
-
-[[package]]
-name = "dope_types"
-version = "0.1.0"
-dependencies = [
- "alexandria_bytes",
- "alexandria_encoding",
- "alexandria_merkle_tree",
- "dojo",
- "dope_tools",
- "graffiti",
-]
-
-[[package]]
-name = "graffiti"
-version = "0.1.0"
 
 [[package]]
 name = "openzeppelin"
@@ -250,7 +158,6 @@ dependencies = [
  "achievement",
  "cartridge_vrf",
  "dojo",
- "dope_types",
  "openzeppelin",
 ]
 
