@@ -62,7 +62,8 @@ export function useSqlQuery<T>(
   }, [toriiUrl, query, logging]);
 
   useEffect(() => {
-    const queryChanged = lastQueryRef.current !== query;
+    // Compare string values, not references
+    const queryChanged = lastQueryRef.current !== query && lastQueryRef.current?.trim() !== query?.trim();
     const toriiUrlChanged = lastToriiUrlRef.current !== toriiUrl;
 
     if (queryChanged || toriiUrlChanged || !hasFetchedRef.current) {
@@ -71,7 +72,8 @@ export function useSqlQuery<T>(
       hasFetchedRef.current = true;
       fetchData();
     }
-  }, [query, toriiUrl, fetchData]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [query, toriiUrl, logging]);
 
   const refetch = useCallback(() => {
     return fetchData();

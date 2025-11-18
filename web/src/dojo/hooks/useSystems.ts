@@ -251,6 +251,7 @@ export const useSystems = (): SystemsInterface => {
   const createGame = useCallback(
     async (gameMode: GameMode, playerName: string, multiplier: number, minigameTokenId: number) => {
       // Games are now free - no PAPER approval needed
+      console.log(gameMode, playerName, multiplier, minigameTokenId);
       const createGameCall = {
         contractAddress: gameAddress,
         entrypoint: "create_game",

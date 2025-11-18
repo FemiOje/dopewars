@@ -65,7 +65,8 @@ export class GameStoreClass {
   gameConfig: GameConfig | null = null;
   seasonSettings: SeasonSettings | null = null;
   subscriptions: Array<Subscription> = [];
-  tokenId: string | undefined;
+  tokenId: string | undefined = undefined;
+  tournamentId: string | undefined = undefined;
 
   allGamesCreated: GameCreated[] = [];
 
@@ -81,6 +82,7 @@ export class GameStoreClass {
       gameInfos: observable,
       gameConfig: observable,
       seasonSettings: observable,
+      tournamentId: observable,
       reset: action,
       cleanSubscriptions: action,
       init: flow,
@@ -105,6 +107,7 @@ export class GameStoreClass {
     this.seasonSettings = null;
     this.subscriptions = [];
     this.tokenId = undefined;
+    this.tournamentId = undefined;
     this.isInitialized = false;
   }
 
@@ -119,11 +122,20 @@ export class GameStoreClass {
       throw new Error("Invalid tokenId: tokenId is required but was empty or undefined");
     }
 
-    // Strip any existing 0x prefix(es) and whitespace
-    const cleanTokenId = tokenId.trim().replace(/^0x+/i, "");
+    const trimmedTokenId = tokenId.trim();
+    let tokenIdNumber: number;
 
-    // Validate tokenId can be parsed as number
-    const tokenIdNumber = parseInt(cleanTokenId, 16);
+    // Check if it's a hex string (starts with 0x)
+    if (trimmedTokenId.startsWith("0x") || trimmedTokenId.startsWith("0X")) {
+      // Parse as hex
+      const cleanTokenId = trimmedTokenId.replace(/^0x+/i, "");
+      tokenIdNumber = parseInt(cleanTokenId, 16);
+    } else {
+      // Parse as decimal
+      tokenIdNumber = parseInt(trimmedTokenId, 10);
+    }
+
+    // Validate tokenId is a valid number
     if (isNaN(tokenIdNumber) || tokenIdNumber <= 0) {
       throw new Error(`Invalid tokenId: "${tokenId}" is not a valid token ID`);
     }
@@ -274,8 +286,10 @@ export class GameStoreClass {
     console.log("gameToken", tokenId, gameToken);
 
     if (!gameToken || !gameToken.game_id) {
+      // Game hasn't been started yet - check if this token exists in metagame
+      // This will be handled by a custom error that the UI can catch
       throw new Error(
-        `GameToken not found for tokenId: ${tokenId}. token may not exist or indexer may not have synced yet.`,
+        `GAME_NOT_STARTED:${tokenId}`,
       );
     }
 

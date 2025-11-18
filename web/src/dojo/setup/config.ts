@@ -191,8 +191,8 @@ const pgMainnet: DojoChainConfig = {
   name: "MAINNET",
   chainConfig: mainnet,
   rpcUrl: "https://api.cartridge.gg/x/starknet/mainnet",
-  toriiUrl: "https://api.cartridge.gg/x/provable-dw-1/torii/graphql",
-  toriiWsUrl: "wss://api.cartridge.gg/x/provable-dw-1/torii/graphql/ws",
+  toriiUrl: "https://api.cartridge.gg/x/pg-dw-2/torii/graphql",
+  toriiWsUrl: "wss://api.cartridge.gg/x/pg-dw-2/torii/graphql/ws",
   manifest: mergeManifests(manifestMainnet, [manifestDopeMainnet]),
   predeployedAccounts: [],
   paperAddress: PAPER_MAINNET,
@@ -204,8 +204,8 @@ const pgMainnet: DojoChainConfig = {
 // The first chain in this object is the default chain in production
 export const dojoContextConfig = {
   // SN_MAIN: snMainnet,
-  // PG_MAINNET: pgMainnet,
-  SN_SEPOLIA: snSepolia,
+  PG_MAINNET: pgMainnet,
+  // SN_SEPOLIA: snSepolia,
   // WP_PROVABLE_DW: provableDW,
   // WP_DOPEWARS: katanaSlotDopewars,
   // KATANA: katanaLocal,

@@ -65,12 +65,12 @@ export const Leaderboard = observer(({ config }: { config?: Config }) => {
     clients: { rpcProvider },
   } = useDojoContext();
   const { account } = useAccount();
-  const { metagameGames, dopeTokens } = useGameTokens({
+  const { games } = useGameTokens({
     sortBy: "score",
     limit: 10,
   });
 
-  console.log(metagameGames, dopeTokens);
+  console.log(games);
 
   const [currentVersion, setCurrentVersion] = useState(config?.ryo.season_version || 0);
   const [selectedVersion, setSelectedVersion] = useState(config?.ryo.season_version || 0);

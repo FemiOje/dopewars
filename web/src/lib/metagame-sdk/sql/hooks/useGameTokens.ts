@@ -3,7 +3,7 @@
 import { gamesQuery, gamesCountQuery } from "../queries/sql";
 import { useSqlQuery, type SqlQueryResult } from "../services/sqlService";
 import { feltToString } from "../../shared/lib";
-import { useMemo, useState, useCallback, useEffect } from "react";
+import { useMemo, useState, useCallback } from "react";
 import { getMetagameClientSafe } from "../../shared/singleton";
 import { parseSettingsData, parseContextData } from "../../shared/utils/dataTransformers";
 import type { GameTokenData } from "../../shared/types";
@@ -104,7 +104,7 @@ export const useGameTokens = ({
       console.warn("⚠️ Metagame client not available for query");
       return null;
     }
-    const generatedQuery = gamesQuery({
+    return gamesQuery({
       namespace: client.getNamespace(),
       owner,
       gameAddresses,
@@ -126,15 +126,8 @@ export const useGameTokens = ({
       sortBy,
       sortOrder: finalSortOrder,
     });
-    console.log("📝 Generated SQL query for games:", {
-      namespace: client.getNamespace(),
-      owner,
-      gameAddresses,
-      queryPreview: generatedQuery.substring(0, 300) + "...",
-    });
-    return generatedQuery;
   }, [
-    client,
+    client?.getNamespace(),
     owner,
     JSON.stringify(gameAddresses),
     JSON.stringify(tokenIds),
@@ -208,25 +201,6 @@ export const useGameTokens = ({
     error: countError,
     refetch: refetchCount,
   } = useSqlQuery(toriiUrl, countQuery, true);
-
-  // Log query results for debugging
-  useEffect(() => {
-    if (!loading && query) {
-      if (queryError) {
-        console.error("❌ SQL query error in useGameTokens:", {
-          error: queryError,
-          toriiUrl,
-          queryPreview: query.substring(0, 200),
-        });
-      } else {
-        console.log("📊 Raw game data received:", {
-          count: rawGameData?.length || 0,
-          data: rawGameData,
-          toriiUrl,
-        });
-      }
-    }
-  }, [rawGameData, loading, queryError, query, toriiUrl]);
 
   const error = queryError || countError;
   const isLoading = loading || countLoading;
