@@ -38,7 +38,8 @@ const Market = observer(() => {
   const [canBuy, setCanBuy] = useState(false);
 
   const { account } = useAccount();
-  const { game } = useGameStore();
+  const gameStore = useGameStore();
+  const { game } = gameStore;
 
   const { toast } = useToast();
 
@@ -75,8 +76,9 @@ const Market = observer(() => {
       console.log(e);
     }
 
-    router.push(`/${gameId}/${location!.location}`);
-  }, [tradeDirection, quantityBuy, quantitySell, gameId, location, drug, router, game, market]);
+    const tokenId = gameStore.tokenId;
+    router.push(`/${tokenId}/${location!.location}`);
+  }, [tradeDirection, quantityBuy, quantitySell, location, drug, router, game, market, gameStore.tokenId]);
 
   if (!router.isReady || !game || !drug || !market) return <></>;
 

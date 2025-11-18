@@ -14,7 +14,8 @@ pub struct GameCreated {
     pub game_mode: GameMode,
     pub player_name: felt252,
     pub multiplier: u8,
-    // token_id, hustler_equipment, hustler_body removed - Dope collection integration stripped
+    pub token_id: u64, // Denshokan token ID
+    // dope token_id, hustler_equipment, hustler_body removed - Dope collection integration stripped
 }
 
 

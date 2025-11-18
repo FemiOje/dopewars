@@ -17,7 +17,8 @@ export const Inventory = observer(({ hidePawnshop = false, ...props }: StyleProp
   const { gameId, router } = useRouterContext();
   const { account } = useAccount();
 
-  const { game, gameInfos } = useGameStore();
+  const gameStore = useGameStore();
+  const { game, gameInfos } = gameStore;
   const configStore = useConfigStore();
 
   if (!game || !configStore) return null;
@@ -86,7 +87,8 @@ export const Inventory = observer(({ hidePawnshop = false, ...props }: StyleProp
             onClick={() => {
               if (game.isShopOpen) {
                 playSound(Sounds.Door, 0.5);
-                router.push(`/${gameId}/pawnshop`);
+                const tokenId = gameStore.tokenId;
+                router.push(`/${tokenId}/pawnshop`);
               }
             }}
           >

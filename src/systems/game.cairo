@@ -96,7 +96,7 @@ pub mod game {
             // Dope collection integration removed - no token_id needed
 
             let mut game_created = GameCreated {
-                game_id, player_id, game_mode, player_name, multiplier,
+                game_id, player_id, game_mode, player_name, multiplier, token_id: minigame_token_id
             };
 
             // create game

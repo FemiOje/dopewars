@@ -11,7 +11,8 @@ export const ProfileLink = () => {
   const { router, gameId } = useRouterContext();
 
   const { account } = useAccount();
-  const { gameInfos } = useGameStore();
+  const gameStore = useGameStore();
+  const { gameInfos } = gameStore;
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -19,7 +20,8 @@ export const ProfileLink = () => {
     if (router.pathname === "/[gameId]/logs") {
       router.back();
     } else {
-      router.push(`/${gameId}/logs`);
+      const tokenId = gameStore.tokenId;
+      router.push(`/${tokenId}/logs`);
     }
   };
 
@@ -43,7 +45,8 @@ export const ProfileLinkMobile = () => {
   const { router, gameId } = useRouterContext();
 
   const { account } = useAccount();
-  const { gameEvents, gameInfos } = useGameStore();
+  const gameStore = useGameStore();
+  const { gameEvents, gameInfos } = gameStore;
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -51,7 +54,8 @@ export const ProfileLinkMobile = () => {
     if (router.pathname === "/[gameId]/logs") {
       router.back();
     } else {
-      router.push(`/${gameId}/logs`);
+      const tokenId = gameStore.tokenId;
+      router.push(`/${tokenId}/logs`);
     }
   };
 
@@ -76,7 +80,8 @@ export const ProfileLinkDrawer = () => {
   const { router, gameId } = useRouterContext();
 
   const { account } = useAccount();
-  const { gameEvents, gameInfos } = useGameStore();
+  const gameStore = useGameStore();
+  const { gameEvents, gameInfos } = gameStore;
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -84,7 +89,8 @@ export const ProfileLinkDrawer = () => {
     if (router.pathname === "/[gameId]/logs") {
       router.back();
     } else {
-      router.push(`/${gameId}/logs`);
+      const tokenId = gameStore.tokenId;
+      router.push(`/${tokenId}/logs`);
     }
   };
 

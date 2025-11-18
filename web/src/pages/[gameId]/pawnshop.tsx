@@ -18,7 +18,8 @@ const PawnShop = observer(() => {
   const { router, gameId } = useRouterContext();
   const configStore = useConfigStore();
   const { config } = configStore;
-  const { game, gameConfig, gameInfos } = useGameStore();
+  const gameStore = useGameStore();
+  const { game, gameConfig, gameInfos } = gameStore;
 
   const toaster = useToast();
 
@@ -40,10 +41,11 @@ const PawnShop = observer(() => {
 
   const onBack = () => {
     playSound(Sounds.Door, 0.3);
+    const tokenId = gameStore.tokenId;
     if (!game?.player.location) {
-      return router.push(`/${gameId}/travel`);
+      return router.push(`/${tokenId}/travel`);
     }
-    router.push(`/${gameId}/${game?.player.location.location}`);
+    router.push(`/${tokenId}/${game?.player.location.location}`);
   };
 
   const buy = async () => {

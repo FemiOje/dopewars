@@ -195,7 +195,7 @@ const cartridgeConnector = ({ selectedChain }: { selectedChain: DojoChainConfig 
     // rpc: selectedChain.rpcUrl ? selectedChain.rpcUrl : "http://localhost:5050",
     // profileUrl: selectedChain.profileUrl ? selectedChain.profileUrl : undefined,
     namespace: selectedChain.namespace ? selectedChain.namespace : "dopewars",
-    slot: selectedChain.slot ? selectedChain.slot : "ryo",
+    slot: selectedChain.slot ? selectedChain.slot : "provable-dw-1",
     tokens: {
       erc20: [
         // paperAddress

@@ -65,15 +65,16 @@ const YourGameEntry = ({ game }: { game: any; account: AccountInterface | undefi
 
   const color = colors.yellow["400"].toString();
 
+  const handleClick = () => {
+    if (!game.minigame_token_id || game.minigame_token_id === 0) {
+      console.warn("[YourGames] Cannot navigate: minigame_token_id is missing for game", game.game_id);
+      return;
+    }
+    router.push(`/0x${game.minigame_token_id.toString(16)}`);
+  };
+
   return (
-    <Card
-      position="relative"
-      h="100px"
-      p={2}
-      color={color}
-      cursor="pointer"
-      onClick={() => router.push(`/0x${game.game_id.toString(16)}`)}
-    >
+    <Card position="relative" h="100px" p={2} color={color} cursor="pointer" onClick={handleClick}>
       <VStack h="100%" justifyContent="space-between" gap={0}>
         <HStack w="full" gap={3}>
           <HustlerAvatarIcon

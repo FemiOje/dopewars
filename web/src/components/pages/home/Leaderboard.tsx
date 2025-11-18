@@ -238,7 +238,16 @@ export const Leaderboard = observer(({ config }: { config?: Config }) => {
                         flexShrink={0}
                         style={{ marginTop: "-8px" }}
                         cursor="pointer"
-                        onClick={() => router.push(`/0x${game.game_id.toString(16)}/logs`)}
+                        onClick={() => {
+                          if (!game.minigame_token_id || game.minigame_token_id === 0) {
+                            console.warn(
+                              "[Leaderboard] Cannot navigate: minigame_token_id is missing for game",
+                              game.game_id,
+                            );
+                            return;
+                          }
+                          router.push(`/0x${game.minigame_token_id.toString(16)}/logs`);
+                        }}
                       >
                         <HustlerAvatarIcon
                           gameId={game.game_id}
@@ -257,7 +266,16 @@ export const Leaderboard = observer(({ config }: { config?: Config }) => {
                           overflow="hidden"
                           fontSize={["12px", "16px"]}
                           cursor="pointer"
-                          onClick={() => router.push(`/0x${game.game_id.toString(16)}/logs`)}
+                          onClick={() => {
+                            if (!game.minigame_token_id || game.minigame_token_id === 0) {
+                              console.warn(
+                                "[Leaderboard] Cannot navigate: minigame_token_id is missing for game",
+                                game.game_id,
+                              );
+                              return;
+                            }
+                            router.push(`/0x${game.minigame_token_id.toString(16)}/logs`);
+                          }}
                         >
                           {displayName}
                         </Text>

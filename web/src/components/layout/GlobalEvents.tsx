@@ -106,7 +106,12 @@ export const GlobalEvents = () => {
               : `${gameCreated.player_name} is training...`,
         });
       } else {
-        router.push(`/${num.toHexString(gameCreated.game_id)}`);
+        const tokenId = gameCreated.token_id;
+        if (!tokenId) {
+          console.warn("[GlobalEvents] GameCreated event missing both token_id and game_id");
+          return;
+        }
+        router.push(`/0x${tokenId.toString(16)}`);
       }
     }
 
@@ -178,6 +183,7 @@ export interface GameCreated {
   game_mode: string;
   player_name: string;
   multiplier: number;
+  token_id?: number; // denshokan token_id
   // token_id, token_id_type, hustler_equipment, hustler_body removed - Dope collection integration stripped
 }
 

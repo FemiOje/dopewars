@@ -65,6 +65,7 @@ export class GameStoreClass {
   gameConfig: GameConfig | null = null;
   seasonSettings: SeasonSettings | null = null;
   subscriptions: Array<Subscription> = [];
+  tokenId: string | undefined;
 
   allGamesCreated: GameCreated[] = [];
 
@@ -103,17 +104,34 @@ export class GameStoreClass {
     this.gameEvents = null;
     this.seasonSettings = null;
     this.subscriptions = [];
+    this.tokenId = undefined;
     this.isInitialized = false;
   }
 
-  *init(gameId: string) {
+  *init(tokenId: string) {
     // Wait for config store to be initialized before proceeding
     if (!this.configStore.isInitialized) {
       console.log("Waiting for config store to initialize...");
       throw new Error("Config store not initialized yet, will retry");
     }
 
-    yield this.loadGameInfos(gameId);
+    if (!tokenId || tokenId.trim() === "") {
+      throw new Error("Invalid tokenId: tokenId is required but was empty or undefined");
+    }
+
+    // Strip any existing 0x prefix(es) and whitespace
+    const cleanTokenId = tokenId.trim().replace(/^0x+/i, "");
+
+    // Validate tokenId can be parsed as number
+    const tokenIdNumber = parseInt(cleanTokenId, 16);
+    if (isNaN(tokenIdNumber) || tokenIdNumber <= 0) {
+      throw new Error(`Invalid tokenId: "${tokenId}" is not a valid token ID`);
+    }
+
+    // Normalize to clean hex format (single 0x prefix)
+    this.tokenId = `0x${tokenIdNumber.toString(16)}`;
+
+    yield this.loadGameInfos(this.tokenId);
     yield this.loadSeasonSettings(this.gameInfos?.season_version);
     yield this.loadGameEvents();
 
@@ -225,9 +243,43 @@ export class GameStoreClass {
     }
   }
 
-  *loadGameInfos(gameId: string) {
-    // Convert gameId to decimal number, handling both hex (0x...) and decimal formats
-    const gameIdNumber = gameId.startsWith("0x") ? parseInt(gameId, 16) : parseInt(gameId, 10);
+  *loadGameInfos(tokenId: string) {
+    const tokenIdNumber = tokenId.startsWith("0x") ? parseInt(tokenId, 16) : parseInt(tokenId, 10);
+
+    // query GameToken by token_id
+    let gameTokenEntities: Entities = yield this.toriiClient.getEntities({
+      clause: {
+        Keys: {
+          keys: [tokenIdNumber.toString()],
+          models: ["dopewars-GameToken"],
+          pattern_matching: "FixedLen",
+        },
+      },
+      pagination: {
+        limit: 1,
+        cursor: undefined,
+        direction: "Forward",
+        order_by: [],
+      },
+      no_hashed_keys: true,
+      models: ["dopewars-GameToken"],
+      historical: false,
+    });
+
+    let gameToken = parseModels(gameTokenEntities, "dopewars-GameToken")[0] as {
+      token_id: number;
+      game_id: number;
+      player_id: string;
+    };
+    console.log("gameToken", tokenId, gameToken);
+
+    if (!gameToken || !gameToken.game_id) {
+      throw new Error(
+        `GameToken not found for tokenId: ${tokenId}. token may not exist or indexer may not have synced yet.`,
+      );
+    }
+
+    const gameIdNumber = gameToken.game_id;
     const entities: Entities = yield this.toriiClient.getEntities({
       clause: {
         Member: {
@@ -248,17 +300,12 @@ export class GameStoreClass {
       historical: false,
     });
 
-    // console.log(entities)
-    // const gameEntity = Object.values(entities)[0];
-    // if (!gameEntity) return;
-
-    // const gameInfos = parseStruct(entities.items[0].models["dopewars-Game"]) as Game;
     const gameInfos = parseModels(entities, "dopewars-Game")[0] as Game;
     const gameStorePacked = parseModels(entities, "dopewars-GameStorePacked")[0] as GameStorePacked;
 
     if (!gameInfos || !gameStorePacked) {
       throw new Error(
-        `Game data not found for gameId: ${gameId}. The game may not exist or the indexer may not have synced yet.`,
+        `Game data not found for tokenId: ${tokenId} (game_id: ${gameIdNumber}). The game may not exist or the indexer may not have synced yet.`,
       );
     }
 
@@ -319,15 +366,36 @@ export class GameStoreClass {
     this.gameEvents.addEvent(entity);
 
     if (!wasGameOver && this.gameEvents?.isGameOver) {
-      const gameId = num.toHexString(this.gameInfos?.game_id);
-      this.router.push(`/${gameId}/event/consequence`);
+      if (!this.tokenId) {
+        console.warn("[GameStore] Cannot navigate: tokenId is missing");
+        return;
+      }
+
+      // Ensure tokenId is in hex format for router
+      const tokenIdHex = this.tokenId.startsWith("0x") ? this.tokenId : `0x${parseInt(this.tokenId, 10).toString(16)}`;
+
+      // Only redirect to /event/consequence if there's a pending encounter result to show
+      // Otherwise, redirect directly to /end
+      const hasPendingEncounter = this.gameEvents?.lastEncounter && this.gameEvents?.lastEncounterResult;
+
+      if (hasPendingEncounter) {
+        this.router.push(`/${tokenIdHex}/event/consequence`);
+      } else {
+        this.router.push(`/${tokenIdHex}/end`);
+      }
     }
   }
 
   onEntityUpdated(key: string, entity: Entity) {
     // console.log("onEntityUpdated", key, entity);
 
-    const gameId = num.toHexString(this.gameInfos?.game_id);
+    if (!this.tokenId) {
+      console.warn("[GameStore] Cannot navigate: tokenId is missing");
+      return;
+    }
+
+    // Ensure tokenId is in hex format for router (like gameId was with num.toHexString)
+    const tokenId = this.tokenId.startsWith("0x") ? this.tokenId : `0x${parseInt(this.tokenId, 10).toString(16)}`;
     const currentPath = this.router.asPath;
 
     const prevState = this.game?.player;
@@ -337,12 +405,12 @@ export class GameStoreClass {
       this.initGameStore();
 
       // Don't redirect if already on the end page (e.g., when registering score)
-      const isOnEndPage = currentPath === `/${gameId}/end`;
+      const isOnEndPage = currentPath === `/${tokenId}/end`;
 
       // if dead, handled in /event/consequence
       if (this.gameEvents?.isGameOver && this.game!.player!.health > 0) {
         if (!isOnEndPage) {
-          return this.router.push(`/${gameId}/end`);
+          return this.router.push(`/${tokenId}/end`);
         }
         return;
       }
@@ -358,19 +426,24 @@ export class GameStoreClass {
           .location.toLowerCase();
         if (prevState?.status !== PlayerStatus.Normal) {
           // decision -> consequence
-          this.router.push(`/${gameId}/event/consequence`);
+          this.router.push(`/${tokenId}/event/consequence`);
         } else {
           // normal travel
-          this.router.push(`/${gameId}/${location}`);
+          this.router.push(`/${tokenId}/${location}`);
         }
       } else {
         if (this.gameEvents?.isGameOver) {
-          // Only redirect to consequence if not already on end page
+          // Only redirect to consequence if there's a pending encounter and not already on end page
+          const hasPendingEncounter = this.gameEvents?.lastEncounter && this.gameEvents?.lastEncounterResult;
           if (!isOnEndPage) {
-            this.router.push(`/${gameId}/event/consequence`);
+            if (hasPendingEncounter) {
+              this.router.push(`/${tokenId}/event/consequence`);
+            } else {
+              this.router.push(`/${tokenId}/end`);
+            }
           }
         } else {
-          this.router.push(`/${gameId}/event/decision`);
+          this.router.push(`/${tokenId}/event/decision`);
         }
       }
     }
@@ -402,7 +475,6 @@ export class GameStoreClass {
 
     const gameCreated = parseModels(entities, "dopewars-GameCreated")[0];
     if (gameCreated) {
-      // token_id, token_id_type removed from GameCreated event - Dope collection integration stripped
       this.allGamesCreated.push(gameCreated);
     }
     return gameCreated;

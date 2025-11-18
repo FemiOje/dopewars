@@ -12,7 +12,8 @@ const Redirector = observer(() => {
 
   const { account } = useAccount();
 
-  const { game } = useGameStore();
+  const gameStore = useGameStore();
+  const { game } = gameStore;
 
   useEffect(() => {
     let handle: any = undefined;
@@ -20,27 +21,30 @@ const Redirector = observer(() => {
     if (!game) {
       handle = setTimeout(() => {
         router.push(`/`);
-      // }, 2000);
-    }, 10000); // temp fix for slow indexer
+        // }, 2000);
+      }, 10000); // temp fix for slow indexer
     } else {
       clearTimeout(handle);
 
+      // Use tokenId from gameStore if available (correct value), otherwise fall back to gameId from router
+      const tokenId = gameStore.tokenId || gameId;
+
       if (game.gameInfos.game_over) {
-        router.push(`/${gameId}/end`);
+        router.push(`/${tokenId}/end`);
       } else if (game.player.status === PlayerStatus.Normal) {
         if (game.player.location) {
-          router.push(`/${gameId}/${game.player.location.location}`);
+          router.push(`/${tokenId}/${game.player.location.location}`);
         } else {
-          router.push(`/${gameId}/travel`);
+          router.push(`/${tokenId}/travel`);
         }
       } else if (game.player.status === PlayerStatus.BeingArrested || game.player.status === PlayerStatus.BeingMugged) {
         //
-        router.push(`/${gameId}/event/decision`);
+        router.push(`/${tokenId}/event/decision`);
       }
     }
 
     return () => clearTimeout(handle);
-  }, [game, game?.player.status, game?.player.location, router, gameId]);
+  }, [game, game?.player.status, game?.player.location, router, gameId, gameStore.tokenId]);
 
   return (
     <Layout isSinglePanel>
