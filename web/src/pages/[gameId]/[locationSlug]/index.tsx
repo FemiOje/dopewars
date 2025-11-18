@@ -35,7 +35,8 @@ const Location = observer(() => {
   const { toast } = useToast();
 
   const configStore = useConfigStore();
-  const { game, gameInfos, gameConfig, gameEvents } = useGameStore();
+  const gameStore = useGameStore();
+  const { game, gameInfos, gameConfig, gameEvents } = gameStore;
   const { endGame, isPending } = useSystems();
 
   const [prices, setPrices] = useState<DrugMarket[]>([]);
@@ -46,15 +47,15 @@ const Location = observer(() => {
     if (game && gameConfig && location && game.player.location?.location) {
       // check if player at right location
       if (location?.location !== game.player.location?.location) {
-        // router.replace(`/${gameId}/${game.player.location?.location}`);
-        router.push(`/${gameId}/${game.player.location?.location}`);
+        const tokenId = gameStore.tokenId;
+        router.push(`/${tokenId}/${game.player.location?.location}`);
         return;
       }
 
       setGreetings(getRandomGreeting(game.player.turn));
       setIsLastDay(game.player.turn >= gameConfig.max_turns);
     }
-  }, [location, game, router, gameId, gameConfig?.max_turns, game?.player.location]);
+  }, [location, game, router, gameId, gameConfig?.max_turns, game?.player.location, gameStore.tokenId]);
 
   useEffect(() => {
     if (game && game.markets.marketsByLocation && location) {
@@ -97,12 +98,14 @@ const Location = observer(() => {
                   try {
                     const tokenId = game.gameInfos.minigame_token_id!.toString();
                     await endGame(tokenId, game.getPendingCalls());
-                    router.push(`/${gameId}/end`);
+                    const tokenIdHex = gameStore.tokenId;
+                    router.push(`/${tokenIdHex}/end`);
                   } catch (e: any) {
                     game.clearPendingCalls();
                   }
                 } else {
-                  router.push(`/${gameId}/travel`);
+                  const tokenId = gameStore.tokenId;
+                  router.push(`/${tokenId}/travel`);
                 }
               }}
             >

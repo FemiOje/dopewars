@@ -1,13 +1,13 @@
 
 [env]
 rpc_url = "https://api.cartridge.gg/x/starknet/sepolia"
-account_address = "0x05ef6460b5165a94bc342a57825058c039e6f6c17e3c2daf6350e30cc58c8bd6"
-keystore = "../scard/contracts/deployments/keystore.json"
-world_address="0x023a155b194b217a3eaed9cdca290f185df52d0fac739b97875d9adbd78407c3"
+account_address = "0x07ff283430af5cb5499464f5c0b594fd988acfe83aa2995532432f26c0644017"
+keystore = "./deployments/keystore-1.json"
+world_address="0x027a27e814146de539ae428b4a9aecdd225707d8dacca2336443dc81ee78a476"
 
 [world]
 name = "Dope Wars"
-seed = "sepo16seed"
+seed = "sepo17seed"
 description = "Dope Wars is an onchain adaptation of the classic arbitrage game Drug Wars, built by Cartridge in partnership with Dope DAO."
 # website = "https://rollyourown.preview.cartridge.gg/"
 # icon_uri = "file://assets/icon.png"

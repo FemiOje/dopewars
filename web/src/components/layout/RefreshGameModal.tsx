@@ -5,7 +5,8 @@ import { observer } from "mobx-react-lite";
 export const RefreshGameModal = observer(() => {
   const { router, gameId } = useRouterContext();
   const { uiStore } = useDojoContext();
-  const { game } = useGameStore();
+  const gameStore = useGameStore();
+  const { game } = gameStore;
 
   return (
     <Modal motionPreset="slideInBottom" isCentered isOpen={uiStore.modals.refreshGame !== undefined} onClose={() => {}}>
@@ -20,8 +21,9 @@ export const RefreshGameModal = observer(() => {
                   game?.clearPendingCalls();
                   uiStore.closeRefreshGame();
 
-                  if (gameId) {
-                    router.push(`/${gameId}`);
+                  const tokenId = gameStore.tokenId;
+                  if (tokenId) {
+                    router.push(`/${tokenId}`);
                   } else {
                     router.push("/");
                   }

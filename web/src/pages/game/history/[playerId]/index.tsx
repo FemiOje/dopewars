@@ -83,10 +83,15 @@ const GameList = observer(({ games }: { games?: GameClass[] }) => {
   const { router } = useRouterContext();
 
   const onClick = (game: GameClass) => {
+    if (!game.gameInfos.minigame_token_id || game.gameInfos.minigame_token_id === 0) {
+      console.warn("[History] Cannot navigate: minigame_token_id is missing for game", game.gameInfos.game_id);
+      return;
+    }
+
     if (!game.gameInfos.game_over) {
-      router.push(`/0x${game.gameInfos.game_id.toString(16)}`);
+      router.push(`/0x${game.gameInfos.minigame_token_id.toString(16)}`);
     } else {
-      router.push(`/0x${game.gameInfos.game_id.toString(16)}/logs`);
+      router.push(`/0x${game.gameInfos.minigame_token_id.toString(16)}/logs`);
     }
   };
 
@@ -145,7 +150,16 @@ const GameList = observer(({ games }: { games?: GameClass[] }) => {
                 <Td textAlign="right">{formatCashHeader(game.player.cash)}</Td>
 
                 <Td
-                  onClick={() => router.push(`/0x${game.gameInfos.game_id.toString(16)}/end`)}
+                  onClick={() => {
+                    if (!game.gameInfos.minigame_token_id || game.gameInfos.minigame_token_id === 0) {
+                      console.warn(
+                        "[History] Cannot navigate: minigame_token_id is missing for game",
+                        game.gameInfos.game_id,
+                      );
+                      return;
+                    }
+                    router.push(`/0x${game.gameInfos.minigame_token_id.toString(16)}/end`);
+                  }}
                   textAlign="right"
                   color={
                     game.gameInfos.game_mode === "Ranked"

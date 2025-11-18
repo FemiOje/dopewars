@@ -15,7 +15,8 @@ import { ReactNode, useEffect, useState } from "react";
 const Consequence = () => {
   const { router, gameId } = useRouterContext();
   const configStore = useConfigStore();
-  const { game, gameEvents } = useGameStore();
+  const gameStore = useGameStore();
+  const { game, gameEvents } = gameStore;
 
   const [isDead, setIsDead] = useState(false);
   const [encounterResult, setEncounterResult] = useState<TravelEncounterResult | undefined>(undefined);
@@ -59,10 +60,11 @@ const Consequence = () => {
                 w={["full", "auto"]}
                 px={["auto", "20px"]}
                 onClick={() => {
+                  const tokenId = gameStore.tokenId;
                   if (gameEvents.isGameOver) {
-                    router.push(`/${gameId}/end`);
+                    router.push(`/${tokenId}/end`);
                   } else {
-                    router.push(`/${gameId}/${game.player.location.location}`);
+                    router.push(`/${tokenId}/${game.player.location.location}`);
                   }
                 }}
               >
@@ -73,7 +75,8 @@ const Consequence = () => {
                 w={["full", "auto"]}
                 px={["auto", "20px"]}
                 onClick={() => {
-                  router.push(`/${gameId}/end`);
+                  const tokenId = gameStore.tokenId;
+                  router.push(`/${tokenId}/end`);
                 }}
               >
                 Game Over

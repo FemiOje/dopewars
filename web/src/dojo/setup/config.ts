@@ -204,8 +204,8 @@ const pgMainnet: DojoChainConfig = {
 // The first chain in this object is the default chain in production
 export const dojoContextConfig = {
   // SN_MAIN: snMainnet,
-  PG_MAINNET: pgMainnet,
-  // SN_SEPOLIA: snSepolia,
+  // PG_MAINNET: pgMainnet,
+  SN_SEPOLIA: snSepolia,
   // WP_PROVABLE_DW: provableDW,
   // WP_DOPEWARS: katanaSlotDopewars,
   // KATANA: katanaLocal,
