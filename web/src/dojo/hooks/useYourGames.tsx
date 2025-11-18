@@ -4,7 +4,10 @@ import { useConfigStore } from "./useConfigStore";
 import { EnrichedGame } from "../types";
 
 export const useYourGames = () => {
-  const { gamesData, isLoading } = useGameTokens();
+  const { metagameGames: gamesData, isLoading } = useGameTokens({
+    sortBy: "token_id",
+    limit: 10,
+  });
   const { config } = useConfigStore();
 
   // Filter to active games and transform to EnrichedGame format

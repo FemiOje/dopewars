@@ -24,9 +24,8 @@ export const MetagameProvider = ({ children }: MetagameProviderProps) => {
 
     // Initialize Metagame SDK
     initMetagame({
-      toriiUrl: selectedChain.toriiUrl,
-      worldAddress: selectedChain.manifest.world.address,
-      namespace: selectedChain.namespace,
+      toriiUrl: "https://api.cartridge.gg/x/pg-mainnet-9/torii",
+      worldAddress: "0x2ef591697f0fd9adc0ba9dbe0ca04dabad80cf95f08ba02e435d9cb6698a28a",
     })
       .then((client) => {
         console.log("✅ Metagame SDK setup complete!");

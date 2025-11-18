@@ -20,6 +20,7 @@ import { Dopewars_Game as Game } from "@/generated/graphql";
 import { Config } from "@/dojo/stores/config";
 import { HustlerAvatarIcon } from "../profile/HustlerAvatarIcon";
 import { useSwipeable } from "react-swipeable";
+// import { useGameTokens } from "@/lib/metagame-sdk";
 
 const renderer = ({
   days,
@@ -64,7 +65,12 @@ export const Leaderboard = observer(({ config }: { config?: Config }) => {
     clients: { rpcProvider },
   } = useDojoContext();
   const { account } = useAccount();
-  const { getGameTokens } = useGameTokens();
+  const { metagameGames, dopeTokens } = useGameTokens({
+    sortBy: "score",
+    limit: 10,
+  });
+
+  console.log(metagameGames, dopeTokens);
 
   const [currentVersion, setCurrentVersion] = useState(config?.ryo.season_version || 0);
   const [selectedVersion, setSelectedVersion] = useState(config?.ryo.season_version || 0);
@@ -127,8 +133,8 @@ export const Leaderboard = observer(({ config }: { config?: Config }) => {
       try {
         setIsLoadingOwnedTokens(true);
         const tokenAddress = await fetchTokenAddress();
-        const tokenIds = await getGameTokens(account.address, tokenAddress);
-        setOwnedTokenIds(new Set(tokenIds));
+        // const tokenIds = await getGameTokens(account.address, tokenAddress);
+        // setOwnedTokenIds(new Set(tokenIds));
       } catch (error) {
         console.error("Error fetching owned tokens:", error);
         setOwnedTokenIds(new Set());
@@ -138,7 +144,7 @@ export const Leaderboard = observer(({ config }: { config?: Config }) => {
     };
 
     fetchOwnedTokens();
-  }, [account?.address, getGameTokens, fetchTokenAddress, selectedChain.manifest, rpcProvider]);
+  }, [account?.address, fetchTokenAddress, selectedChain.manifest, rpcProvider]);
 
   // Reset token address when account changes
   useEffect(() => {
