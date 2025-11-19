@@ -22,11 +22,17 @@ export const MetagameProvider = ({ children }: MetagameProviderProps) => {
       return;
     }
 
-    // Initialize Metagame SDK
+    // Only initialize if metagame config is available
+    if (!selectedChain.metagameToriiUrl || !selectedChain.metagameWorldAddress) {
+      console.warn(`⚠️ Metagame SDK not configured for chain ${selectedChain.name}`);
+      setMetagameClient(null); // Set to null to indicate no metagame support
+      return;
+    }
+
+    // Initialize Metagame SDK with config from selectedChain
     initMetagame({
-      toriiUrl: selectedChain.toriiUrl,
-      worldAddress: selectedChain.manifest.world.address,
-      namespace: selectedChain.namespace,
+      toriiUrl: selectedChain.metagameToriiUrl,
+      worldAddress: selectedChain.metagameWorldAddress,
     })
       .then((client) => {
         console.log("✅ Metagame SDK setup complete!");

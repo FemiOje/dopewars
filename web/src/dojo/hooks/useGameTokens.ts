@@ -1,80 +1,101 @@
-import { useMemo, useEffect } from "react";
-import { GameTokenData } from "../types";
 import { useAccount } from "@starknet-react/core";
-import { useGameTokens as useMetagameGameTokens, getGameTokens as getMetagameGameTokens } from "@/lib/metagame-sdk";
+import { useGameTokens as useMetagameGameTokens } from "@/lib/metagame-sdk";
+import { useSqlQuery } from "@/lib/metagame-sdk/sql/services/sqlService";
+import { useMemo } from "react";
+import { padAddress, padU64 } from "@/lib/metagame-sdk/shared/lib";
+import { useDojoContext } from "./useDojoContext";
 
-const transformToGameTokenData = (game: any): GameTokenData => {
-  return {
-    token_id: game.token_id || 0,
-    game_id: game.game_id,
-    game_over: game.game_over,
-    lifecycle: game.lifecycle
-      ? {
-          start: game.lifecycle.start,
-          end: game.lifecycle.end,
-        }
-      : { start: undefined, end: undefined },
-    minted_at: game.minted_at,
-    minted_by: game.minted_by,
-    minted_by_address: game.minted_by_address,
-    owner: game.owner,
-    settings_id: game.settings_id,
-    soulbound: game.soulbound,
-    completed_all_objectives: game.completed_all_objectives,
-    player_name: game.player_name,
-    metadata: game.metadata,
-    context: game.context,
-    settings: game.settings,
-    score: game.score || 0,
-    objective_ids: game.objective_ids || [],
-    renderer: game.renderer,
-    client_url: game.client_url,
-    gameMetadata: game.gameMetadata,
+const GAME_ADDRESS = "0x12bf5118f03d2bbb8a2a31c72e0020ab85af172dd965ccd55c3132066ad8554";
+
+interface GameTokensProps {
+  sortBy: "score" | "token_id";
+  limit: number;
+  tokenIds?: number[]; // Optional filter by specific token IDs
+  filterByOwner?: boolean; // Optional flag to filter by connected account
+  pagination?: {
+    pageSize?: number;
+    initialPage?: number;
   };
-};
+}
 
-const GAME_TOKEN_ADDRESS = "0x036017E69D21D6D8c13E266EaBB73ef1f1D02722D86BDcAbe5f168f8e549d3cD";
+export const useGameTokens = ({
+  sortBy,
+  limit,
+  tokenIds: filterTokenIds,
+  filterByOwner = false,
+  pagination,
+}: GameTokensProps) => {
+  const { address } = useAccount();
+  const { chains } = useDojoContext();
+  const toriiUrl = chains.selectedChain.toriiUrl || "";
 
-export const useGameTokens = () => {
-  const { account } = useAccount();
+  console.log("useGameTokens - filterByOwner:", filterByOwner, "address:", address);
 
-  const { games: metagameGames, loading: metagameLoading } = useMetagameGameTokens({
-    gameAddresses: [GAME_TOKEN_ADDRESS],
-    owner: account?.address,
-    limit: 1000,
+  const {
+    games: metagameGames,
+    loading: metagameLoading,
+    pagination: paginationControls,
+  } = useMetagameGameTokens({
+    gameAddresses: [GAME_ADDRESS],
+    owner: filterByOwner ? address : undefined, // Only filter by owner if explicitly requested
+    tokenIds: filterTokenIds,
+    pagination: pagination || {
+      pageSize: limit,
+    },
+    sortBy: sortBy,
+    sortOrder: "desc",
   });
 
-  const gamesData = useMemo(() => {
-    if (!metagameGames || metagameGames.length === 0) {
-      return [];
-    }
-    return metagameGames.map(transformToGameTokenData);
-  }, [metagameGames]);
+  console.log("useGameTokens - metagameGames count:", metagameGames.length);
 
-  // Log owned games when they're loaded
-  useEffect(() => {
-    if (!metagameLoading && account?.address) {
-      if (gamesData.length > 0) {
-        console.log(`🎮 Games owned by ${account.address}:`, {
-          totalGames: gamesData.length,
-          games: gamesData.map((game) => ({
-            game_id: game.game_id,
-            token_id: game.token_id,
-            player_name: game.player_name,
-            game_over: game.game_over,
-            score: game.score,
-            owner: game.owner,
-          })),
-        });
-      } else {
-        console.log(`ℹ️ No games found for owner: ${account.address}`);
-      }
+  const tokenIds = metagameGames.map((game) => padU64(BigInt(game.token_id)));
+
+  // Custom query for dopewars-GameToken
+  const dopeTokenQuery = useMemo(() => {
+    if (tokenIds.length === 0) return null;
+    const tokenIdList = tokenIds.map((id) => `'${id}'`).join(", ");
+
+    // If filtering by owner, include player_id filter
+    if (filterByOwner && address) {
+      return `
+        SELECT * FROM 'dopewars-GameToken'
+        WHERE player_id = '${padAddress(address)}' AND token_id IN (${tokenIdList})
+        LIMIT ${limit}
+      `;
     }
-  }, [gamesData, metagameLoading, account?.address]);
+
+    // Otherwise, just filter by token IDs
+    return `
+      SELECT * FROM 'dopewars-GameToken'
+      WHERE token_id IN (${tokenIdList})
+      LIMIT ${limit}
+    `;
+  }, [address, tokenIds, filterByOwner, limit]);
+
+  const { data: dopeTokens, loading: dopeLoading } = useSqlQuery(toriiUrl, dopeTokenQuery, true);
+
+  // Merge metagame games with dope tokens data
+  const mergedGames = useMemo(() => {
+    if (!dopeTokens) return metagameGames.map((game) => ({ ...game, hasDopeToken: false, dopeTokenData: null }));
+
+    // Create a map of dope tokens by token_id for quick lookup
+    const dopeTokenMap = new Map(dopeTokens.map((token: any) => [token.token_id, token]));
+
+    return metagameGames.map((game) => {
+      const paddedTokenId = padU64(BigInt(game.token_id));
+      const dopeToken = dopeTokenMap.get(paddedTokenId);
+
+      return {
+        ...game,
+        hasDopeToken: !!dopeToken,
+        dopeTokenData: dopeToken || null,
+      };
+    });
+  }, [metagameGames, dopeTokens]);
 
   return {
-    gamesData,
-    isLoading: metagameLoading,
-    getGameTokens: getMetagameGameTokens,
+    games: mergedGames,
+    isLoading: metagameLoading || dopeLoading,
+    pagination: paginationControls,
   };
 };

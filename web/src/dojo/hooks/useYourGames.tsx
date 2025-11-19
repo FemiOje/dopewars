@@ -4,8 +4,14 @@ import { useConfigStore } from "./useConfigStore";
 import { EnrichedGame } from "../types";
 
 export const useYourGames = () => {
-  const { gamesData, isLoading } = useGameTokens();
+  const { games: gamesData, isLoading } = useGameTokens({
+    sortBy: "token_id",
+    limit: 100,
+    filterByOwner: true, // Only get games for connected account
+  });
   const { config } = useConfigStore();
+
+  console.log("YourGames - gamesData:", gamesData);
 
   // Filter to active games and transform to EnrichedGame format
   // Note: metagame-sdk provides token data, but we need to map it to EnrichedGame
@@ -21,9 +27,9 @@ export const useYourGames = () => {
     return gamesData
       .filter((game) => !game.game_over && game.game_id !== undefined)
       .map(
-        (game): EnrichedGame => ({
+        (game): EnrichedGame & { hasDopeToken: boolean; context?: any } => ({
           season_version: currentSeasonVersion,
-          game_id: game.game_id!,
+          game_id: game.dopeTokenData?.game_id,
           player_id: "", // metagame-sdk may not provide this
           player_name: game.player_name || "",
           game_mode: "", // metagame-sdk may not provide this
@@ -38,6 +44,8 @@ export const useYourGames = () => {
           equipment_by_slot: "", // metagame-sdk may not provide this
           minted_by: game.minted_by,
           lifecycle: game.lifecycle,
+          hasDopeToken: game.hasDopeToken,
+          context: game.context,
         }),
       );
   }, [gamesData, config?.ryo.season_version]);

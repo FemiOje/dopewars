@@ -77,6 +77,8 @@ export type DojoChainConfig = {
   paperAddress: string;
   vrfProviderAddress: string;
   vrfProviderSecret?: string;
+  metagameToriiUrl?: string;
+  metagameWorldAddress?: string;
 };
 
 // const katanaLocal: DojoChainConfig = {
@@ -191,8 +193,10 @@ const pgMainnet: DojoChainConfig = {
   name: "MAINNET",
   chainConfig: mainnet,
   rpcUrl: "https://api.cartridge.gg/x/starknet/mainnet",
-  toriiUrl: "https://api.cartridge.gg/x/provable-dw-1/torii/graphql",
-  toriiWsUrl: "wss://api.cartridge.gg/x/provable-dw-1/torii/graphql/ws",
+  toriiUrl: "https://api.cartridge.gg/x/pg-dw-2/torii/graphql",
+  toriiWsUrl: "wss://api.cartridge.gg/x/pg-dw-2/torii/graphql/ws",
+  metagameToriiUrl: "https://api.cartridge.gg/x/pg-mainnet-10/torii",
+  metagameWorldAddress: "0x2ef591697f0fd9adc0ba9dbe0ca04dabad80cf95f08ba02e435d9cb6698a28a",
   manifest: mergeManifests(manifestMainnet, [manifestDopeMainnet]),
   predeployedAccounts: [],
   paperAddress: PAPER_MAINNET,
@@ -204,8 +208,8 @@ const pgMainnet: DojoChainConfig = {
 // The first chain in this object is the default chain in production
 export const dojoContextConfig = {
   // SN_MAIN: snMainnet,
-  // PG_MAINNET: pgMainnet,
-  SN_SEPOLIA: snSepolia,
+  PG_MAINNET: pgMainnet,
+  // SN_SEPOLIA: snSepolia,
   // WP_PROVABLE_DW: provableDW,
   // WP_DOPEWARS: katanaSlotDopewars,
   // KATANA: katanaLocal,

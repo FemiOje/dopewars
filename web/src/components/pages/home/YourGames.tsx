@@ -7,6 +7,7 @@ import { useAccount } from "@starknet-react/core";
 import { observer } from "mobx-react-lite";
 import { AccountInterface } from "starknet";
 import { HustlerAvatarIcon } from "../profile/HustlerAvatarIcon";
+import { feltToString } from "@/dope/helpers";
 
 const truncateAddress = (address: string, startLength: number = 6, endLength: number = 4): string => {
   if (!address || address.length <= startLength + endLength) {
@@ -73,6 +74,10 @@ const YourGameEntry = ({ game }: { game: any; account: AccountInterface | undefi
     router.push(`/0x${game.minigame_token_id.toString(16)}`);
   };
 
+  // Check if there's a tournament context
+  const tournamentId = game.context?.contexts?.["Tournament ID"];
+  const displayLabel = tournamentId ? `TOURNAMENT ${tournamentId}` : `SEASON ${game.season_version}`;
+
   return (
     <Card position="relative" h="100px" p={2} color={color} cursor="pointer" onClick={handleClick}>
       <VStack h="100%" justifyContent="space-between" gap={0}>
@@ -89,21 +94,21 @@ const YourGameEntry = ({ game }: { game: any; account: AccountInterface | undefi
 
           <VStack w="full" alignItems="flex-start" gap={0}>
             <Text fontSize="sm" opacity={0.7}>
-              Game #{game.game_id}
+              {game.hasDopeToken ? `Game #${game.game_id}` : "Not Started"}
             </Text>
             <Text fontSize="sm" opacity={0.7}>
               Token #{game.minigame_token_id}
             </Text>
             <Text color={colors.neon["400"].toString()} fontWeight="bold">
-              {truncateAddress(game.player_name as string)}
+              {feltToString(game.player_name)}
             </Text>
           </VStack>
         </HStack>
 
         <HStack w="full" justifyContent="space-between" borderTop="solid 1px" borderColor="neon.700" pt={1} mt={1}>
-          <Text opacity={0.7}>SEASON {game.season_version}</Text>
+          <Text opacity={0.7}>{displayLabel}</Text>
           <Text color={colors.neon["400"].toString()} fontWeight="bold">
-            RESUME →
+            {game.hasDopeToken ? "RESUME →" : "BEGIN →"}
           </Text>
         </HStack>
       </VStack>

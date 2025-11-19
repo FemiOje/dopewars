@@ -123,11 +123,11 @@ const cartridgeConnector = ({ selectedChain }: { selectedChain: DojoChainConfig 
     policies.contracts![decideAddress] = { methods: [{ entrypoint: "decide" }] };
   }
 
-  if (laundromatAddress) {
-    policies.contracts![laundromatAddress] = {
-      methods: [{ entrypoint: "register_score" }],
-    };
-  }
+  // if (laundromatAddress) {
+  //   policies.contracts![laundromatAddress] = {
+  //     methods: [{ entrypoint: "register_score" }],
+  //   };
+  // }
 
   // if (dopeLootClaimAddress) {
   //   policies.contracts![dopeLootClaimAddress] = {
@@ -195,14 +195,14 @@ const cartridgeConnector = ({ selectedChain }: { selectedChain: DojoChainConfig 
     // rpc: selectedChain.rpcUrl ? selectedChain.rpcUrl : "http://localhost:5050",
     // profileUrl: selectedChain.profileUrl ? selectedChain.profileUrl : undefined,
     namespace: selectedChain.namespace ? selectedChain.namespace : "dopewars",
-    slot: selectedChain.slot ? selectedChain.slot : "provable-dw-1",
+    slot: selectedChain.slot ? selectedChain.slot : "pg-mainnet-9",
     tokens: {
       erc20: [
         // paperAddress
         // "0x410466536b5ae074f7fea81e5533b8134a9fa08b3dd077dd9db08f64997d113",
       ],
     },
-    preset: "dope-wars",
+    // preset: "dope-wars",
     // colorMode: "dark",
     policies,
   }) as unknown as InjectedConnector;

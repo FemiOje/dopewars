@@ -39,7 +39,7 @@ import { HustlerAvatarIcon } from "@/components/pages/profile/HustlerAvatarIcon"
 
 const End = () => {
   const gameStore = useGameStore();
-  const { game, gameInfos } = gameStore;
+  const { game, gameInfos, tournamentId } = gameStore;
   const { router, gameId } = useRouterContext();
   const {
     clients: { rpcProvider },
@@ -93,29 +93,13 @@ const End = () => {
     }
   }, [registeredGames, game]);
 
-  const onRegister = async () => {
+  console.log("gameInfos:", gameInfos, "tournamentId:", tournamentId);
+
+  const goToBudokan = async () => {
     try {
-      const prevGameId = prev ? prev.game_id : 0;
-      const prevPlayerId = prev ? prev.player_id : 0;
-
-      const tokenId = gameInfos?.minigame_token_id!.toString();
-      const { hash } = await registerScore(tokenId, prevGameId, prevPlayerId);
-
-      if (hash !== "") {
-        toast({
-          message: `Registered!`,
-          duration: 5_000,
-          isError: false,
-        });
-        await rpcProvider.waitForTransaction(hash, {
-          retryInterval: 200,
-        });
-        setTimeout(async () => {
-          await gameStore.init(`0x${gameInfos?.game_id!.toString(16)}`);
-          setTimeout(() => {
-            refetchRegisteredGame();
-          }, 1_000);
-        }, 1_500);
+      if (tournamentId) {
+        // Navigate to Budokan with the game ID
+        window.open(`https://budokan.gg/tournament/${tournamentId}`, "_blank");
       }
     } catch (e: any) {
       console.log(e);
@@ -143,8 +127,8 @@ const End = () => {
               </Card> */}
 
               <ChildrenOrConnect>
-                <Button isLoading={isPending} onClick={() => onRegister()}>
-                  Register your score
+                <Button isLoading={isPending} onClick={() => goToBudokan()}>
+                  Go to Budokan
                 </Button>
               </ChildrenOrConnect>
             </VStack>
