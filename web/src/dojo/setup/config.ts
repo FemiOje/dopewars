@@ -77,6 +77,8 @@ export type DojoChainConfig = {
   paperAddress: string;
   vrfProviderAddress: string;
   vrfProviderSecret?: string;
+  metagameToriiUrl?: string;
+  metagameWorldAddress?: string;
 };
 
 // const katanaLocal: DojoChainConfig = {
@@ -193,6 +195,8 @@ const pgMainnet: DojoChainConfig = {
   rpcUrl: "https://api.cartridge.gg/x/starknet/mainnet",
   toriiUrl: "https://api.cartridge.gg/x/pg-dw-2/torii/graphql",
   toriiWsUrl: "wss://api.cartridge.gg/x/pg-dw-2/torii/graphql/ws",
+  metagameToriiUrl: "https://api.cartridge.gg/x/pg-mainnet-10/torii",
+  metagameWorldAddress: "0x2ef591697f0fd9adc0ba9dbe0ca04dabad80cf95f08ba02e435d9cb6698a28a",
   manifest: mergeManifests(manifestMainnet, [manifestDopeMainnet]),
   predeployedAccounts: [],
   paperAddress: PAPER_MAINNET,

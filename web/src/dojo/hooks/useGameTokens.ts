@@ -11,36 +11,66 @@ interface GameTokensProps {
   sortBy: "score" | "token_id";
   limit: number;
   tokenIds?: number[]; // Optional filter by specific token IDs
+  filterByOwner?: boolean; // Optional flag to filter by connected account
+  pagination?: {
+    pageSize?: number;
+    initialPage?: number;
+  };
 }
 
-export const useGameTokens = ({ sortBy, limit, tokenIds: filterTokenIds }: GameTokensProps) => {
+export const useGameTokens = ({
+  sortBy,
+  limit,
+  tokenIds: filterTokenIds,
+  filterByOwner = false,
+  pagination,
+}: GameTokensProps) => {
   const { address } = useAccount();
   const { chains } = useDojoContext();
   const toriiUrl = chains.selectedChain.toriiUrl || "";
 
-  const { games: metagameGames, loading: metagameLoading } = useMetagameGameTokens({
+  console.log("useGameTokens - filterByOwner:", filterByOwner, "address:", address);
+
+  const {
+    games: metagameGames,
+    loading: metagameLoading,
+    pagination: paginationControls,
+  } = useMetagameGameTokens({
     gameAddresses: [GAME_ADDRESS],
-    owner: address,
-    tokenIds: filterTokenIds, // Pass through token ID filter
-    pagination: {
-      pageSize: 100,
+    owner: filterByOwner ? address : undefined, // Only filter by owner if explicitly requested
+    tokenIds: filterTokenIds,
+    pagination: pagination || {
+      pageSize: limit,
     },
     sortBy: sortBy,
     sortOrder: "desc",
   });
 
+  console.log("useGameTokens - metagameGames count:", metagameGames.length);
+
   const tokenIds = metagameGames.map((game) => padU64(BigInt(game.token_id)));
 
   // Custom query for dopewars-GameToken
   const dopeTokenQuery = useMemo(() => {
-    if (!address || tokenIds.length === 0) return null;
+    if (tokenIds.length === 0) return null;
     const tokenIdList = tokenIds.map((id) => `'${id}'`).join(", ");
+
+    // If filtering by owner, include player_id filter
+    if (filterByOwner && address) {
+      return `
+        SELECT * FROM 'dopewars-GameToken'
+        WHERE player_id = '${padAddress(address)}' AND token_id IN (${tokenIdList})
+        LIMIT ${limit}
+      `;
+    }
+
+    // Otherwise, just filter by token IDs
     return `
       SELECT * FROM 'dopewars-GameToken'
-      WHERE player_id = '${padAddress(address)}' AND token_id IN (${tokenIdList})
+      WHERE token_id IN (${tokenIdList})
       LIMIT ${limit}
     `;
-  }, [address, tokenIds]);
+  }, [address, tokenIds, filterByOwner, limit]);
 
   const { data: dopeTokens, loading: dopeLoading } = useSqlQuery(toriiUrl, dopeTokenQuery, true);
 
@@ -66,5 +96,6 @@ export const useGameTokens = ({ sortBy, limit, tokenIds: filterTokenIds }: GameT
   return {
     games: mergedGames,
     isLoading: metagameLoading || dopeLoading,
+    pagination: paginationControls,
   };
 };

@@ -22,10 +22,17 @@ export const MetagameProvider = ({ children }: MetagameProviderProps) => {
       return;
     }
 
-    // Initialize Metagame SDK
+    // Only initialize if metagame config is available
+    if (!selectedChain.metagameToriiUrl || !selectedChain.metagameWorldAddress) {
+      console.warn(`⚠️ Metagame SDK not configured for chain ${selectedChain.name}`);
+      setMetagameClient(null); // Set to null to indicate no metagame support
+      return;
+    }
+
+    // Initialize Metagame SDK with config from selectedChain
     initMetagame({
-      toriiUrl: "https://api.cartridge.gg/x/pg-mainnet-9/torii",
-      worldAddress: "0x2ef591697f0fd9adc0ba9dbe0ca04dabad80cf95f08ba02e435d9cb6698a28a",
+      toriiUrl: selectedChain.metagameToriiUrl,
+      worldAddress: selectedChain.metagameWorldAddress,
     })
       .then((client) => {
         console.log("✅ Metagame SDK setup complete!");

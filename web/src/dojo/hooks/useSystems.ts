@@ -112,6 +112,7 @@ export const useSystems = (): SystemsInterface => {
           duration: 5_000,
           isError: true,
         });
+        throw new Error("Wallet not connected");
       }
 
       // override wallet (ArgentX / Braavos) default providers..

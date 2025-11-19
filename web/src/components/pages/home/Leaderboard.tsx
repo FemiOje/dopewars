@@ -1,11 +1,5 @@
 import { Loader } from "@/components/layout/Loader";
-import {
-  useDojoContext,
-  useRegisteredGamesBySeason,
-  useRouterContext,
-  useSeasonByVersion,
-  useGameTokens,
-} from "@/dojo/hooks";
+import { useDojoContext, useRouterContext, useSeasonByVersion, useGameTokens } from "@/dojo/hooks";
 import { getContractByName } from "@dojoengine/core";
 import { DW_NS } from "@/dojo/hooks/useSystems";
 import colors from "@/theme/colors";
@@ -16,11 +10,11 @@ import { observer } from "mobx-react-lite";
 import { useCallback, useEffect, useRef, useState } from "react";
 import Countdown from "react-countdown";
 import { Arrow, InfosIcon } from "../../icons";
-import { Dopewars_Game as Game } from "@/generated/graphql";
 import { Config } from "@/dojo/stores/config";
 import { HustlerAvatarIcon } from "../profile/HustlerAvatarIcon";
 import { useSwipeable } from "react-swipeable";
 // import { useGameTokens } from "@/lib/metagame-sdk";
+import { feltToString } from "@/lib/metagame-sdk/shared/lib";
 
 const renderer = ({
   days,
@@ -65,12 +59,6 @@ export const Leaderboard = observer(({ config }: { config?: Config }) => {
     clients: { rpcProvider },
   } = useDojoContext();
   const { account } = useAccount();
-  const { games } = useGameTokens({
-    sortBy: "score",
-    limit: 10,
-  });
-
-  console.log(games);
 
   const [currentVersion, setCurrentVersion] = useState(config?.ryo.season_version || 0);
   const [selectedVersion, setSelectedVersion] = useState(config?.ryo.season_version || 0);
@@ -81,17 +69,26 @@ export const Leaderboard = observer(({ config }: { config?: Config }) => {
   const { season } = useSeasonByVersion(selectedVersion);
 
   const {
-    registeredGames,
-    isFetching: isFetchingRegisteredGames,
-    refetch: refetchRegisteredGames,
-  } = useRegisteredGamesBySeason(selectedVersion);
+    games: registeredGames,
+    isLoading: isFetchingRegisteredGames,
+    pagination,
+  } = useGameTokens({
+    sortBy: "score",
+    limit: 10,
+    filterByOwner: false, // Get all games for leaderboard
+    pagination: {
+      pageSize: 10,
+      initialPage: 0,
+    },
+  });
+
+  console.log("Leaderboard games:", registeredGames);
 
   useEffect(() => {
     if (!config) return;
 
     setCurrentVersion(config?.ryo.season_version || 0);
-    refetchRegisteredGames();
-  }, [config, refetchRegisteredGames]);
+  }, [config]);
 
   // Memoize token address fetching to avoid unnecessary re-renders
   const fetchTokenAddress = useCallback(async () => {
@@ -205,28 +202,31 @@ export const Leaderboard = observer(({ config }: { config?: Config }) => {
         )}
       </VStack>
       <VStack
-        boxSize="full"
+        w="full"
         gap="20px"
-        maxH={["calc(100dvh - 350px)", "calc(100dvh - 380px)"]}
+        flex="1"
+        overflowY="scroll"
         sx={{
-          overflowY: "scroll",
-        }}
-        __css={{
-          "scrollbar-width": "none",
+          scrollbarWidth: "none",
         }}
       >
         {isFetchingRegisteredGames && <Loader />}
         {!isFetchingRegisteredGames && (
           <UnorderedList boxSize="full" variant="dotted" h="auto">
             {registeredGames && registeredGames.length > 0 ? (
-              registeredGames.map((game: Game, index: number) => {
+              registeredGames.map((game: any, index: number) => {
                 // Check if player currently owns the token (not just if they are original owner)
-                const tokenId = Number(game.minigame_token_id);
+                const tokenId = Number(game.token_id);
 
                 // check if current owner of token
                 const isOwn = ownedTokenIds.has(tokenId);
                 const color = isOwn ? colors.yellow["400"].toString() : colors.neon["200"].toString();
-                const displayName = game.player_name ? `${game.player_name}${isOwn ? " (you)" : ""}` : "Anonymous";
+                const displayName = game.player_name
+                  ? `${feltToString(game.player_name)}${isOwn ? " (you)" : ""}`
+                  : "Anonymous";
+
+                // Calculate actual rank based on page offset
+                const rank = pagination ? pagination.currentPage * pagination.pageSize + index + 1 : index + 1;
 
                 return (
                   <ListItem color={color} key={game.game_id}>
@@ -238,21 +238,18 @@ export const Leaderboard = observer(({ config }: { config?: Config }) => {
                         // display={["none", "block"]}
                         whiteSpace="nowrap"
                       >
-                        {index + 1}.
+                        {rank}.
                       </Text>
                       <Box
                         flexShrink={0}
                         style={{ marginTop: "-8px" }}
                         cursor="pointer"
                         onClick={() => {
-                          if (!game.minigame_token_id || game.minigame_token_id === 0) {
-                            console.warn(
-                              "[Leaderboard] Cannot navigate: minigame_token_id is missing for game",
-                              game.game_id,
-                            );
+                          if (!game.token_id || game.token_id === 0) {
+                            console.warn("[Leaderboard] Cannot navigate: token_id is missing for game", game.game_id);
                             return;
                           }
-                          router.push(`/0x${game.minigame_token_id.toString(16)}/logs`);
+                          router.push(`/0x${game.token_id.toString(16)}/logs`);
                         }}
                       >
                         <HustlerAvatarIcon
@@ -273,14 +270,11 @@ export const Leaderboard = observer(({ config }: { config?: Config }) => {
                           fontSize={["12px", "16px"]}
                           cursor="pointer"
                           onClick={() => {
-                            if (!game.minigame_token_id || game.minigame_token_id === 0) {
-                              console.warn(
-                                "[Leaderboard] Cannot navigate: minigame_token_id is missing for game",
-                                game.game_id,
-                              );
+                            if (!game.token_id || game.token_id === 0) {
+                              console.warn("[Leaderboard] Cannot navigate: token_id is missing for game", game.game_id);
                               return;
                             }
-                            router.push(`/0x${game.minigame_token_id.toString(16)}/logs`);
+                            router.push(`/0x${game.token_id.toString(16)}/logs`);
                           }}
                         >
                           {displayName}
@@ -299,7 +293,7 @@ export const Leaderboard = observer(({ config }: { config?: Config }) => {
                       </Text>
 
                       <Text flexShrink={0} fontSize={["12px", "16px"]}>
-                        {formatCash(game.final_score)}
+                        {formatCash(game.score)}
                       </Text>
                     </HStack>
                   </ListItem>
@@ -313,6 +307,25 @@ export const Leaderboard = observer(({ config }: { config?: Config }) => {
           </UnorderedList>
         )}
       </VStack>
+      {!isFetchingRegisteredGames && pagination && pagination.totalPages > 1 && (
+        <HStack w="full" justifyContent="center" gap={2} py={3}>
+          <Arrow
+            direction="left"
+            cursor="pointer"
+            opacity={pagination.hasPreviousPage ? "1" : "0.25"}
+            onClick={() => pagination.hasPreviousPage && pagination.previousPage()}
+          />
+          <Text fontSize="12px" textStyle="subheading">
+            Page {pagination.currentPage + 1} of {pagination.totalPages}
+          </Text>
+          <Arrow
+            direction="right"
+            cursor="pointer"
+            opacity={pagination.hasNextPage ? "1" : "0.25"}
+            onClick={() => pagination.hasNextPage && pagination.nextPage()}
+          />
+        </HStack>
+      )}
     </VStack>
   );
 });

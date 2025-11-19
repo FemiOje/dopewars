@@ -6,9 +6,12 @@ import { EnrichedGame } from "../types";
 export const useYourGames = () => {
   const { games: gamesData, isLoading } = useGameTokens({
     sortBy: "token_id",
-    limit: 10,
+    limit: 100,
+    filterByOwner: true, // Only get games for connected account
   });
   const { config } = useConfigStore();
+
+  console.log("YourGames - gamesData:", gamesData);
 
   // Filter to active games and transform to EnrichedGame format
   // Note: metagame-sdk provides token data, but we need to map it to EnrichedGame

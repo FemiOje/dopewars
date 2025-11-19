@@ -16,41 +16,41 @@ const Redirector = observer(() => {
   const { game } = gameStore;
 
   useEffect(() => {
-    let handle: any = undefined;
-
-    if (!game) {
-      handle = setTimeout(() => {
-        router.push(`/`);
-        // }, 2000);
-      }, 10000); // temp fix for slow indexer
-    } else {
-      clearTimeout(handle);
-
-      // Use tokenId from gameStore if available (correct value), otherwise fall back to gameId from router
-      const tokenId = gameStore.tokenId || gameId;
-
-      if (game.gameInfos.game_over) {
-        router.push(`/${tokenId}/end`);
-      } else if (game.player.status === PlayerStatus.Normal) {
-        if (game.player.location) {
-          router.push(`/${tokenId}/${game.player.location.location}`);
-        } else {
-          router.push(`/${tokenId}/travel`);
-        }
-      } else if (game.player.status === PlayerStatus.BeingArrested || game.player.status === PlayerStatus.BeingMugged) {
-        //
-        router.push(`/${tokenId}/event/decision`);
-      }
+    // Don't set timeout if game is being created
+    if (gameStore.isCreatingGame) {
+      return;
     }
 
-    return () => clearTimeout(handle);
-  }, [game, game?.player.status, game?.player.location, router, gameId, gameStore.tokenId]);
+    if (!game) {
+      const handle = setTimeout(() => {
+        router.push(`/`);
+      }, 10000); // temp fix for slow indexer
+
+      return () => clearTimeout(handle);
+    }
+
+    // Game exists, redirect to appropriate page
+    // Use tokenId from gameStore if available (correct value), otherwise fall back to gameId from router
+    const tokenId = gameStore.tokenId || gameId;
+
+    if (game.gameInfos.game_over) {
+      router.push(`/${tokenId}/end`);
+    } else if (game.player.status === PlayerStatus.Normal) {
+      if (game.player.location) {
+        router.push(`/${tokenId}/${game.player.location.location}`);
+      } else {
+        router.push(`/${tokenId}/travel`);
+      }
+    } else if (game.player.status === PlayerStatus.BeingArrested || game.player.status === PlayerStatus.BeingMugged) {
+      router.push(`/${tokenId}/event/decision`);
+    }
+  }, [game, game?.player.status, game?.player.location, router, gameId, gameStore.tokenId, gameStore.isCreatingGame]);
 
   return (
     <Layout isSinglePanel>
       <HStack h="full" alignItems="center" justifyContent="center">
         {/* <OGLoader /> */}
-        <Loader />
+        <Loader text={gameStore.isCreatingGame ? "STARTING GAME ..." : "LOADING ..."} />
       </HStack>
     </Layout>
   );

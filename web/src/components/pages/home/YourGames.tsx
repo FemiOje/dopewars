@@ -7,6 +7,7 @@ import { useAccount } from "@starknet-react/core";
 import { observer } from "mobx-react-lite";
 import { AccountInterface } from "starknet";
 import { HustlerAvatarIcon } from "../profile/HustlerAvatarIcon";
+import { feltToString } from "@/dope/helpers";
 
 const truncateAddress = (address: string, startLength: number = 6, endLength: number = 4): string => {
   if (!address || address.length <= startLength + endLength) {
@@ -99,7 +100,7 @@ const YourGameEntry = ({ game }: { game: any; account: AccountInterface | undefi
               Token #{game.minigame_token_id}
             </Text>
             <Text color={colors.neon["400"].toString()} fontWeight="bold">
-              {truncateAddress(game.player_name as string)}
+              {feltToString(game.player_name)}
             </Text>
           </VStack>
         </HStack>

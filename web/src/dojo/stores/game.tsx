@@ -58,6 +58,7 @@ export class GameStoreClass {
   router: NextRouter;
 
   isInitialized = false;
+  isCreatingGame = false;
   game: GameClass | null = null;
   gameEvents: EventClass | null = null;
   gameInfos: Game | null = null;
@@ -83,6 +84,9 @@ export class GameStoreClass {
       gameConfig: observable,
       seasonSettings: observable,
       tournamentId: observable,
+      isCreatingGame: observable,
+      setIsCreatingGame: action,
+      setTournamentId: action,
       reset: action,
       cleanSubscriptions: action,
       init: flow,
@@ -97,6 +101,14 @@ export class GameStoreClass {
     });
   }
 
+  setIsCreatingGame(value: boolean) {
+    this.isCreatingGame = value;
+  }
+
+  setTournamentId(value: string) {
+    this.tournamentId = value;
+  }
+
   reset() {
     this.cleanSubscriptions();
 
@@ -109,6 +121,7 @@ export class GameStoreClass {
     this.tokenId = undefined;
     this.tournamentId = undefined;
     this.isInitialized = false;
+    this.isCreatingGame = false;
   }
 
   *init(tokenId: string) {
