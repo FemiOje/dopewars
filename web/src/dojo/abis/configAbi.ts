@@ -136,18 +136,6 @@ export const ABI = [
         "type": "core::integer::u16"
       },
       {
-        "name": "paper_fee",
-        "type": "core::integer::u16"
-      },
-      {
-        "name": "paper_reward_launderer",
-        "type": "core::integer::u16"
-      },
-      {
-        "name": "treasury_fee_pct",
-        "type": "core::integer::u8"
-      },
-      {
         "name": "treasury_balance",
         "type": "core::integer::u32"
       }

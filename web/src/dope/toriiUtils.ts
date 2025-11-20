@@ -1,4 +1,4 @@
-import { Entities, EnumValue, Query, Ty } from "@dojoengine/torii-client";
+import { Clause, Entities, EnumValue, Query, Ty } from "@dojoengine/torii-client";
 import { BigNumberish, CairoCustomEnum, CairoOption, CairoOptionVariant } from "starknet";
 
 export function parseValue(value: Ty): any {
@@ -69,10 +69,19 @@ export function parseModels(entities: Entities, modelName: string) {
 }
 
 export function queryAllModels(models: string[], limit = 10_000): Query {
+  const clause: Clause = {
+    Keys: {
+      keys: [],
+      models,
+      pattern_matching: "VariableLen",
+    },
+  };
+
   return {
-    clause: undefined,
+    clause,
+    world_addresses: [],
     pagination: {
-      limit: 10_000,
+      limit,
       cursor: undefined,
       direction: "Forward",
       order_by: [],

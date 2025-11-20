@@ -23,6 +23,7 @@ type GameStoreProps = {
   client: GraphQLClient;
   configStore: ConfigStoreClass;
   router: NextRouter;
+  worldAddress: string;
 };
 
 // Historical event models that need to be loaded for game state
@@ -56,6 +57,7 @@ export class GameStoreClass {
   client: GraphQLClient;
   configStore: ConfigStoreClass;
   router: NextRouter;
+  worldAddress: string;
 
   isInitialized = false;
   isCreatingGame = false;
@@ -71,11 +73,12 @@ export class GameStoreClass {
 
   allGamesCreated: GameCreated[] = [];
 
-  constructor({ toriiClient, client, configStore, router }: GameStoreProps) {
+  constructor({ toriiClient, client, configStore, router, worldAddress }: GameStoreProps) {
     this.toriiClient = toriiClient;
     this.client = client;
     this.configStore = configStore;
     this.router = router;
+    this.worldAddress = worldAddress;
 
     makeObservable(this, {
       game: observable,
@@ -185,29 +188,27 @@ export class GameStoreClass {
     yield this.cleanSubscriptions();
 
     const subEntities: Subscription = yield this.toriiClient.onEntityUpdated(
-      [
-        {
-          Keys: {
-            keys: [num.toHexString(this.gameInfos?.game_id), this.gameInfos?.player_id],
-            models: ["dopewars-GameStorePacked"],
-            pattern_matching: "VariableLen",
-          },
+      {
+        Keys: {
+          keys: [num.toHexString(this.gameInfos?.game_id), this.gameInfos?.player_id],
+          models: ["dopewars-GameStorePacked"],
+          pattern_matching: "VariableLen",
         },
-      ],
+      },
+      [this.worldAddress],
       (entity: any, update: any) => this.onEntityUpdated(entity, update),
     );
     this.subscriptions.push(subEntities);
 
     const subEvent: Subscription = yield this.toriiClient.onEventMessageUpdated(
-      [
-        {
-          Keys: {
-            keys: [num.toHexString(this.gameInfos?.game_id), this.gameInfos?.player_id],
-            models: ["dopewars-*"],
-            pattern_matching: "VariableLen",
-          },
+      {
+        Keys: {
+          keys: [num.toHexString(this.gameInfos?.game_id), this.gameInfos?.player_id],
+          models: ["dopewars-*"],
+          pattern_matching: "VariableLen",
         },
-      ],
+      },
+      [this.worldAddress],
       (entity: any, update: any) => this.onEventMessage(entity, update),
     );
     this.subscriptions.push(subEvent);
@@ -234,6 +235,7 @@ export class GameStoreClass {
       const eventModels = [...HISTORICAL_EVENT_MODELS];
 
       const entities: Entities = yield this.toriiClient.getEventMessages({
+        world_addresses: [this.worldAddress],
         clause: {
           Keys: {
             keys: [num.toHexString(this.gameInfos?.game_id), this.gameInfos?.player_id],
@@ -273,6 +275,7 @@ export class GameStoreClass {
 
     // query GameToken by token_id
     let gameTokenEntities: Entities = yield this.toriiClient.getEntities({
+      world_addresses: [this.worldAddress],
       clause: {
         Keys: {
           keys: [tokenIdNumber.toString()],
@@ -301,13 +304,12 @@ export class GameStoreClass {
     if (!gameToken || !gameToken.game_id) {
       // Game hasn't been started yet - check if this token exists in metagame
       // This will be handled by a custom error that the UI can catch
-      throw new Error(
-        `GAME_NOT_STARTED:${tokenId}`,
-      );
+      throw new Error(`GAME_NOT_STARTED:${tokenId}`);
     }
 
     const gameIdNumber = gameToken.game_id;
     const entities: Entities = yield this.toriiClient.getEntities({
+      world_addresses: [this.worldAddress],
       clause: {
         Member: {
           member: "game_id",
@@ -347,6 +349,7 @@ export class GameStoreClass {
 
   *loadSeasonSettings(season_version: string) {
     const entities: Entities = yield this.toriiClient.getEntities({
+      world_addresses: [this.worldAddress],
       clause: {
         Keys: {
           keys: [num.toHexString(season_version)],
@@ -481,6 +484,7 @@ export class GameStoreClass {
     if (loaded) return loaded;
 
     const entities: Entities = yield this.toriiClient.getEventMessages({
+      world_addresses: [this.worldAddress],
       clause: {
         Member: {
           member: "game_id",

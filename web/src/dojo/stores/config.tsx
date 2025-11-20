@@ -17,8 +17,8 @@ import {
   Dopewars_DopewarsItemTierEdge as DopewarsItemTierEdge,
   Dopewars_DopewarsItemTierConfig as DopewarsItemTierConfig,
   Dopewars_DopewarsItemTierConfigEdge as DopewarsItemTierConfigEdge,
-  Dope_ComponentValueEventEdge as ComponentValueEventEdge,
-  Dope_ComponentValueEvent as ComponentValueEvent,
+  // Dope_ComponentValueEventEdge as ComponentValueEventEdge,
+  // Dope_ComponentValueEvent as ComponentValueEvent,
 } from "@/generated/graphql";
 import { DojoProvider } from "@dojoengine/core";
 import { GraphQLClient } from "graphql-request";
@@ -194,7 +194,7 @@ export type Config = {
   encounterStats: EncounterStatsConfig[];
   config: GetConfig;
 
-  componentValues: ComponentValueEvent[];
+  // componentValues: ComponentValueEvent[];
   dopewarsItemsTiers: DopewarsItemTier[];
   dopewarsItemsTierConfigs: DopewarsItemTierConfig[];
 };
@@ -232,144 +232,40 @@ export class ConfigStoreClass {
 
   *init() {
     this.isInitialized = false;
-
     this.config = undefined;
-
     let data: ConfigQuery;
+
     try {
       data = (yield this.client.request(ConfigDocument, {})) as ConfigQuery;
+      console.log("init successfully. data:", data);
     } catch (error: any) {
-      // Handle case where Dope namespace doesn't exist (e.g., Sepolia)
-      // The error occurs when dopeComponentValueEventModels field doesn't exist in the schema
-      if (
-        error?.response?.errors?.some(
-          (e: any) => e.message?.includes("dopeComponentValueEventModels") || e.message?.includes("Unknown field"),
-        )
-      ) {
-        // Retry with a query that excludes the Dope field
-        const queryWithoutDope = `
-          query Config {
-            dopewarsRyoAddressModels(limit: 1) {
-              edges {
-                node {
-                  key
-                  # paper removed - PAPER integration stripped
-                  treasury
-                }
-              }
-            }
-            dopewarsRyoConfigModels(limit: 1) {
-              edges {
-                node {
-                  key
-                  initialized
-                  paused
-                  season_version
-                  season_duration
-                  season_time_limit
-                  # paper_fee removed - PAPER integration stripped
-                  # paper_reward_launderer removed - PAPER integration stripped
-                  # treasury_fee_pct removed - PAPER integration stripped
-                  treasury_balance
-                }
-              }
-            }
-            dopewarsDrugConfigModels(limit: 24, order: { field: DRUG_ID, direction: ASC }) {
-              edges {
-                node {
-                  drugs_mode
-                  drug
-                  drug_id
-                  base
-                  step
-                  weight
-                  name {
-                    value
-                  }
-                }
-              }
-            }
-            dopewarsLocationConfigModels(order: { field: LOCATION_ID, direction: ASC }) {
-              edges {
-                node {
-                  location
-                  location_id
-                  name {
-                    value
-                  }
-                }
-              }
-            }
-            dopewarsEncounterStatsConfigModels(limit: 100) {
-              edges {
-                node {
-                  encounters_mode
-                  encounter
-                  health_base
-                  health_step
-                  attack_base
-                  attack_step
-                  defense_base
-                  defense_step
-                  speed_base
-                  speed_step
-                }
-              }
-            }
-            dopewarsDopewarsItemTierModels(limit: 1000) {
-              edges {
-                node {
-                  slot_id
-                  item_id
-                  tier
-                }
-              }
-            }
-            dopewarsDopewarsItemTierConfigModels(limit: 1000) {
-              edges {
-                node {
-                  slot_id
-                  tier
-                  levels {
-                    stat
-                    cost
-                  }
-                }
-              }
-            }
-          }
-        `;
-        data = (yield this.client.request(queryWithoutDope, {})) as ConfigQuery;
-        // Ensure dopeComponentValueEventModels is undefined for chains without Dope namespace
-        data.dopeComponentValueEventModels = undefined;
-      } else {
-        throw error;
-      }
+      console.log("error", error);
+      throw error;
     }
 
     /*************************************************** */
 
-    const ryoConfigEdges = data.dopewarsRyoConfigModels!.edges as RyoConfigEdge[];
+    const ryoConfigEdges = data!.dopewarsRyoConfigModels!.edges as RyoConfigEdge[];
     const ryoConfig = ryoConfigEdges[0]!.node as RyoConfig;
 
-    const ryoAddressEdges = data.dopewarsRyoAddressModels!.edges as RyoAddressEdge[];
+    const ryoAddressEdges = data!.dopewarsRyoAddressModels!.edges as RyoAddressEdge[];
     const ryoAddress = ryoAddressEdges[0]!.node as RyoAddress;
 
     /*************************************************** */
 
-    const drugConfigEdges = data.dopewarsDrugConfigModels!.edges as DrugConfigEdge[];
+    const drugConfigEdges = data!.dopewarsDrugConfigModels!.edges as DrugConfigEdge[];
     const drugConfig = drugConfigEdges.map((i) => i.node as DrugConfig);
 
     //
 
-    const locationConfigEdges = data.dopewarsLocationConfigModels!.edges as LocationConfigEdge[];
+    const locationConfigEdges = data!.dopewarsLocationConfigModels!.edges as LocationConfigEdge[];
     const locationConfig = locationConfigEdges.map((i) => i.node as LocationConfig);
 
     //
 
     //
 
-    const encounterStatsConfigEdges = data.dopewarsEncounterStatsConfigModels!.edges as EncounterStatsConfigEdge[];
+    const encounterStatsConfigEdges = data!.dopewarsEncounterStatsConfigModels!.edges as EncounterStatsConfigEdge[];
     const encounterStatsConfig = encounterStatsConfigEdges.map((i) => i.node as EncounterStatsConfig);
 
     /*************************************************** */
@@ -395,26 +291,15 @@ export class ConfigStoreClass {
     });
 
     /*************************************************** */
-    const dopewarsItemsTiersEdges = data.dopewarsDopewarsItemTierModels?.edges as DopewarsItemTierEdge[];
+    const dopewarsItemsTiersEdges = data!.dopewarsDopewarsItemTierModels?.edges as DopewarsItemTierEdge[];
     const dopewarsItemsTiers = dopewarsItemsTiersEdges.map((i) => i.node as DopewarsItemTier);
 
-    const dopewarsItemsTierConfigsEdges = data.dopewarsDopewarsItemTierConfigModels
+    const dopewarsItemsTierConfigsEdges = data!.dopewarsDopewarsItemTierConfigModels
       ?.edges as DopewarsItemTierConfigEdge[];
     const dopewarsItemsTierConfigs = dopewarsItemsTierConfigsEdges.map((i) => i.node as DopewarsItemTierConfig);
 
-    const componentValuesEdges = data.dopeComponentValueEventModels?.edges as ComponentValueEventEdge[] | undefined;
-    const componentValues =
-      componentValuesEdges?.map((i) => {
-        const node = i.node as ComponentValueEvent;
-        return {
-          ...node,
-          component_id: Number(node.component_id),
-          collection_id: shortString.decodeShortString(node.collection_id),
-          component_slug: shortString.decodeShortString(node.component_slug),
-        };
-      }) || [];
 
-    // console.log(componentValues);
+
 
     /*************************************************** */
 
@@ -434,7 +319,7 @@ export class ConfigStoreClass {
           "Enum parsing error in SeasonSettingsModes, using raw response and manually parsing layouts only",
           error,
         );
-        const configContract = new Contract(configAbi, configContractAddress, provider);
+        const configContract = new Contract({abi: configAbi, address: configContractAddress, providerOrAccount: provider});
         const rawResponse: string[] = yield configContract.call("get_config", [], {
           blockIdentifier: "latest",
           parseResponse: false,
@@ -615,7 +500,7 @@ export class ConfigStoreClass {
       drug: drugConfigFull,
       location: locationConfigFull,
 
-      componentValues,
+      // componentValues,
       dopewarsItemsTiers,
       dopewarsItemsTierConfigs,
 
@@ -639,7 +524,7 @@ export class ConfigStoreClass {
    * original `dojoProvider.call` path (see commented block below) and delete this helper.
    */
   private async fetchConfigWithLatestBlock(provider: ProviderInterface, configContractAddress: string): Promise<any> {
-    const configContract = new Contract(configAbi, configContractAddress, provider);
+    const configContract = new Contract({abi: configAbi, address: configContractAddress, providerOrAccount: provider});
     return configContract.call("get_config", [], { blockIdentifier: "latest" });
   }
 

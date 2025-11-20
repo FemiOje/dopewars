@@ -15,7 +15,7 @@ import { QueryClientProvider } from "react-query";
 import { Account, AccountInterface } from "starknet";
 import { DojoChainsResult, useDojoChains } from "../hooks/useDojoChains";
 import { DojoClientsResult, useDojoClients } from "../hooks/useDojoClients";
-import { paperFaucet } from "../hooks/useFaucet";
+// import { paperFaucet } from "../hooks/useFaucet";
 import { DojoContextConfig, SupportedChainIds } from "../setup/config";
 import { ConfigStoreClass } from "../stores/config";
 import { GameStoreClass } from "../stores/game";
@@ -81,7 +81,11 @@ export const DojoContextProvider = observer(
 
     const masterAccount = useMemo(() => {
       if (selectedChain.masterAddress && selectedChain.masterPrivateKey) {
-        return new Account(rpcProvider, selectedChain.masterAddress, selectedChain.masterPrivateKey, "1");
+        return new Account({
+          provider: rpcProvider,
+          address: selectedChain.masterAddress,
+          signer: selectedChain.masterPrivateKey,
+        });
       }
       return undefined;
     }, [rpcProvider, selectedChain.masterAddress, selectedChain.masterPrivateKey]);
@@ -102,7 +106,7 @@ export const DojoContextProvider = observer(
           const receipt = await account!.waitForTransaction(deployTx, {
             retryInterval: 500,
           });
-          await paperFaucet({ account, paperAddress: configStore.config?.ryoAddress.paper });
+          // await paperFaucet({ account, paperAddress: configStore.config?.ryoAddress.paper });
         } catch (e: any) {
           console.log("fail afterDeploy");
         }
@@ -112,7 +116,7 @@ export const DojoContextProvider = observer(
       manager.setAfterDeployingCallback(afterDeploy);
 
       return manager;
-    }, [masterAccount, selectedChain.accountClassHash, rpcProvider]);
+    }, [masterAccount, selectedChain.accountClassHash, rpcProvider, selectedChain.chainConfig.nativeCurrency.address]);
 
     const predeployedManager = useMemo(() => {
       if (!selectedChain.predeployedAccounts || selectedChain.predeployedAccounts.length === 0) return undefined;
@@ -151,8 +155,9 @@ export const DojoContextProvider = observer(
         client: graphqlClient,
         configStore,
         router,
+        worldAddress: selectedChain.manifest.world.address,
       });
-    }, [graphqlClient, configStore, toriiClient]);
+    }, [graphqlClient, configStore, toriiClient, router, selectedChain.manifest.world.address]);
 
     useEffect(() => {
       const initAsync = async () => {
@@ -233,7 +238,7 @@ export const DojoContextProvider = observer(
             <ConnectionError errors={errors} />
           ) : (
             <>
-              <DopeProvider toriiClient={toriiClient}>
+              <DopeProvider toriiClient={toriiClient} worldAddress={selectedChain.manifest.world.address}>
                 <QueryClientProvider client={queryClient}>
                   <RegisterEntities />
                   {children}

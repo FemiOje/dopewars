@@ -55,13 +55,18 @@ export interface PlayerGameInfosInterface {
   allTravelEncounterResults: TravelEncounterResult[];
 }
 
-export const usePlayerGameInfos = (toriiClient: ToriiClient, playerId: string): PlayerGameInfosInterface => {
+export const usePlayerGameInfos = (
+  toriiClient: ToriiClient,
+  playerId: string,
+  worldAddress: string,
+): PlayerGameInfosInterface => {
   const [allTradedDrug, setAllTradedDrug] = useState<TradeDrug[]>([]);
   const [allTravelEncounters, setAllTravelEncounters] = useState<TravelEncounter[]>([]);
   const [allTravelEncounterResults, setAllTravelEncounterResults] = useState<TravelEncounterResult[]>([]);
   useEffect(() => {
     const init = async () => {
       const entities = await toriiClient.getEventMessages({
+        world_addresses: [worldAddress],
         clause: {
           Keys: {
             keys: [undefined, playerId],
@@ -95,7 +100,7 @@ export const usePlayerGameInfos = (toriiClient: ToriiClient, playerId: string): 
     if (toriiClient && Number(playerId) !== 0) {
       init();
     }
-  }, [toriiClient, playerId]);
+  }, [toriiClient, playerId, worldAddress]);
   return {
     allTradedDrug,
     allTravelEncounters: allTravelEncounters,
@@ -112,9 +117,17 @@ export const useGamesByPlayer = (toriiClient: ToriiClient, playerIdRaw: string):
   const { data: allSeasonSettings } = useAllSeasonSettingsQuery({});
   const { data: allGameConfig } = useAllGameConfigQuery({});
 
-  const { allTradedDrug, allTravelEncounters, allTravelEncounterResults } = usePlayerGameInfos(toriiClient, playerId);
+  const {
+    configStore,
+    chains: { selectedChain },
+  } = useDojoContext();
+  const worldAddress = selectedChain.manifest.world.address;
 
-  const { configStore } = useDojoContext();
+  const { allTradedDrug, allTravelEncounters, allTravelEncounterResults } = usePlayerGameInfos(
+    toriiClient,
+    playerId,
+    worldAddress,
+  );
 
   const games = useMemo(() => {
     if (!data || !allGameConfig || !allSeasonSettings) return [];

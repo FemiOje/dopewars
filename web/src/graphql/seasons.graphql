@@ -128,12 +128,7 @@ query Claimable($playerId: ContractAddress) {
         player_name {
           value
         }
-        token_id {
-          option
-          GuestLootId
-          LootId
-          HustlerId
-        }
+       
         equipment_by_slot
         claimed
         claimable

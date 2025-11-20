@@ -1,24 +1,24 @@
 import { ToriiClient } from "@dojoengine/torii-client";
 import { useEffect, useState } from "react";
-import {
-  defaultHustlerMetadata,
-  HustlerBody,
-  HustlerMetadata,
-} from "../components";
+import { defaultHustlerMetadata, HustlerBody, HustlerMetadata } from "../components";
 import { parseModels } from "../toriiUtils";
 import { feltToString } from "../helpers";
+import { useDojoContext } from "@/dojo/hooks";
 
 export const useHustler = (toriiClient: ToriiClient, tokenId: number) => {
+  const {
+    chains: { selectedChain },
+  } = useDojoContext();
+  const worldAddress = selectedChain.manifest.world.address;
   const [isLoaded, setIsLoaded] = useState(false);
   const [hustlerBody, setHustlerBody] = useState<HustlerBody>({});
-  const [hustlerMeta, setHustlerMeta] = useState<HustlerMetadata>(
-    defaultHustlerMetadata
-  );
+  const [hustlerMeta, setHustlerMeta] = useState<HustlerMetadata>(defaultHustlerMetadata);
 
   useEffect(() => {
     const initAsync = async () => {
       // setHustlerMeta(defaultHustlerMetadata);
       const entities = await toriiClient.getEntities({
+        world_addresses: [worldAddress],
         clause: {
           Keys: {
             keys: [tokenId.toString() || "0"],
@@ -38,10 +38,7 @@ export const useHustler = (toriiClient: ToriiClient, tokenId: number) => {
         historical: false,
       });
 
-      const parsedHustlerMetadata = parseModels(
-        entities,
-        "dope-HustlerMetadata"
-      )[0];
+      const parsedHustlerMetadata = parseModels(entities, "dope-HustlerMetadata")[0];
 
       if (parsedHustlerMetadata) {
         parsedHustlerMetadata.token_id = BigInt(parsedHustlerMetadata.token_id);
@@ -65,7 +62,7 @@ export const useHustler = (toriiClient: ToriiClient, tokenId: number) => {
     if (tokenId && !Number.isNaN(tokenId)) {
       initAsync();
     }
-  }, [tokenId]);
+  }, [tokenId, toriiClient, worldAddress]);
 
   return { hustlerBody, hustlerMeta, setHustlerBody, setHustlerMeta, isLoaded };
 };

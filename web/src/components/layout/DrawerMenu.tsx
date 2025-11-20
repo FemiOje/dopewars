@@ -18,7 +18,7 @@ import {
   keyframes,
   useDisclosure,
 } from "@chakra-ui/react";
-import { ReactNode, useRef } from "react";
+import { Fragment, ReactNode, useRef } from "react";
 import { Cigarette, Close, Dots, Home, PaperIcon, Refresh } from "../icons";
 import { HeaderButton, MediaPlayer } from ".";
 import { ChainSelector, ConnectButton, TokenBalance } from "../wallet";
@@ -81,15 +81,15 @@ const DrawerMenu = () => {
             >
               <VStack w="full" alignItems="flex-start" gap={12}>
                 <UnorderedList w="full" listStyleType="none" marginInlineStart="0">
-                  <DrawerListItem cursor="default">
+                  <DrawerListItem key="media-player" cursor="default">
                     <MediaPlayer />
                   </DrawerListItem>
 
-                  <DrawerListItem cursor="default">
+                  <DrawerListItem key="account-label" cursor="default">
                     <Text color="neon.500"> ACCOUNT </Text>
                   </DrawerListItem>
 
-                  <DrawerListItem cursor="default">
+                  <DrawerListItem key="account-connect" cursor="default">
                     <HStack w="full" justifyContent="space-between">
                       <ConnectButton />
                       {process.env.NODE_ENV !== "production" && (
@@ -112,8 +112,8 @@ const DrawerMenu = () => {
                   )} */}
 
                   {game && (
-                    <>
-                      <DrawerListItem cursor="default">
+                    <Fragment key="game-section">
+                      <DrawerListItem key="game-label" cursor="default">
                         <HStack w="full" justifyContent="space-between">
                           <Text color="neon.500"> GAME </Text>
                           <></>
@@ -126,20 +126,22 @@ const DrawerMenu = () => {
                       </DrawerListItem> */}
 
                       <DrawerListItem
+                        key="game-refresh"
                         onClick={() => {
                           uiStore.openRefreshGame();
                         }}
                       >
                         <Refresh mr={2} /> REFRESH
                       </DrawerListItem>
-                    </>
+                    </Fragment>
                   )}
 
-                  <DrawerListItem cursor="default" color="neon.500">
+                  <DrawerListItem key="nav-label" cursor="default" color="neon.500">
                     <Text> NAVIGATION </Text>
                   </DrawerListItem>
 
                   <DrawerListItem
+                    key="nav-home"
                     onClick={() => {
                       router.push("/");
                     }}
@@ -166,11 +168,12 @@ const DrawerMenu = () => {
                   {/* DEV */}
 
                   {isAdmin && (
-                    <>
-                      <DrawerListItem cursor="default" color="neon.500">
+                    <Fragment key="admin-section">
+                      <DrawerListItem key="admin-label" cursor="default" color="neon.500">
                         <Text> ADMIN </Text>
                       </DrawerListItem>
                       <DrawerListItem
+                        key="admin-page"
                         onClick={() => {
                           router.push("/admin");
                         }}
@@ -178,13 +181,14 @@ const DrawerMenu = () => {
                         <Cigarette mr={2} /> ADMIN
                       </DrawerListItem>
                       <DrawerListItem
+                        key="devtools-page"
                         onClick={() => {
                           router.push("/devtools");
                         }}
                       >
                         <Cigarette mr={2} /> DEVTOOLS
                       </DrawerListItem>
-                    </>
+                    </Fragment>
                   )}
                 </UnorderedList>
               </VStack>

@@ -1,5 +1,5 @@
 import { Entity, Subscription } from "@dojoengine/torii-client";
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import { useDojoContext, useGameStore, useRouterContext } from "@/dojo/hooks";
 import { useToast } from "@/hooks/toast";
 import { useAccount } from "@starknet-react/core";
@@ -22,9 +22,103 @@ export const GlobalEvents = () => {
     chains: { selectedChain },
     clients: { toriiClient },
   } = useDojoContext();
+  const worldAddress = selectedChain.manifest.world.address;
 
   const subscription = useRef<Subscription | undefined>(undefined);
   const accountAddress = useRef(0n);
+
+  const onEventMessage = useCallback(
+    async (key: string, entity: Entity) => {
+      // console.log("globalEvents::onEventMessage", key, entity);
+
+      if (entity.models["dopewars-GameCreated"]) {
+        // const gameCreated = parseStruct(entity.models["dopewars-GameCreated"]) as GameCreated;
+
+        const gameCreated = parseModels({ items: [entity], next_cursor: "" }, "dopewars-GameCreated")[0] as GameCreated;
+        gameCreated.player_name = shortString.decodeShortString(num.toHexString(BigInt(gameCreated.player_name)));
+
+        // @ts-ignore
+        gameCreated.game_mode = gameCreated.game_mode.activeVariant();
+        // token_id, token_id_type, hustler_equipment, hustler_body removed - Dope collection integration stripped
+
+        if (BigInt(gameCreated.player_id) !== accountAddress.current) {
+          toast({
+            icon: () => <HustlerAvatarIcon gameId={gameCreated.game_id} tokenIdType={undefined} tokenId={undefined} />,
+            message:
+              gameCreated.game_mode === "Ranked"
+                ? `${gameCreated.player_name} is ready to hustle...`
+                : `${gameCreated.player_name} is training...`,
+          });
+        } else {
+          const tokenId = gameCreated.token_id;
+          if (!tokenId) {
+            console.warn("[GlobalEvents] GameCreated event missing both token_id and game_id");
+            return;
+          }
+          router.push(`/0x${tokenId.toString(16)}`);
+        }
+      }
+
+      if (entity.models["dopewars-NewSeason"]) {
+        const newSeason = parseStruct(entity.models["dopewars-NewSeason"]) as NewSeason;
+        playSound(Sounds.Uzi);
+        toast({
+          icon: () => <PaperIcon width="16px" height="16px" />,
+          message: `Season ${newSeason.season_version} has started!`,
+        });
+      }
+
+      if (entity.models["dopewars-NewHighScore"]) {
+        const newHighScore = parseStruct(entity.models["dopewars-NewHighScore"]) as NewHighScore;
+        newHighScore.player_name = shortString.decodeShortString(num.toHexString(BigInt(newHighScore.player_name)));
+
+        // token_id removed from NewHighScore event - Dope collection integration stripped
+
+        toast({
+          icon: () => <HustlerAvatarIcon gameId={newHighScore.game_id} tokenIdType={undefined} tokenId={undefined} />,
+          message: `${newHighScore.player_name} rules with ${formatCashHeader(newHighScore.cash)}!`,
+        });
+      }
+
+      if (entity.models["dopewars-GameOver"]) {
+        const gameOver = parseStruct(entity.models["dopewars-GameOver"]) as GameOver;
+        gameOver.player_name = shortString.decodeShortString(num.toHexString(BigInt(gameOver.player_name)));
+        if (BigInt(gameOver.player_id) !== accountAddress.current) {
+          if (gameOver.health === 0) {
+            playSound(Sounds.Magnum357);
+          }
+          // token_id removed from GameOver event - Dope collection integration stripped
+          toast({
+            icon: () => <HustlerAvatarIcon gameId={gameOver.game_id} tokenIdType={undefined} tokenId={undefined} />,
+            message: gameOver.health === 0 ? `RIP ${gameOver.player_name}!` : `${gameOver.player_name} survived!`,
+          });
+        }
+      }
+
+      // if (entity.models["dope-DopeLootReleasedEvent"]) {
+      //   const released = parseStruct(entity.models["dope-DopeLootReleasedEvent"]) as DopeLootReleasedEvent;
+      //   const id = Number(released.id);
+      //   toast({
+      //     icon: () => <HustlerAvatarIcon gameId={0} tokenIdType={"LootId"} tokenId={id} />,
+      //     message: `#${id} has been released!`,
+      //   });
+      // }
+
+      // uncomment to check TrophyProgression
+      // if (entity.models["dopewars-TrophyProgression"]) {
+      //   const progression = parseStruct(entity.models["dopewars-TrophyProgression"]);
+      //   progression.task_id = shortString.decodeShortString(progression.task_id);
+      //   progression.count = Number(progression.count);
+      //   if (BigInt(progression.player_id) === accountAddress.current) {
+      //     console.log("TrophyProgression", progression.task_id, progression.count);
+      //   }
+      //   toast({
+      //     message: `TrophyProgression: ${progression.task_id} ${progression.count}`,
+      //   });
+      // }
+    },
+    [router, toast],
+  );
 
   useEffect(() => {
     accountAddress.current = BigInt(account?.address || 0);
@@ -47,34 +141,33 @@ export const GlobalEvents = () => {
         duration: 6000,
       });
     }
-  }, [gameEvents?.sortedEvents.length]);
+  }, [gameEvents?.sortedEvents.length, game, gameEvents?.sortedEvents, toast]);
 
   useEffect(() => {
     const init = async () => {
       if (!subscription.current) {
         subscription.current = await toriiClient.onEventMessageUpdated(
-          [
-            {
-              Keys: {
-                keys: [undefined],
-                models: [
-                  "dopewars-GameCreated",
-                  "dopewars-NewSeason",
-                  "dopewars-NewHighScore",
-                  "dopewars-GameOver",
-                  "dope-DopeLootReleasedEvent",
-                  "dopewars-TrophyProgression",
-                ],
-                pattern_matching: "VariableLen",
-              },
+          {
+            Keys: {
+              keys: [undefined],
+              models: [
+                "dopewars-GameCreated",
+                "dopewars-NewSeason",
+                "dopewars-NewHighScore",
+                "dopewars-GameOver",
+                "dope-DopeLootReleasedEvent",
+                "dopewars-TrophyProgression",
+              ],
+              pattern_matching: "VariableLen",
             },
-          ],
+          },
+          [worldAddress],
           onEventMessage,
         );
       }
     };
 
-    if (selectedChain) {
+    if (selectedChain && worldAddress) {
       init();
     }
 
@@ -82,97 +175,7 @@ export const GlobalEvents = () => {
       if (subscription.current) subscription.current.cancel();
       subscription.current = undefined;
     };
-  }, [selectedChain, accountAddress.current]);
-
-  const onEventMessage = async (key: string, entity: Entity) => {
-    // console.log("globalEvents::onEventMessage", key, entity);
-
-    if (entity.models["dopewars-GameCreated"]) {
-      // const gameCreated = parseStruct(entity.models["dopewars-GameCreated"]) as GameCreated;
-
-      const gameCreated = parseModels({ items: [entity], next_cursor: "" }, "dopewars-GameCreated")[0] as GameCreated;
-      gameCreated.player_name = shortString.decodeShortString(num.toHexString(BigInt(gameCreated.player_name)));
-
-      // @ts-ignore
-      gameCreated.game_mode = gameCreated.game_mode.activeVariant();
-      // token_id, token_id_type, hustler_equipment, hustler_body removed - Dope collection integration stripped
-
-      if (BigInt(gameCreated.player_id) !== accountAddress.current) {
-        toast({
-          icon: () => <HustlerAvatarIcon gameId={gameCreated.game_id} tokenIdType={undefined} tokenId={undefined} />,
-          message:
-            gameCreated.game_mode === "Ranked"
-              ? `${gameCreated.player_name} is ready to hustle...`
-              : `${gameCreated.player_name} is training...`,
-        });
-      } else {
-        const tokenId = gameCreated.token_id;
-        if (!tokenId) {
-          console.warn("[GlobalEvents] GameCreated event missing both token_id and game_id");
-          return;
-        }
-        router.push(`/0x${tokenId.toString(16)}`);
-      }
-    }
-
-    if (entity.models["dopewars-NewSeason"]) {
-      const newSeason = parseStruct(entity.models["dopewars-NewSeason"]) as NewSeason;
-      playSound(Sounds.Uzi);
-      toast({
-        icon: () => <PaperIcon width="16px" height="16px" />,
-        message: `Season ${newSeason.season_version} has started!`,
-      });
-    }
-
-    if (entity.models["dopewars-NewHighScore"]) {
-      const newHighScore = parseStruct(entity.models["dopewars-NewHighScore"]) as NewHighScore;
-      newHighScore.player_name = shortString.decodeShortString(num.toHexString(BigInt(newHighScore.player_name)));
-
-      // token_id removed from NewHighScore event - Dope collection integration stripped
-
-      toast({
-        icon: () => <HustlerAvatarIcon gameId={newHighScore.game_id} tokenIdType={undefined} tokenId={undefined} />,
-        message: `${newHighScore.player_name} rules with ${formatCashHeader(newHighScore.cash)}!`,
-      });
-    }
-
-    if (entity.models["dopewars-GameOver"]) {
-      const gameOver = parseStruct(entity.models["dopewars-GameOver"]) as GameOver;
-      gameOver.player_name = shortString.decodeShortString(num.toHexString(BigInt(gameOver.player_name)));
-      if (BigInt(gameOver.player_id) !== accountAddress.current) {
-        if (gameOver.health === 0) {
-          playSound(Sounds.Magnum357);
-        }
-        // token_id removed from GameOver event - Dope collection integration stripped
-        toast({
-          icon: () => <HustlerAvatarIcon gameId={gameOver.game_id} tokenIdType={undefined} tokenId={undefined} />,
-          message: gameOver.health === 0 ? `RIP ${gameOver.player_name}!` : `${gameOver.player_name} survived!`,
-        });
-      }
-    }
-
-    if (entity.models["dope-DopeLootReleasedEvent"]) {
-      const released = parseStruct(entity.models["dope-DopeLootReleasedEvent"]) as DopeLootReleasedEvent;
-      const id = Number(released.id);
-      toast({
-        icon: () => <HustlerAvatarIcon gameId={0} tokenIdType={"LootId"} tokenId={id} />,
-        message: `#${id} has been released!`,
-      });
-    }
-
-    // uncomment to check TrophyProgression
-    // if (entity.models["dopewars-TrophyProgression"]) {
-    //   const progression = parseStruct(entity.models["dopewars-TrophyProgression"]);
-    //   progression.task_id = shortString.decodeShortString(progression.task_id);
-    //   progression.count = Number(progression.count);
-    //   if (BigInt(progression.player_id) === accountAddress.current) {
-    //     console.log("TrophyProgression", progression.task_id, progression.count);
-    //   }
-    //   toast({
-    //     message: `TrophyProgression: ${progression.task_id} ${progression.count}`,
-    //   });
-    // }
-  };
+  }, [selectedChain, worldAddress, toriiClient, onEventMessage]);
 
   return null;
 };

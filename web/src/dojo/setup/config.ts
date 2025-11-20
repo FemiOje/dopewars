@@ -32,29 +32,29 @@ const VRF_PROVIDER_SEPOLIA = "0x051fea4450da9d6aee758bdeba88b2f665bcbf549d2c6142
 const VRF_PROVIDER_MAINNET = "0x051fea4450da9d6aee758bdeba88b2f665bcbf549d2c61421aa724e9ac0ced8f";
 const PAPER_MAINNET = "0x410466536b5ae074f7fea81e5533b8134a9fa08b3dd077dd9db08f64997d113";
 
-const provableChain = {
-  id: BigInt(shortString.encodeShortString("WP_PROVABLE_DW")),
-  network: "slot-provable-dw",
-  name: "Provable DW",
-  nativeCurrency: {
-    address: "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
-    name: "Ether",
-    symbol: "ETH",
-    decimals: 18,
-  },
-  testnet: true,
-  rpcUrls: {
-    default: {
-      http: ["https://api.cartridge.gg/x/provable-dw/katana"],
-    },
-    public: {
-      http: ["https://api.cartridge.gg/x/provable-dw/katana"],
-    },
-  },
-  explorers: {
-    worlds: ["https://worlds.dev"],
-  },
-} as const satisfies Chain;
+// const provableChain = {
+//   id: BigInt(shortString.encodeShortString("WP_PROVABLE_DW")),
+//   network: "slot-provable-dw",
+//   name: "Provable DW",
+//   nativeCurrency: {
+//     address: "0x049d36570d4e46f48e99674bd3fcc84644ddd6b96f7c741b1562b82f9e004dc7",
+//     name: "Ether",
+//     symbol: "ETH",
+//     decimals: 18,
+//   },
+//   testnet: true,
+//   rpcUrls: {
+//     default: {
+//       http: ["https://api.cartridge.gg/x/provable-dw/katana"],
+//     },
+//     public: {
+//       http: ["https://api.cartridge.gg/x/provable-dw/katana"],
+//     },
+//   },
+//   explorers: {
+//     worlds: ["https://worlds.dev"],
+//   },
+// } as const satisfies Chain;
 
 export type SupportedChainIds = keyof typeof dojoContextConfig;
 export type DojoContextConfig = typeof dojoContextConfig;
@@ -148,18 +148,18 @@ export type DojoChainConfig = {
 //   vrfProviderSecret: undefined,
 // };
 
-const snSepolia: DojoChainConfig = {
-  name: "SEPOLIA",
-  chainConfig: sepolia,
-  rpcUrl: "https://api.cartridge.gg/x/starknet/sepolia",
-  toriiUrl: "https://api.cartridge.gg/x/provable-dw-1/torii/graphql",
-  toriiWsUrl: "wss://api.cartridge.gg/x/provable-dw-1/torii/graphql/ws",
-  manifest: mergeManifests(manifestSepolia, [manifestDopeSepolia]),
-  predeployedAccounts: [],
-  paperAddress: manifestSepolia.contracts.find((i) => i.tag === `${DW_NS}-paper_mock`)?.address || "0x0",
-  vrfProviderAddress: manifestSepolia.contracts.find((i) => i.tag === `${DW_NS}-vrf_provider_mock`)?.address || "0x0",
-  vrfProviderSecret: undefined,
-};
+// const snSepolia: DojoChainConfig = {
+//   name: "SEPOLIA",
+//   chainConfig: sepolia,
+//   rpcUrl: "https://api.cartridge.gg/x/starknet/sepolia",
+//   toriiUrl: "https://api.cartridge.gg/x/provable-dw-1/torii/graphql",
+//   toriiWsUrl: "wss://api.cartridge.gg/x/provable-dw-1/torii/graphql/ws",
+//   manifest: mergeManifests(manifestSepolia, [manifestDopeSepolia]),
+//   predeployedAccounts: [],
+//   paperAddress: manifestSepolia.contracts.find((i) => i.tag === `${DW_NS}-paper_mock`)?.address || "0x0",
+//   vrfProviderAddress: manifestSepolia.contracts.find((i) => i.tag === `${DW_NS}-vrf_provider_mock`)?.address || "0x0",
+//   vrfProviderSecret: undefined,
+// };
 
 // const provableDW: DojoChainConfig = {
 //   name: "WP_PROVABLE_DW",

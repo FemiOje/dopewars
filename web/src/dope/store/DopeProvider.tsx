@@ -1,25 +1,18 @@
-import {
-  ComponentType,
-  createContext,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { ComponentType, createContext, useContext, useEffect, useRef, useState } from "react";
 import { createDopeStore, DopeState, DopeStore } from "./store";
 import { useStore } from "zustand";
 import { ToriiClient } from "@dojoengine/torii-client";
 
-export const CollectionStoreContext = createContext<DopeStore | undefined>(
-  undefined
-);
+export const CollectionStoreContext = createContext<DopeStore | undefined>(undefined);
 
 export function DopeProvider({
   toriiClient,
+  worldAddress,
   children,
   ErrorComponent,
 }: {
   toriiClient: ToriiClient;
+  worldAddress: string;
   children: any;
   ErrorComponent?: ComponentType;
   onError?: (e: any) => void;
@@ -31,11 +24,12 @@ export function DopeProvider({
   useEffect(() => {
     storeRef.current = createDopeStore();
     storeRef.current.getState().setToriiClient(toriiClient);
+    storeRef.current.getState().setWorldAddress(worldAddress);
 
     return () => {
       storeRef.current?.getState().clearSubscriptions();
     };
-  }, [toriiClient]);
+  }, [toriiClient, worldAddress]);
 
   useEffect(() => {
     const initAsync = async () => {
@@ -63,16 +57,11 @@ export function DopeProvider({
     return <>{ErrorComponent && <ErrorComponent />}</>;
   }
 
-  return (
-    <CollectionStoreContext.Provider value={storeRef.current}>
-      {children}
-    </CollectionStoreContext.Provider>
-  );
+  return <CollectionStoreContext.Provider value={storeRef.current}>{children}</CollectionStoreContext.Provider>;
 }
 
 export function useDopeStore<T>(selector: (state: DopeState) => T): T {
   const store = useContext(CollectionStoreContext);
-  if (!store)
-    throw new Error("Missing CollectionStoreContext.Provider in the tree");
+  if (!store) throw new Error("Missing CollectionStoreContext.Provider in the tree");
   return useStore(store, selector);
 }

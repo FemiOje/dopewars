@@ -42,13 +42,29 @@ export const useDojoTokens = (
     setTokensBalances([])
     try {
       setIsLoading(true);
-      const tokens = await toriiClient.getTokens(addresses, tokenIds || []);
+      const tokens = await toriiClient.getTokens({
+        contract_addresses: addresses,
+        token_ids: tokenIds || [],
+        pagination: {
+          cursor: "",
+          limit: 100,
+          order_by: [],
+          direction: "Forward",
+        },
+        attribute_filters: [],
+      });
 
-      const tokensBalances = await toriiClient.getTokenBalances(
-        addresses,
-        accountAddress ? [accountAddress] : [],
-        tokenIds || [],
-      );
+      const tokensBalances = await toriiClient.getTokenBalances({
+        contract_addresses: addresses,
+        account_addresses: accountAddress ? [accountAddress] : [],
+        token_ids: tokenIds || [],
+        pagination: {
+          cursor: "",
+          limit: 100,
+          order_by: [],
+          direction: "Forward",
+        }
+      });
 
       const parsedTokens = tokens.items.map((t: Token) => {
         let metadata = {};
@@ -57,7 +73,7 @@ export const useDojoTokens = (
         } catch (e) {}
         return {
           ...t,
-          token_id: BigInt(t.token_id),
+          token_id: BigInt(t.token_id || "0"),
           metadata: metadata,
         } as ParsedToken;
       });
@@ -67,7 +83,7 @@ export const useDojoTokens = (
       const parsedTokensBalances = tokensBalances.items.map((tb: TokenBalance) => {
         return {
           ...tb,
-          token_id: BigInt(tb.token_id),
+          token_id: BigInt(tb.token_id || "0"),
           balance: BigInt(tb.balance),
         };
       });

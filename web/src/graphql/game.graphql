@@ -17,12 +17,7 @@ query GameById($gameId: u32) {
         position
         multiplier
         minigame_token_id
-        token_id {
-          option
-          GuestLootId
-          LootId
-          HustlerId
-        }
+        
         equipment_by_slot
       }
     }
@@ -50,12 +45,7 @@ query RegisteredGamesBySeason($version: u16) {
         position
         multiplier
         minigame_token_id
-        token_id {
-          option
-          GuestLootId
-          LootId
-          HustlerId
-        }
+      
         equipment_by_slot
       }
     }
@@ -86,12 +76,7 @@ query GamesByPlayer($playerId: String) {
             claimable
             position
             minigame_token_id
-            token_id {
-              option
-              GuestLootId
-              LootId
-              HustlerId
-            }
+            
             equipment_by_slot
           }
           ... on dopewars_GameStorePacked {
@@ -238,12 +223,7 @@ query GameByTokenId($tokenId: u64) {
         position
         multiplier
         minigame_token_id
-        token_id {
-          option
-          GuestLootId
-          LootId
-          HustlerId
-        }
+      
         equipment_by_slot
       }
     }

@@ -102,6 +102,8 @@ export const useSystems = (): SystemsInterface => {
     return { gameAddress, decideAddress, laundromatAddress, dopeLootClaimAddress, gameTokenAddress };
   }, [dojoProvider]);
 
+  const worldAddress = selectedChain.manifest.world.address;
+
   const dopeLootClaimState = useDopeStore((state) => state.dopeLootClaimState);
 
   const executeAndReceipt = useCallback(
@@ -172,7 +174,7 @@ export const useSystems = (): SystemsInterface => {
         receipt,
       };
     },
-    [rpcProvider, dojoProvider, account, selectedChain, toast],
+    [rpcProvider, dojoProvider, account, toast],
   );
 
   const mintGameToken = useCallback(
@@ -271,7 +273,7 @@ export const useSystems = (): SystemsInterface => {
         hash,
       };
     },
-    [executeAndReceipt, selectedChain],
+    [executeAndReceipt, selectedChain, account, gameAddress],
   );
 
   const endGame = useCallback(
@@ -289,7 +291,7 @@ export const useSystems = (): SystemsInterface => {
         hash,
       };
     },
-    [executeAndReceipt],
+    [executeAndReceipt, gameAddress],
   );
 
   const travel = useCallback(
@@ -315,7 +317,7 @@ export const useSystems = (): SystemsInterface => {
         hash,
       };
     },
-    [executeAndReceipt, selectedChain],
+    [executeAndReceipt, selectedChain, account, gameAddress],
   );
 
   const decide = useCallback(
@@ -338,7 +340,7 @@ export const useSystems = (): SystemsInterface => {
         hash,
       };
     },
-    [executeAndReceipt, selectedChain],
+    [executeAndReceipt, selectedChain, account, decideAddress],
   );
 
   //
@@ -359,6 +361,7 @@ export const useSystems = (): SystemsInterface => {
       // Query GameToken to resolve the associated game before checking for loot release.
       try {
         const gameTokenEntities = await toriiClient.getEntities({
+          world_addresses: [worldAddress],
           clause: {
             Keys: {
               keys: [Number(tokenId).toString()],
@@ -388,6 +391,7 @@ export const useSystems = (): SystemsInterface => {
 
           if (!Number.isNaN(resolvedGameId) && resolvedPlayerId) {
             const gameEntities = await toriiClient.getEntities({
+              world_addresses: [worldAddress],
               clause: {
                 Member: {
                   member: "game_id",
@@ -420,15 +424,13 @@ export const useSystems = (): SystemsInterface => {
         console.error("[useSystems] Failed to resolve game for registerScore:", error);
       }
 
-      // console.log(calls);
-
       const { hash } = await executeAndReceipt(calls);
 
       return {
         hash,
       };
     },
-    [account?.address, dopeLootClaimAddress, dopeLootClaimState, executeAndReceipt, toriiClient],
+    [account?.address, executeAndReceipt, toriiClient, worldAddress],
   );
 
   //
@@ -518,7 +520,7 @@ export const useSystems = (): SystemsInterface => {
         hash,
       };
     },
-    [executeAndReceipt, selectedChain],
+    [executeAndReceipt, selectedChain, account, dojoProvider.manifest],
   );
 
   //
