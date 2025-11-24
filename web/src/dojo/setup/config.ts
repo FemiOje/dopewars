@@ -148,19 +148,20 @@ export type DojoChainConfig = {
 //   vrfProviderSecret: undefined,
 // };
 
-// const snSepolia: DojoChainConfig = {
-//   name: "SEPOLIA",
-//   chainConfig: sepolia,
-//   rpcUrl: "https://api.cartridge.gg/x/starknet/sepolia",
-//   toriiUrl: "https://api.cartridge.gg/x/provable-dw-1/torii/graphql",
-//   toriiWsUrl: "wss://api.cartridge.gg/x/provable-dw-1/torii/graphql/ws",
-//   manifest: mergeManifests(manifestSepolia, [manifestDopeSepolia]),
-//   predeployedAccounts: [],
-//   paperAddress: manifestSepolia.contracts.find((i) => i.tag === `${DW_NS}-paper_mock`)?.address || "0x0",
-//   vrfProviderAddress: manifestSepolia.contracts.find((i) => i.tag === `${DW_NS}-vrf_provider_mock`)?.address || "0x0",
-//   vrfProviderSecret: undefined,
-// };
-
+const snSepolia: DojoChainConfig = {
+  name: "SEPOLIA",
+  chainConfig: sepolia,
+  rpcUrl: "https://api.cartridge.gg/x/starknet/sepolia",
+  toriiUrl: "https://api.cartridge.gg/x/provable-dw-1/torii/graphql",
+  toriiWsUrl: "wss://api.cartridge.gg/x/provable-dw-1/torii/graphql/ws",
+  manifest: mergeManifests(manifestSepolia, [manifestDopeSepolia]),
+  predeployedAccounts: [],
+  paperAddress: manifestSepolia.contracts.find((i) => i.tag === `${DW_NS}-paper_mock`)?.address || "0x0",
+  vrfProviderAddress: manifestSepolia.contracts.find((i) => i.tag === `${DW_NS}-vrf_provider_mock`)?.address || "0x0",
+  vrfProviderSecret: undefined,
+  metagameToriiUrl: "https://api.cartridge.gg/x/provable-dw-1/torii",
+  metagameWorldAddress: "0x0417a513cb972757e1350a56553b4eedfb253d519273db4bc84c81c8a1c84ab6",
+};
 // const provableDW: DojoChainConfig = {
 //   name: "WP_PROVABLE_DW",
 //   chainConfig: provableChain,
@@ -189,27 +190,27 @@ export type DojoChainConfig = {
 //   vrfProviderSecret: undefined,
 // };
 
-const pgMainnet: DojoChainConfig = {
-  name: "MAINNET",
-  chainConfig: mainnet,
-  rpcUrl: "https://api.cartridge.gg/x/starknet/mainnet",
-  toriiUrl: "https://api.cartridge.gg/x/pg-dw-2/torii/graphql",
-  toriiWsUrl: "wss://api.cartridge.gg/x/pg-dw-2/torii/graphql/ws",
-  metagameToriiUrl: "https://api.cartridge.gg/x/pg-mainnet-10/torii",
-  metagameWorldAddress: "0x2ef591697f0fd9adc0ba9dbe0ca04dabad80cf95f08ba02e435d9cb6698a28a",
-  manifest: mergeManifests(manifestMainnet, [manifestDopeMainnet]),
-  predeployedAccounts: [],
-  paperAddress: PAPER_MAINNET,
-  vrfProviderAddress: VRF_PROVIDER_MAINNET,
-  vrfProviderSecret: undefined,
-};
+// const pgMainnet: DojoChainConfig = {
+//   name: "MAINNET",
+//   chainConfig: mainnet,
+//   rpcUrl: "https://api.cartridge.gg/x/starknet/mainnet",
+//   toriiUrl: "https://api.cartridge.gg/x/pg-dw-2/torii/graphql",
+//   toriiWsUrl: "wss://api.cartridge.gg/x/pg-dw-2/torii/graphql/ws",
+//   metagameToriiUrl: "https://api.cartridge.gg/x/pg-mainnet-10/torii",
+//   metagameWorldAddress: "0x2ef591697f0fd9adc0ba9dbe0ca04dabad80cf95f08ba02e435d9cb6698a28a",
+//   manifest: mergeManifests(manifestMainnet, [manifestDopeMainnet]),
+//   predeployedAccounts: [],
+//   paperAddress: PAPER_MAINNET,
+//   vrfProviderAddress: VRF_PROVIDER_MAINNET,
+//   vrfProviderSecret: undefined,
+// };
 
 // keys must match chain.id
 // The first chain in this object is the default chain in production
 export const dojoContextConfig = {
   // SN_MAIN: snMainnet,
-  PG_MAINNET: pgMainnet,
-  // SN_SEPOLIA: snSepolia,
+  // PG_MAINNET: pgMainnet,
+  SN_SEPOLIA: snSepolia,
   // WP_PROVABLE_DW: provableDW,
   // WP_DOPEWARS: katanaSlotDopewars,
   // KATANA: katanaLocal,

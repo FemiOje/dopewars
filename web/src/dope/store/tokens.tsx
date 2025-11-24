@@ -1,6 +1,6 @@
 import { Subscription, Token, TokenBalance } from "@dojoengine/torii-client";
 import { StateCreator } from "zustand";
-import { parseStruct } from "../toriiUtils";
+// import { parseStruct } from "../toriiUtils";
 import { DopeState } from "./store";
 
 export interface ParsedToken {
@@ -105,212 +105,212 @@ export const createTokenStore: StateCreator<DopeState, [], [], TokenState> = (se
 
   //
   initDopeLootClaimState: async () => {
-    const worldAddress = get().worldAddress;
-    if (!worldAddress) {
-      throw new Error("[DopeStore] worldAddress is not set");
-    }
-    const entities = await get().toriiClient!.getEntities({
-      world_addresses: [worldAddress],
-      clause: {
-        Keys: {
-          keys: [undefined],
-          models: ["dope-DopeLootClaimed", "dope-DopeLootReleased", "dope-DopeLootOpened"],
-          pattern_matching: "FixedLen",
-        },
-      },
-      models: ["dope-DopeLootClaimed", "dope-DopeLootReleased", "dope-DopeLootOpened"],
-      historical: false,
-      no_hashed_keys: false,
-      pagination: {
-        cursor: undefined,
-        direction: "Forward",
-        limit: 30_000,
-        order_by: [],
-      },
-    });
+    // const worldAddress = get().worldAddress;
+    // if (!worldAddress) {
+    //   throw new Error("[DopeStore] worldAddress is not set");
+    // }
+    // const entities = await get().toriiClient!.getEntities({
+    //   world_addresses: [worldAddress],
+    //   clause: {
+    //     Keys: {
+    //       keys: [undefined],
+    //       models: ["dope-DopeLootClaimed", "dope-DopeLootReleased", "dope-DopeLootOpened"],
+    //       pattern_matching: "FixedLen",
+    //     },
+    //   },
+    //   models: ["dope-DopeLootClaimed", "dope-DopeLootReleased", "dope-DopeLootOpened"],
+    //   historical: false,
+    //   no_hashed_keys: false,
+    //   pagination: {
+    //     cursor: undefined,
+    //     direction: "Forward",
+    //     limit: 30_000,
+    //     order_by: [],
+    //   },
+    // });
 
-    const state: DopeLootClaimState = {};
+    // const state: DopeLootClaimState = {};
 
-    for (let entity of entities.items) {
-      const models = entity.models;
-      const dopeLootClaimed = models["dope-DopeLootClaimed"] && parseStruct(models["dope-DopeLootClaimed"]);
-      const dopeLootReleased = models["dope-DopeLootReleased"] && parseStruct(models["dope-DopeLootReleased"]);
-      const dopeLootOpened = models["dope-DopeLootOpened"] && parseStruct(models["dope-DopeLootOpened"]);
-      let lootId = "";
-      if (dopeLootClaimed) {
-        lootId = Number(dopeLootClaimed.token_id).toString();
-      } else if (dopeLootReleased) {
-        lootId = Number(dopeLootReleased.token_id).toString();
-      } else if (dopeLootOpened) {
-        lootId = Number(dopeLootOpened.token_id).toString();
-      }
-      if (!lootId) continue;
-      state[lootId] = {
-        isClaimed: dopeLootClaimed ? dopeLootClaimed.claimed : false,
-        isReleased: dopeLootReleased ? dopeLootReleased.released : false,
-        isOpened: dopeLootOpened ? dopeLootOpened.opened : false,
-      };
-    }
-    set({ dopeLootClaimState: state });
+    // for (let entity of entities.items) {
+    //   const models = entity.models;
+    //   const dopeLootClaimed = models["dope-DopeLootClaimed"] && parseStruct(models["dope-DopeLootClaimed"]);
+    //   const dopeLootReleased = models["dope-DopeLootReleased"] && parseStruct(models["dope-DopeLootReleased"]);
+    //   const dopeLootOpened = models["dope-DopeLootOpened"] && parseStruct(models["dope-DopeLootOpened"]);
+    //   let lootId = "";
+    //   if (dopeLootClaimed) {
+    //     lootId = Number(dopeLootClaimed.token_id).toString();
+    //   } else if (dopeLootReleased) {
+    //     lootId = Number(dopeLootReleased.token_id).toString();
+    //   } else if (dopeLootOpened) {
+    //     lootId = Number(dopeLootOpened.token_id).toString();
+    //   }
+    //   if (!lootId) continue;
+    //   state[lootId] = {
+    //     isClaimed: dopeLootClaimed ? dopeLootClaimed.claimed : false,
+    //     isReleased: dopeLootReleased ? dopeLootReleased.released : false,
+    //     isOpened: dopeLootOpened ? dopeLootOpened.opened : false,
+    //   };
+    // }
+    // set({ dopeLootClaimState: state });
   },
   clearSubscriptions: () => {
-    for (let subscription of get().subscriptions) {
-      // cancel subscription
-      subscription.cancel();
-    }
-    set({ subscriptions: [] });
+    // for (let subscription of get().subscriptions) {
+    //   // cancel subscription
+    //   subscription.cancel();
+    // }
+    // set({ subscriptions: [] });
   },
   subscribe: async (_tokensAddresses: string[]) => {
-    get().clearSubscriptions();
+    // get().clearSubscriptions();
 
-    // const subscriptionTokens = await get().toriiClient!.onTokenUpdated(
-    //   tokensAddresses,
-    //   [],
-    //   get().onTokenUpdated
+    // // const subscriptionTokens = await get().toriiClient!.onTokenUpdated(
+    // //   tokensAddresses,
+    // //   [],
+    // //   get().onTokenUpdated
+    // // );
+
+    // // const subscriptionTokensBalances = await get().toriiClient!.onTokenBalanceUpdated(
+    // //   tokensAddresses,
+    // //   [],
+    // //   [],
+    // //   get().onTokenBalanceUpdated
+    // // );
+
+    // const worldAddress = get().worldAddress;
+    // if (!worldAddress) {
+    //   throw new Error("[DopeStore] worldAddress is not set");
+    // }
+    // const subscriptionEntities = await get().toriiClient!.onEntityUpdated(
+    //   {
+    //     Keys: {
+    //       keys: [undefined],
+    //       models: ["dope-DopeLootClaimed", "dope-DopeLootReleased", "dope-DopeLootOpened"],
+    //       pattern_matching: "FixedLen",
+    //     },
+    //   },
+    //   [worldAddress],
+    //   get().onEntityUpdated,
     // );
 
-    // const subscriptionTokensBalances = await get().toriiClient!.onTokenBalanceUpdated(
-    //   tokensAddresses,
-    //   [],
-    //   [],
-    //   get().onTokenBalanceUpdated
-    // );
-
-    const worldAddress = get().worldAddress;
-    if (!worldAddress) {
-      throw new Error("[DopeStore] worldAddress is not set");
-    }
-    const subscriptionEntities = await get().toriiClient!.onEntityUpdated(
-      {
-        Keys: {
-          keys: [undefined],
-          models: ["dope-DopeLootClaimed", "dope-DopeLootReleased", "dope-DopeLootOpened"],
-          pattern_matching: "FixedLen",
-        },
-      },
-      [worldAddress],
-      get().onEntityUpdated,
-    );
-
-    const subscriptions = [
-      // subscriptionTokens,
-      // subscriptionTokensBalances,
-      subscriptionEntities,
-    ];
-    set({
-      subscriptions,
-    });
+    // const subscriptions = [
+    //   // subscriptionTokens,
+    //   // subscriptionTokensBalances,
+    //   subscriptionEntities,
+    // ];
+    // set({
+    //   subscriptions,
+    // });
   },
   onTokenUpdated: async (token: Token) => {
-    if (BigInt(token.contract_address) === 0n) return;
+    // if (BigInt(token.contract_address) === 0n) return;
 
-    const tokens = get().tokens;
-    if (!tokens[token.contract_address]) {
-      tokens[token.contract_address] = [];
-    }
+    // const tokens = get().tokens;
+    // if (!tokens[token.contract_address]) {
+    //   tokens[token.contract_address] = [];
+    // }
 
-    const parsedToken = parseToken(token);
-    tokens[token.contract_address] = tokens[token.contract_address].filter(
-      (i: ParsedToken) => i.token_id === parsedToken.token_id && i.contract_address === parsedToken.contract_address,
-    );
-    set({
-      tokens: {
-        ...tokens,
-        [token.contract_address]: [...tokens[token.contract_address], parsedToken],
-      },
-    });
+    // const parsedToken = parseToken(token);
+    // tokens[token.contract_address] = tokens[token.contract_address].filter(
+    //   (i: ParsedToken) => i.token_id === parsedToken.token_id && i.contract_address === parsedToken.contract_address,
+    // );
+    // set({
+    //   tokens: {
+    //     ...tokens,
+    //     [token.contract_address]: [...tokens[token.contract_address], parsedToken],
+    //   },
+    // });
   },
   onTokenBalanceUpdated: async (tokenBalance: TokenBalance) => {
-    if (BigInt(tokenBalance.contract_address) === 0n) return;
+    // if (BigInt(tokenBalance.contract_address) === 0n) return;
 
-    const tokensBalances = get().tokensBalances;
-    if (!tokensBalances[tokenBalance.contract_address]) {
-      tokensBalances[tokenBalance.contract_address] = [];
-    }
+    // const tokensBalances = get().tokensBalances;
+    // if (!tokensBalances[tokenBalance.contract_address]) {
+    //   tokensBalances[tokenBalance.contract_address] = [];
+    // }
 
-    const parsedTokenBalance = parseTokenBalance(tokenBalance);
-    tokensBalances[tokenBalance.contract_address] = tokensBalances[tokenBalance.contract_address].filter(
-      (i: ParsedTokenBalance) =>
-        i.token_id === parsedTokenBalance.token_id && i.contract_address === parsedTokenBalance.contract_address,
-    );
-    set({
-      tokensBalances: {
-        ...tokensBalances,
-        [tokenBalance.contract_address]: [...tokensBalances[tokenBalance.contract_address], parsedTokenBalance],
-      },
-    });
+    // const parsedTokenBalance = parseTokenBalance(tokenBalance);
+    // tokensBalances[tokenBalance.contract_address] = tokensBalances[tokenBalance.contract_address].filter(
+    //   (i: ParsedTokenBalance) =>
+    //     i.token_id === parsedTokenBalance.token_id && i.contract_address === parsedTokenBalance.contract_address,
+    // );
+    // set({
+    //   tokensBalances: {
+    //     ...tokensBalances,
+    //     [tokenBalance.contract_address]: [...tokensBalances[tokenBalance.contract_address], parsedTokenBalance],
+    //   },
+    // });
   },
   onEntityUpdated: async (entity: string, update: any) => {
-    if (BigInt(entity) === 0n) return;
+    // if (BigInt(entity) === 0n) return;
 
-    if (update["dope-DopeLootClaimed"]) {
-      const dopeLootClaimState = get().dopeLootClaimState;
-      const parsed = parseStruct(update["dope-DopeLootClaimed"]);
-      const tokenId = Number(parsed.token_id);
-      const claimed = parsed.opened;
+    // if (update["dope-DopeLootClaimed"]) {
+    //   const dopeLootClaimState = get().dopeLootClaimState;
+    //   const parsed = parseStruct(update["dope-DopeLootClaimed"]);
+    //   const tokenId = Number(parsed.token_id);
+    //   const claimed = parsed.opened;
 
-      if (dopeLootClaimState[tokenId]) {
-        dopeLootClaimState[tokenId].isClaimed = claimed;
-      } else {
-        dopeLootClaimState[tokenId] = {
-          isClaimed: claimed,
-          isReleased: false,
-          isOpened: false,
-        };
-      }
-      set({
-        dopeLootClaimState: {
-          ...dopeLootClaimState,
-          [tokenId]: dopeLootClaimState[tokenId],
-        },
-      });
-    }
+    //   if (dopeLootClaimState[tokenId]) {
+    //     dopeLootClaimState[tokenId].isClaimed = claimed;
+    //   } else {
+    //     dopeLootClaimState[tokenId] = {
+    //       isClaimed: claimed,
+    //       isReleased: false,
+    //       isOpened: false,
+    //     };
+    //   }
+    //   set({
+    //     dopeLootClaimState: {
+    //       ...dopeLootClaimState,
+    //       [tokenId]: dopeLootClaimState[tokenId],
+    //     },
+    //   });
+    // }
 
-    if (update["dope-DopeLootReleased"]) {
-      const dopeLootClaimState = get().dopeLootClaimState;
-      const parsed = parseStruct(update["dope-DopeLootReleased"]);
-      const tokenId = Number(parsed.token_id);
-      const released = parsed.released;
+    // if (update["dope-DopeLootReleased"]) {
+    //   const dopeLootClaimState = get().dopeLootClaimState;
+    //   const parsed = parseStruct(update["dope-DopeLootReleased"]);
+    //   const tokenId = Number(parsed.token_id);
+    //   const released = parsed.released;
 
-      if (dopeLootClaimState[tokenId]) {
-        dopeLootClaimState[tokenId].isReleased = released;
-      } else {
-        dopeLootClaimState[tokenId] = {
-          isClaimed: false,
-          isReleased: released,
-          isOpened: false,
-        };
-      }
-      set({
-        dopeLootClaimState: {
-          ...dopeLootClaimState,
-          [tokenId]: dopeLootClaimState[tokenId],
-        },
-      });
-    }
+    //   if (dopeLootClaimState[tokenId]) {
+    //     dopeLootClaimState[tokenId].isReleased = released;
+    //   } else {
+    //     dopeLootClaimState[tokenId] = {
+    //       isClaimed: false,
+    //       isReleased: released,
+    //       isOpened: false,
+    //     };
+    //   }
+    //   set({
+    //     dopeLootClaimState: {
+    //       ...dopeLootClaimState,
+    //       [tokenId]: dopeLootClaimState[tokenId],
+    //     },
+    //   });
+    // }
 
-    if (update["dope-DopeLootOpened"]) {
-      const dopeLootClaimState = get().dopeLootClaimState;
-      const parsed = parseStruct(update["dope-DopeLootOpened"]);
-      const tokenId = Number(parsed.token_id);
-      const opened = parsed.opened;
+    // if (update["dope-DopeLootOpened"]) {
+    //   const dopeLootClaimState = get().dopeLootClaimState;
+    //   const parsed = parseStruct(update["dope-DopeLootOpened"]);
+    //   const tokenId = Number(parsed.token_id);
+    //   const opened = parsed.opened;
 
-      if (dopeLootClaimState[tokenId]) {
-        dopeLootClaimState[tokenId].isOpened = opened;
-      } else {
-        dopeLootClaimState[tokenId] = {
-          isClaimed: false,
-          isReleased: false,
-          isOpened: opened,
-        };
-      }
-      set({
-        dopeLootClaimState: {
-          ...dopeLootClaimState,
-          [tokenId]: dopeLootClaimState[tokenId],
-        },
-      });
-    }
+    //   if (dopeLootClaimState[tokenId]) {
+    //     dopeLootClaimState[tokenId].isOpened = opened;
+    //   } else {
+    //     dopeLootClaimState[tokenId] = {
+    //       isClaimed: false,
+    //       isReleased: false,
+    //       isOpened: opened,
+    //     };
+    //   }
+    //   set({
+    //     dopeLootClaimState: {
+    //       ...dopeLootClaimState,
+    //       [tokenId]: dopeLootClaimState[tokenId],
+    //     },
+    //   });
+    // }
   },
 });
 
@@ -318,22 +318,22 @@ export const createTokenStore: StateCreator<DopeState, [], [], TokenState> = (se
 //
 //
 
-const parseToken = (t: Token) => {
-  let metadata = {};
-  try {
-    metadata = JSON.parse(t.metadata);
-  } catch (e) {}
-  return {
-    ...t,
-    token_id: BigInt(t.token_id),
-    metadata: metadata,
-  };
-};
+// const parseToken = (t: Token) => {
+//   let metadata = {};
+//   try {
+//     metadata = JSON.parse(t.metadata);
+//   } catch (e) {}
+//   return {
+//     ...t,
+//     token_id: BigInt(t.token_id),
+//     metadata: metadata,
+//   };
+// };
 
-const parseTokenBalance = (tb: TokenBalance) => {
-  return {
-    ...tb,
-    token_id: BigInt(tb.token_id),
-    balance: BigInt(tb.balance),
-  };
-};
+// const parseTokenBalance = (tb: TokenBalance) => {
+//   return {
+//     ...tb,
+//     token_id: BigInt(tb.token_id),
+//     balance: BigInt(tb.balance),
+//   };
+// };

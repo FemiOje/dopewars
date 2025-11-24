@@ -237,7 +237,6 @@ export class ConfigStoreClass {
 
     try {
       data = (yield this.client.request(ConfigDocument, {})) as ConfigQuery;
-      console.log("init successfully. data:", data);
     } catch (error: any) {
       console.log("error", error);
       throw error;

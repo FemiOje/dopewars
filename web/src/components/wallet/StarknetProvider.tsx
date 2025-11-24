@@ -96,7 +96,13 @@ const cartridgeConnector = ({ selectedChain }: { selectedChain: DojoChainConfig 
   // const dopeGearAddress = getContractByName(selectedChain.manifest, "dope", "DopeGear")?.address;
   // const dopeHustlersAddress = getContractByName(selectedChain.manifest, "dope", "DopeHustlers")?.address;
 
-  const policies: SessionPolicies = { contracts: {} };
+  const policies: SessionPolicies = { contracts: {
+    [selectedChain.vrfProviderAddress]: { methods: [{ entrypoint: "request_random" }] },
+    [gameAddress]: { methods: [{ entrypoint: "create_game" }, { entrypoint: "travel" }, { entrypoint: "end_game" }] },
+    [gameTokenAddress]: { methods: [{ entrypoint: "mint_game" }, { entrypoint: "player_name" }, { entrypoint: "token_uri" }] },
+    [decideAddress]: { methods: [{ entrypoint: "decide" }] },
+    [laundromatAddress]: { methods: [{ entrypoint: "register_score" }] }
+  } };
 
   // Only add contracts to policies if the address is available in the manifest
   if (selectedChain.vrfProviderAddress) {
@@ -192,7 +198,6 @@ const cartridgeConnector = ({ selectedChain }: { selectedChain: DojoChainConfig 
     ],
     defaultChainId: `0x${selectedChain.chainConfig.id.toString(16)}`,
     url: selectedChain.keychain ? selectedChain.keychain : "https://x.cartridge.gg",
-    // rpc: selectedChain.rpcUrl ? selectedChain.rpcUrl : "http://localhost:5050",
     // profileUrl: selectedChain.profileUrl ? selectedChain.profileUrl : undefined,
     namespace: selectedChain.namespace ? selectedChain.namespace : "dopewars",
     slot: selectedChain.slot ? selectedChain.slot : "pg-mainnet-9",

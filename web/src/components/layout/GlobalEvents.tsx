@@ -28,8 +28,13 @@ export const GlobalEvents = () => {
   const accountAddress = useRef(0n);
 
   const onEventMessage = useCallback(
-    async (key: string, entity: Entity) => {
-      // console.log("globalEvents::onEventMessage", key, entity);
+    async (entity: Entity) => {
+      console.log("globalEvents::onEventMessage: Entity: ", entity);
+
+      if (!entity || !entity.models) {
+        console.warn("[GlobalEvents] Received event with undefined entity or models", { entity });
+        return;
+      }
 
       if (entity.models["dopewars-GameCreated"]) {
         // const gameCreated = parseStruct(entity.models["dopewars-GameCreated"]) as GameCreated;
@@ -51,11 +56,14 @@ export const GlobalEvents = () => {
           });
         } else {
           const tokenId = gameCreated.token_id;
-          if (!tokenId) {
+          if (tokenId === undefined || tokenId === null) {
             console.warn("[GlobalEvents] GameCreated event missing both token_id and game_id");
             return;
           }
-          router.push(`/0x${tokenId.toString(16)}`);
+
+          const tokenIdBigInt = typeof tokenId === "bigint" ? tokenId : BigInt(tokenId.toString?.() ?? tokenId);
+          const tokenIdHex = `0x${tokenIdBigInt.toString(16)}`;
+          router.push(`/${tokenIdHex}`);
         }
       }
 

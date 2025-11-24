@@ -23,7 +23,8 @@ export class MetagameClient {
     };
 
     this.namespace = discoveredNamespace || config.namespace || "dopewars";
-    this.tokenAddress = config.tokenAddress || "0x036017e69d21d6d8c13e266eabb73ef1f1d02722d86bdcabe5f168f8e549d3cd";
+    this.tokenAddress = config.tokenAddress || "0x02334dc9c950c74c3228e2a343d495ae36f0b4edf06767a679569e9f9de08776"; // sepolia token address
+    // this.tokenAddress = config.tokenAddress || "0x036017e69d21d6d8c13e266eabb73ef1f1d02722d86bdcabe5f168f8e549d3cd"; // mainnet token address
   }
 
   static async create(config: MetagameConfig): Promise<MetagameClient> {
@@ -110,7 +111,6 @@ export class MetagameClient {
   }
 
   getConfig(): MetagameConfig {
-    console.log("[MetagameClient.getConfig] Returning config with toriiUrl:", this.config.toriiUrl);
     return this.config;
   }
 

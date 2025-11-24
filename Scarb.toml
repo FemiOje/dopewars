@@ -77,7 +77,7 @@ migrate_ryosepolia_controller = "PROFILE=ryosepolia && sozo -P $PROFILE build &&
 migrate_ryosepolia = "PROFILE=ryosepolia && sozo -P $PROFILE build && sozo -P $PROFILE migrate --fee eth --fee-estimate-multiplier 2 --keystore ../../../sozo_acc -vvv && scarb run copy_manifest $PROFILE && scarb run auth $PROFILE && sozo -P $PROFILE inspect"
 migrate_ryomainnet = "PROFILE=mainnet && sozo -P $PROFILE build && sozo -P $PROFILE migrate --fee eth --fee-estimate-multiplier 2 --keystore ../../../dopewars_key -vvv && scarb run copy_manifest $PROFILE && scarb run auth $PROFILE && sozo -P $PROFILE inspect"
 migrate_provable = "PROFILE=provable-dw && sozo -P $PROFILE build && sozo -P $PROFILE migrate -vvv && scarb run copy_manifest $PROFILE && sozo -P $PROFILE inspect"
-migrate_sepolia = "PROFILE=sepolia && sozo -P $PROFILE build && sozo -P $PROFILE migrate --keystore ./deployments/keystore-1.json -vvv && scarb run copy_manifest $PROFILE && sozo -P $PROFILE inspect"
+migrate_sepolia = "PROFILE=sepolia && sozo -P $PROFILE build && sozo -P $PROFILE migrate --keystore ../dev_accounts/dope_key.json -vvv && scarb run copy_manifest $PROFILE && sozo -P $PROFILE inspect"
 migrate_mainnet-dw = "PROFILE=mainnet && sozo -P $PROFILE build && sozo -P $PROFILE migrate --keystore ./deployments/keystore.json -vvv && scarb run copy_manifest $PROFILE && sozo -P $PROFILE inspect"
 
 # slot dopewars

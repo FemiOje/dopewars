@@ -26,23 +26,21 @@ type GameStoreProps = {
   worldAddress: string;
 };
 
-// Historical event models that need to be loaded for game state
-// Must match the historical_events in torii config files
-const HISTORICAL_EVENT_MODELS = [
-  "dopewars-GameCreated",
-  "dopewars-Traveled",
-  "dopewars-GameOver",
-  "dopewars-TradeDrug",
-  "dopewars-HighVolatility",
-  "dopewars-UpgradeItem",
-  "dopewars-TravelEncounter",
-  "dopewars-TravelEncounterResult",
-  "dopewars-NewSeason",
-  "dopewars-NewHighScore",
-  "dopewars-Claimed",
-  "dopewars-TrophyCreation",
-  "dopewars-TrophyProgression",
-] as const;
+// const HISTORICAL_EVENT_MODELS = [
+//   "dopewars-GameCreated",
+//   "dopewars-Traveled",
+//   "dopewars-GameOver",
+//   "dopewars-TradeDrug",
+//   "dopewars-HighVolatility",
+//   "dopewars-UpgradeItem",
+//   "dopewars-TravelEncounter",
+//   "dopewars-TravelEncounterResult",
+//   "dopewars-NewSeason",
+//   "dopewars-NewHighScore",
+//   "dopewars-Claimed",
+//   "dopewars-TrophyCreation",
+//   "dopewars-TrophyProgression",
+// ] as const;
 
 // export type GameWithTokenId = {
 //   game_id: number;
@@ -128,9 +126,7 @@ export class GameStoreClass {
   }
 
   *init(tokenId: string) {
-    // Wait for config store to be initialized before proceeding
     if (!this.configStore.isInitialized) {
-      console.log("Waiting for config store to initialize...");
       throw new Error("Config store not initialized yet, will retry");
     }
 
@@ -141,13 +137,16 @@ export class GameStoreClass {
     const trimmedTokenId = tokenId.trim();
     let tokenIdNumber: number;
 
-    // Check if it's a hex string (starts with 0x)
-    if (trimmedTokenId.startsWith("0x") || trimmedTokenId.startsWith("0X")) {
-      // Parse as hex
-      const cleanTokenId = trimmedTokenId.replace(/^0x+/i, "");
-      tokenIdNumber = parseInt(cleanTokenId, 16);
+    const hasHexPrefix = /^0x/i.test(trimmedTokenId);
+    const tokenDigits = hasHexPrefix ? trimmedTokenId.slice(2) : trimmedTokenId;
+    const isDecimalWithHexPrefix = hasHexPrefix && /^[0-9]+$/.test(tokenDigits);
+
+    if (isDecimalWithHexPrefix) {
+      // Token was incorrectly prefixed with 0x even though it is decimal
+      tokenIdNumber = parseInt(tokenDigits, 10);
+    } else if (hasHexPrefix) {
+      tokenIdNumber = parseInt(tokenDigits, 16);
     } else {
-      // Parse as decimal
       tokenIdNumber = parseInt(trimmedTokenId, 10);
     }
 
@@ -226,48 +225,75 @@ export class GameStoreClass {
     this.game = game;
   }
   //////////////////////////////////////////////
+  // *loadGameEvents() {
+  //   try {
+  //     const eventModels = [...HISTORICAL_EVENT_MODELS];
+
+  //     const entities: Entities = yield this.toriiClient.getEventMessages({
+  //       world_addresses: [this.worldAddress],
+  //       clause: {
+  //         Keys: {
+  //           keys: [num.toHexString(this.gameInfos?.game_id), this.gameInfos?.player_id],
+  //           models: eventModels,
+  //           pattern_matching: "VariableLen",
+  //         },
+  //       },
+  //       pagination: {
+  //         limit: 10_000,
+  //         cursor: undefined,
+  //         direction: "Forward",
+  //         order_by: [],
+  //       },
+  //       no_hashed_keys: false,
+  //       models: eventModels, // Explicit models list instead of empty array
+  //       historical: true,
+  //     });
+
+  //     if (entities.items.length === 0) {
+  //       this.gameEvents = new EventClass(this.configStore, this.gameInfos!, []);
+  //       return;
+  //     }
+
+  //     this.gameEvents = new EventClass(this.configStore, this.gameInfos!, entities.items);
+  //   } catch (error: any) {
+  //     // Log error but don't block game initialization
+  //     const errorMessage = error?.message || String(error);
+  //     console.warn(
+  //       `[GameStore] Failed to load game events for gameId: ${this.gameInfos?.game_id}. Error: ${errorMessage}. Continuing without events.`,
+  //     );
+  //     this.gameEvents = null;
+  //   }
+  // }
+
   *loadGameEvents() {
-    try {
-      // Fix for database schema error: Specify explicit event models instead of empty array
-      // The combination of empty models: [] + wildcard in Keys clause + historical: true
-      // causes the database to query event_model.model_id which doesn't exist
-      // Solution: Use explicit event models list (must match torii config historical_events)
-      const eventModels = [...HISTORICAL_EVENT_MODELS];
-
-      const entities: Entities = yield this.toriiClient.getEventMessages({
-        world_addresses: [this.worldAddress],
-        clause: {
-          Keys: {
-            keys: [num.toHexString(this.gameInfos?.game_id), this.gameInfos?.player_id],
-            models: eventModels,
-            pattern_matching: "VariableLen",
-          },
+    const entities: Entities = yield this.toriiClient.getEventMessages({
+      world_addresses: [this.worldAddress],
+      clause: {
+        Keys: {
+          keys: [num.toHexString(this.gameInfos?.game_id), this.gameInfos?.player_id],
+          models: [],
+          pattern_matching: "VariableLen",
         },
-        pagination: {
-          limit: 10_000,
-          cursor: undefined,
-          direction: "Forward",
-          order_by: [],
-        },
-        no_hashed_keys: false,
-        models: eventModels, // Explicit models list instead of empty array
-        historical: true,
-      });
+      },
 
-      if (entities.items.length === 0) {
-        this.gameEvents = new EventClass(this.configStore, this.gameInfos!, []);
-        return;
-      }
+      pagination: {
+        limit: 10_000,
+        cursor: undefined,
+        direction: "Forward",
+        order_by: [],
+      },
+      no_hashed_keys: true,
+      models: [],
+      historical: false,
+    });
+    console.log("loadGameEvents: entities: ", entities);
 
-      this.gameEvents = new EventClass(this.configStore, this.gameInfos!, entities.items);
-    } catch (error: any) {
-      // Log error but don't block game initialization
-      const errorMessage = error?.message || String(error);
-      console.warn(
-        `[GameStore] Failed to load game events for gameId: ${this.gameInfos?.game_id}. Error: ${errorMessage}. Continuing without events.`,
-      );
-      this.gameEvents = null;
+    if (entities.items.length === 0) {
+      console.log("No game events found for gameId: ", this.gameInfos?.game_id);
+      return;
     }
+
+    this.gameEvents = new EventClass(this.configStore, this.gameInfos!, entities.items);
   }
 
   *loadGameInfos(tokenId: string) {
